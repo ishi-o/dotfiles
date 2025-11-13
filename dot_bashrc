@@ -27,3 +27,6 @@ export GOROOT=/usr/local/go
 export PATH=$PATH:$MAVEN_HOME/bin:$GOROOT/bin
 export GOPATH=$HOME/go/lib:$HOME/go/work
 export GOPROXY=https://goproxy.cn,direct
+
+alias vi=nvim
+alias vim=nvim
