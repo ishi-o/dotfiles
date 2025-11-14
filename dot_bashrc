@@ -17,11 +17,14 @@ export PATH
 
 # User specific aliases and functions
 
+# export COLORTERM=truecolor
+# export TERM=xterm-256color
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-export MAVEN_HOME="/usr/local/apache-maven-3.9.11"
+export MAVEN_HOME="/usr/local/maven"
 export GOROOT=/usr/local/go
 
 export PATH=$PATH:$MAVEN_HOME/bin:$GOROOT/bin
@@ -30,3 +33,10 @@ export GOPROXY=https://goproxy.cn,direct
 
 alias vi=nvim
 alias vim=nvim
+
+shopt -s cdspell
+
+if [[ -n "$TMUX" ]]; then
+	echo ""
+	clear
+fi
