@@ -1,4 +1,4 @@
-require("plugins")
+-- require("plugins")
 
 local map = vim.api.nvim_set_keymap
 map("n", "<Space>", "<Nop>", { noremap = true })
@@ -18,3 +18,9 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = false
 vim.opt.laststatus = 2
+
+if vim.g.vscode then
+	require("config.vscode-keybinding")
+else
+	require("config.local-keybinding")
+end
