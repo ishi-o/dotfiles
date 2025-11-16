@@ -1,3 +1,5 @@
+vim.g.have_nerd_font = true
+
 require("neo-tree").setup({
 	close_if_last_window = false,
 	enable_git_status = true,
@@ -12,6 +14,11 @@ require("neo-tree").setup({
 			enabled = true,
 		},
 		use_libuv_file_watcher = true,
+		renderer = {
+			icons = {
+				enable = true
+			},
+		},
 	},
 })
 

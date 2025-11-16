@@ -2,12 +2,6 @@ return {
 	-- lazy.nvim itself needless
 
 	-- lsp core
-	-- {
-	-- 	"neovim/nvim-lspconfig",
-	-- 	config = function()
-	-- 		require("config.lsp").setup()
-	-- 	end,
-	-- },
 	{
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
@@ -57,7 +51,7 @@ return {
 		end,
 	},
 
-	-- dir-tree
+	-- file-tree
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
@@ -71,11 +65,47 @@ return {
 		end,
 	},
 
+	-- null-ls
 	{
 		"nvimtools/none-ls.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			require("config.none-ls")
 		end,
+	},
+
+	-- nvim-dap
+	{
+		"mfussenegger/nvim-dap",
+		dependencies = {
+			"rcarriga/nvim-dap-ui",
+			"theHamsta/nvim-dap-virtual-text",
+			"nvim-telescope/telescope-dap.nvim",
+		},
+		config = function()
+			require("config.nvim-dap")
+		end
+	},
+
+	-- telescope
+	{
+		"nvim-telescope/telescope.nvim",
+		branch = "0.1.8",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope-fzf-native.nvim",
+			"nvim-telescope/telescope-file-browser.nvim",
+		},
+		config = function()
+			require("config.telescope")
+		end
+	},
+
+	-- autopairs
+	{
+		"windwp/nvim-autopairs",
+		config = function()
+			require("config.autopairs")
+		end
 	},
 }
