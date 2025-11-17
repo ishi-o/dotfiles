@@ -92,15 +92,45 @@ end
 
 require("mason").setup({})
 
+local registry = require("mason-registry")
+
+local required_packages = {
+	-- LSP Servers
+	"clangd",
+	"jdtls",
+	"lua-language-server",
+	"eslint-lsp",
+	"marksman",
+
+	-- DAPs
+	"codelldb",
+	"java-debug-adapter",
+
+	-- Linters
+	"checkstyle",
+	"luacheck",
+	"markdownlint",
+	"proselint",
+
+	-- formatters
+	"google-java-format",
+	"stylua",
+	"prettier",
+	"prettierd",
+}
+
+for _, package_name in ipairs(required_packages) do
+	local pkg = registry.get_package(package_name)
+	if not pkg:is_installed() then
+		pkg:install():once("closed", function()
+			print("[Mason] Successfully installed: " .. package_name)
+		end)
+	end
+end
+
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "java",
 	callback = function()
-		-- check jdtls
-		local mason_registry = require("mason-registry")
-		if not mason_registry.is_installed("jdtls") then
-			mason_registry.get_package("jdtls"):install()
-		end
-
 		local root_files = vim.fs.find({ ".git", "mvnw", "gradlew", "pom.xml" }, { upward = true })
 		local root_dir = vim.fs.dirname(root_files[1])
 		local config = {

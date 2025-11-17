@@ -4,8 +4,8 @@ return {
 	-- lsp core
 	{
 		"williamboman/mason.nvim",
-		"williamboman/mason-lspconfig.nvim",
-		"neovim/nvim-lspconfig",
+		-- "williamboman/mason-lspconfig.nvim",
+		-- "neovim/nvim-lspconfig",
 		config = function()
 			require("config.lsp")
 		end,
@@ -118,11 +118,25 @@ return {
 		end,
 	},
 
-	-- conform -- autoformatOnSave
+	-- conform - autoformatOnSave
 	{
 		"stevearc/conform.nvim",
 		config = function()
 			require("config.conform")
+		end,
+	},
+
+	-- markdown preview
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = {
+			"MarkdownPreviewToggle",
+			"MarkdownPreview",
+			"MarkdownPreviewStop",
+		},
+		ft = { "markdown" },
+		build = function()
+			vim.fn["mkdp#util#install"]()
 		end,
 	},
 }
