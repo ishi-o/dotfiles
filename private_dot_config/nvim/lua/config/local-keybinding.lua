@@ -1,9 +1,6 @@
 vim.keymap.set("i", "jj", "<Esc>", { noremap = true })
 
-vim.keymap.set("n", "<leader>s", function() 
-	vim.lsp.buf.format({ async = false })
-	vim.cmd("w")
-end, { noremap = true })
+vim.keymap.set("n", "<leader>s", ":w<CR>", { noremap = true })
 
 vim.keymap.set("n", "<leader>q", ":q<CR>", { noremap = true })
 vim.keymap.set("n", "q<leader>", ":q<CR>", { noremap = true })

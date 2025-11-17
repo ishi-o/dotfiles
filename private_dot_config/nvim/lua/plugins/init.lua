@@ -84,7 +84,7 @@ return {
 		},
 		config = function()
 			require("config.nvim-dap")
-		end
+		end,
 	},
 
 	-- telescope
@@ -98,7 +98,7 @@ return {
 		},
 		config = function()
 			require("config.telescope")
-		end
+		end,
 	},
 
 	-- autopairs
@@ -106,6 +106,23 @@ return {
 		"windwp/nvim-autopairs",
 		config = function()
 			require("config.autopairs")
-		end
+		end,
+	},
+
+	-- git
+	{
+		"tpope/vim-fugitive",
+		"lewis6991/gitsigns.nvim",
+		config = function()
+			require("config.git")
+		end,
+	},
+
+	-- conform -- autoformatOnSave
+	{
+		"stevearc/conform.nvim",
+		config = function()
+			require("config.conform")
+		end,
 	},
 }
