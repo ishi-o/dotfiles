@@ -31,14 +31,14 @@ shopt -s cdspell
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/admin/opt/conda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('~/opt/conda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/admin/opt/conda3/etc/profile.d/conda.sh" ]; then
-        . "/home/admin/opt/conda3/etc/profile.d/conda.sh"
+    if [ -f "~/opt/conda3/etc/profile.d/conda.sh" ]; then
+        . "~/opt/conda3/etc/profile.d/conda.sh"
     else
-        export PATH="/home/admin/opt/conda3/bin:$PATH"
+        export PATH="~/opt/conda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
@@ -49,3 +49,6 @@ if [[ -n "$TMUX" ]]; then
 	clear
 fi
 
+source ~/.config/private/env
+
+. "$HOME/.cargo/env"

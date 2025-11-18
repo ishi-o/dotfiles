@@ -161,19 +161,6 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "lua",
 	callback = function()
-		local mason_registry = require("mason-registry")
-		if not mason_registry.is_installed("lua-language-server") then
-			mason_registry.get_package("lua-language-server"):install():once(
-				"closed",
-				vim.schedule_wrap(function()
-					if mason_registry.is_installed("lua-language-server") then
-						vim.cmd("edit")
-					end
-				end)
-			)
-			return
-		end
-
 		local root_files = {
 			".git",
 			".luarc.json",
@@ -212,6 +199,27 @@ vim.api.nvim_create_autocmd("FileType", {
 			},
 		}
 
+		vim.lsp.start(config)
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function()
+		local root_files = vim.fs.find({ ".git" }, { upward = true })
+		local root_dir = root_files[1] and vim.fs.dirname(root_files[1]) or vim.loop.cwd()
+		local config = {
+			name = "marksman",
+			cmd = { "marksman", "server" },
+			root_dir = root_dir,
+			on_attach = on_attach,
+			settings = {
+				wiki = {
+					style = "file-stem",
+				},
+			},
+			single_file_support = true,
+		}
 		vim.lsp.start(config)
 	end,
 })
