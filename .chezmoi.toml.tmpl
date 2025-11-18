@@ -1,9 +1,67 @@
 encryption = "age"
 
 [age]
-  recipient = "age1lqfj2wt2376ephe4r4a0qas5nlq5hgtj5j7dzd926ukk346k5paqd9vvu5"
-  identity = "~/.age/key.txt"
+	recipient = "age1lqfj2wt2376ephe4r4a0qas5nlq5hgtj5j7dzd926ukk346k5paqd9vvu5"
+	identity = "~/.age/key.txt"
 
 [edit]
-  command = "vi"
-  args = []
+	command = "vi"
+	args = []
+
+[data]
+	{{ $pkgManager := "" }}
+	{{- if eq .chezmoi.os "darwin" }}
+		{{ $pkgManager = "brew" }}
+	{{- else if eq .chezmoi.os "linux" }}
+		{{- if .chezmoi.wsl }}
+			{{- if fileExists "/etc/debian_version" }}
+				{{ $pkgManager = "apt" }}
+			{{- else if fileExists "/etc/redhat-release" }}
+				{{ $pkgManager = "dnf" }}
+			{{- else }}
+				{{ $pkgManager = "apt" }}
+			{{- end }}
+		{{- else }}
+			{{- if fileExists "/etc/debian_version" }}
+				{{ $pkgManager = "apt" }}
+			{{- else if fileExists "/etc/redhat-release" }}
+				{{ $pkgManager = "dnf" }}
+			{{- else if fileExists "/etc/arch-release" }}
+				{{ $pkgManager = "pacman" }}
+			{{- else if fileExists "/etc/SuSE-release" }}
+				{{ $pkgManager = "zypper" }}
+			{{- else }}
+				{{ $pkgManager = "unknown" }}
+			{{- end }}
+		{{- end }}
+	{{- else }}
+		{{ $pkgManager = "unknown" }}
+	{{- end }}
+
+	platform = "{{ .chezmoi.os }}"
+	arch = "{{ .chezmoi.arch }}"
+	package_manager = "{{ $pkgManager }}"
+	install_dir = "{{ .chezmoi.homeDir }}/.local"
+    bin_dir = "{{ .chezmoi.homeDir }}/.local/bin"
+	share_dir = "{{ .chezmoi.homeDir }}/.local/share"
+	opt_dir = "{{ .chezmoi.homeDir }}/opt"
+
+	{{ if eq .chezmoi.os "darwin" }}
+    default_editor = "code"
+    {{ else if eq .chezmoi.os "linux" }}
+    default_editor = "vim"
+    {{ end }}
+
+	recommended = {
+		"ripgrep",
+		"fd-find",
+		"tmux",
+		"fzf",
+		"bat",
+		"luajit",
+		"libuv",
+		"xclip",
+		"wl-clipboard",
+		"checkstyle",
+		"git",
+	}

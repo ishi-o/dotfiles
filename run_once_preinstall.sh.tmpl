@@ -1,0 +1,499 @@
+#!/bin/bash
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+
+PLATFORM="{{ .platform }}"
+ARCH="{{ .arch }}"
+PACKAGE_MANAGER="{{ .package_manager }}"
+
+LOCAL_DIR="{{ .install_dir }}"
+BIN_DIR="{{ .bin_dir }}"
+SHARE_DIR="{{ .share_dir }}"
+OPT_DIR="{{ .opt_dir }}"
+MAX_RETRIES=3
+
+mkdir -p "$BIN_DIR" "$SHARE_DIR" "$OPT_DIR"
+
+install_rust() {
+	if command -v cargo &> /dev/null && cargo --version &> /dev/null; then
+        log_success "Detect cargo: $(cargo --version)"
+        return 0
+    fi
+	log_info "Installing Rustup And Cargo..."
+	while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+        if curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y; then
+            log_success "Rustup and Cargo Installed successfully."
+            return 0
+        else
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            log_info "Install failed, retrying... ($RETRY_COUNT/$MAX_RETRIES)"
+            sleep 1
+        fi
+    done
+    
+    log_error "Failed to install Rust after $RETRY_COUNT attempts"
+	log_info "Please rerun, or make sure that cargo is available"
+    return 1
+}
+
+install_miniconda() {
+    if command -v conda &> /dev/null && conda --version &> /dev/null; then
+        log_success "Detect conda: $(conda --version)"
+        return 0
+    fi
+    
+	log_info "Installing Conda3(Miniconda)..."
+    
+	case "$PLATFORM" in
+        "macos")
+            case "$ARCH" in
+                "arm64"|"aarch64") installer="Miniconda3-latest-MacOSX-arm64.sh" ;;
+                "x86_64"|"amd64") installer="Miniconda3-latest-MacOSX-x86_64.sh" ;;
+                *) installer="Miniconda3-latest-MacOSX-x86_64.sh" ;;
+            esac
+            ;;
+        "linux"|"wsl")
+            case "$ARCH" in
+                "x86_64"|"amd64") installer="Miniconda3-latest-Linux-x86_64.sh" ;;
+                "aarch64"|"arm64") installer="Miniconda3-latest-Linux-aarch64.sh" ;;
+                "ppc64le") installer="Miniconda3-latest-Linux-ppc64le.sh" ;;
+                "s390x") installer="Miniconda3-latest-Linux-s390x.sh" ;;
+                *) installer="Miniconda3-latest-Linux-x86_64.sh" ;;
+            esac
+            ;;
+        *)
+            log_error "Unsupported platform: $PLATFORM"
+            return 1
+            ;;
+    esac
+    local install_dir="$OPT_DIR/conda3"
+    
+    mkdir -p "$(dirname "$install_dir")"
+    
+    while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+        if curl -sSf -O "https://repo.anaconda.com/miniconda/$installer"; then
+            if bash "$installer" -b -p "$install_dir" -u; then
+                log_success "Miniconda3 Installed successfully."
+                rm -f "$installer"
+                # $install_dir/bin/conda init --dry-run
+                return 0
+            else
+                log_error "Installer execution failed."
+            fi
+        else
+            log_error "Download failed."
+        fi
+        
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        log_info "Install failed, retrying... ($RETRY_COUNT/$MAX_RETRIES)"
+        sleep 1
+    done
+    
+    log_error "Failed to install Miniconda3 after $RETRY_COUNT attempts"
+    log_info "Please rerun, or make sure that conda3 is available"
+    rm -f "$installer"
+    return 1
+}
+
+install_maven() {
+    if command -v mvn &> /dev/null && mvn --version &> /dev/null; then
+        log_success "Detect maven: $(mvn --version | head -n 1)"
+        return 0
+    fi
+    
+    log_info "Installing Maven..."
+    
+    local maven_version="3.9.6"
+    local installer=""
+    case "$PLATFORM" in
+        "macos")
+            installer="apache-maven-${maven_version}-bin.tar.gz"
+            ;;
+        "linux"|"wsl")
+            installer="apache-maven-${maven_version}-bin.tar.gz"
+            ;;
+        *)
+            log_error "Unsupported platform: $PLATFORM"
+            return 1
+            ;;
+    esac
+    
+    local install_dir="$OPT_DIR/maven"
+    local download_url="https://archive.apache.org/dist/maven/maven-3/${maven_version}/binaries/${installer}"
+    
+    mkdir -p "$(dirname "$install_dir")"
+    
+    while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+        if curl -sSf -L -O "$download_url"; then
+            if tar -xzf "$installer" -C "$(dirname "$install_dir")"; then
+                mv "$(dirname "$install_dir")/apache-maven-${maven_version}" "$install_dir"
+                log_success "Maven Installed successfully."
+                rm -f "$installer"
+                return 0
+            else
+                log_info "Extraction failed."
+            fi
+        else
+            log_info "Download failed."
+        fi
+        
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        log_error "Install failed, retrying... ($RETRY_COUNT/$MAX_RETRIES)"
+        sleep 1
+    done
+    
+    log_warn "Failed to install Maven after $RETRY_COUNT attempts"
+    log_info "Please rerun, or make sure that maven is available"
+    rm -f "$installer"
+    return 1
+}
+
+install_sdkman() {
+    if command -v sdk &> /dev/null && sdk version &> /dev/null; then
+        log_success "Detect sdkman: $(sdk version | head -n 1)"
+		log_info "Installing Maven, JDK21 and JDK1.8"
+		sdk install maven
+		sdk install java 21.0.2-open
+		sdk install java 8.0.462-amzn
+		sdk default 21.0.2-open
+        return 0
+    fi
+    
+    log_info "Installing sdkman..."
+    
+    local RETRY_COUNT=0
+    local install_cmd="curl -s --http1.1 \"https://get.sdkman.io\" | bash"
+    
+    while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+		rm $HOME/.sdkman -r
+        if bash -c "$install_cmd"; then
+            # source the sdkman-init.sh to make sdk command available in the current shell
+			# We use chezmoi ...
+            # source "$HOME/.sdkman/bin/sdkman-init.sh"
+            log_success "sdkman installed successfully."
+			log_info "Installing Maven, JDK21 and JDK1.8"
+			sdk install maven
+			sdk install java 21.0.2-open
+			sdk install java 8.0.462-amzn
+			sdk default 21.0.2-open
+            return 0
+        else
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+			log_info "Install failed, retrying... ($RETRY_COUNT/$MAX_RETRIES)"
+			sleep 1
+        fi
+    done
+    
+    log_error "Failed to install SDKMAN after $RETRY_COUNT attempts"
+    log_warn "Please check your network connection and try again, or visit https://sdkman.io/ for manual installation."
+    return 1
+}
+
+install_go() {
+    if command -v go &> /dev/null && go version &> /dev/null; then
+        log_success "Detect go: $(go version)"
+        return 0
+    fi
+    
+    log_info "Installing Go..."
+    
+	local latest_version=$(curl -s https://go.dev/VERSION?m=text | head -1)
+	local go_version="${latest_version#go}"
+    local installer=""
+    
+    case "$PLATFORM" in
+        "macos")
+            case "$ARCH" in
+                "arm64"|"aarch64") installer="go${go_version}.darwin-arm64.tar.gz" ;;
+                "x86_64"|"amd64") installer="go${go_version}.darwin-amd64.tar.gz" ;;
+                *) installer="go${go_version}.darwin-amd64.tar.gz" ;;
+            esac
+            ;;
+        "linux"|"wsl")
+            case "$ARCH" in
+                "x86_64"|"amd64") installer="go${go_version}.linux-amd64.tar.gz" ;;
+                "aarch64"|"arm64") installer="go${go_version}.linux-arm64.tar.gz" ;;
+                "ppc64le") installer="go${go_version}.linux-ppc64le.tar.gz" ;;
+                "s390x") installer="go${go_version}.linux-s390x.tar.gz" ;;
+                *) installer="go${go_version}.linux-amd64.tar.gz" ;;
+            esac
+            ;;
+        *)
+            log_error "Unsupported platform: $PLATFORM"
+            return 1
+            ;;
+    esac
+    
+    local install_dir="$OPT_DIR/go"
+    local download_url="https://go.dev/dl/${installer}"
+    
+    mkdir -p "$(dirname "$install_dir")"
+    
+    while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+        if curl -sSf -L -O "$download_url"; then
+            if tar -xzf "$installer" -C "$(dirname "$install_dir")"; then
+                if [ -d "$(dirname "$install_dir")/go" ]; then
+                    rm -rf "$install_dir"
+                    mv "$(dirname "$install_dir")/go" "$install_dir"
+                fi
+                log_success "Go Installed successfully."
+                rm -f "$installer"
+                return 0
+            else
+                log_error "Extraction failed."
+            fi
+        else
+            log_error "Download failed."
+        fi
+        
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        log_info "Install failed, retrying... ($RETRY_COUNT/$MAX_RETRIES)"
+        sleep 1
+    done
+    
+    log_error "Failed to install Go after $RETRY_COUNT attempts"
+    log_info "Please rerun, or make sure that go is available"
+    rm -f "$installer"
+    return 1
+}
+
+install_neovim() {
+    if command -v nvim &> /dev/null && nvim --version &> /dev/null; then
+        log_success "Detect neovim: $(nvim --version | head -n 1)"
+        return 0
+    fi
+    
+    log_info "Installing Neovim..."
+    
+    local latest_version=$(curl -s https://api.github.com/repos/neovim/neovim/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    if [ -z "$latest_version" ]; then
+        latest_version="v0.9.5"  # 备用版本
+    fi
+    
+    local version_number="${latest_version#v}"
+    local installer=""
+    
+    local glibc_version=$(ldd --version 2>/dev/null | head -n1 | grep -o '[0-9]\.[0-9][0-9]*' | head -n1)
+    local glibc_supported=true
+    
+    if [ -n "$glibc_version" ]; then
+        log_info "Detected GLIBC version: $glibc_version"
+        if awk -v ver="$glibc_version" 'BEGIN { if (ver < 2.33) exit 1; else exit 0; }'; then
+            log_info "GLIBC version is sufficient for prebuilt binaries"
+        else
+            log_warn "GLIBC version $glibc_version may be too old for prebuilt binaries, will try static build if needed"
+            glibc_supported=false
+        fi
+    else
+        log_warn "Cannot detect GLIBC version, proceeding with prebuilt binaries"
+    fi
+    
+    case "$PLATFORM" in
+        "macos")
+            case "$ARCH" in
+                "arm64"|"aarch64") installer="nvim-macos-arm64.tar.gz" ;;
+                "x86_64"|"amd64") installer="nvim-macos-x86_64.tar.gz" ;;
+                *) installer="nvim-macos-x86_64.tar.gz" ;;
+            esac
+            ;;
+        "linux"|"wsl")
+            if [ "$glibc_supported" = "true" ]; then
+                case "$ARCH" in
+                    "x86_64"|"amd64") installer="nvim-linux-x86_64.tar.gz" ;;
+                    "aarch64"|"arm64") installer="nvim-linux-arm64.tar.gz" ;;
+                    *) installer="nvim-linux-x86_64.tar.gz" ;;
+                esac
+            else
+                log_info "GLIBC version too old, will build from source"
+                installer="source"
+            fi
+            ;;
+        *)
+            log_error "Unsupported platform: $PLATFORM"
+            return 1
+            ;;
+    esac
+    
+    local install_dir="$OPT_DIR/nvim"
+    local download_url=""
+    
+    if [ "$installer" != "source" ]; then
+        download_url="https://github.com/neovim/neovim/releases/download/${latest_version}/${installer}"
+    fi
+    
+    mkdir -p "$(dirname "$install_dir")"
+    
+    while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+        if [ "$installer" = "source" ]; then
+            if build_neovim_from_source "$install_dir" "$latest_version"; then
+                return 0
+            fi
+        else
+            if curl -sSf -L -O "$download_url"; then
+                if tar -xzf "$installer" -C "$(dirname "$install_dir")"; then
+                    local extracted_dir="$(dirname "$install_dir")/nvim-${version_number}-*"
+                    if [ -d "$extracted_dir" ]; then
+                        rm -rf "$install_dir"
+                        mv "$extracted_dir" "$install_dir"
+                        log_success "Neovim Installed successfully from prebuilt binary."
+                        rm -f "$installer"
+                        return 0
+                    else
+                        log_error "Extracted directory not found"
+                    fi
+                else
+                    log_error "Extraction failed."
+                fi
+            else
+                log_error "Download failed."
+                
+                if [ $RETRY_COUNT -eq 1 ]; then
+                    log_info "Trying to build from source as fallback..."
+                    if build_neovim_from_source "$install_dir" "$latest_version"; then
+                        return 0
+                    fi
+                fi
+            fi
+        fi
+        
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        log_info "Install failed, retrying... ($RETRY_COUNT/$MAX_RETRIES)"
+        sleep 1
+    done
+    
+    log_error "Failed to install Neovim after $RETRY_COUNT attempts"
+    log_info "Please rerun, or make sure that neovim is available"
+    rm -f "$installer"
+    return 1
+}
+
+build_neovim_from_source() {
+    local install_dir="$1"
+    local version="$2"
+    
+    log_info "Building Neovim from source (version: $version)..."
+    
+    local build_dir="$(mktemp -d)"
+    cd "$build_dir"
+    
+    log_info "Cloning Neovim source code..."
+    if ! git clone --depth 1 --branch "$version" https://github.com/neovim/neovim.git; then
+        log_error "Failed to clone Neovim source code"
+        rm -rf "$build_dir"
+        return 1
+    fi
+    
+    cd neovim
+    
+    log_info "Installing build dependencies..."
+    case "$PACKAGE_MANAGER" in
+        "apt")
+            sudo apt update && sudo apt install -y \
+                ninja-build gettext cmake unzip curl \
+                gcc g++ make
+            ;;
+        "brew")
+            brew install cmake ninja
+            ;;
+        "dnf"|"yum")
+            sudo $PACKAGE_MANAGER install -y \
+                ninja-build cmake gcc-c++ make unzip \
+                gettext gettext-devel
+            ;;
+        "pacman")
+            sudo pacman -S --noconfirm \
+                ninja cmake gcc make unzip \
+                gettext
+            ;;
+        *)
+            log_warn "Unknown package manager: $PACKAGE_MANAGER, attempting build with basic tools"
+            ;;
+    esac
+    
+    log_info "Configuring and building Neovim..."
+    if make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX="$install_dir" -j$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4); then
+        make install
+        log_success "Neovim built from source successfully."
+        cd /
+        rm -rf "$build_dir"
+        return 0
+    else
+        log_error "Build failed"
+        cd /
+        rm -rf "$build_dir"
+        return 1
+    fi
+}
+
+create_nvim_symlinks() {
+    log_info "Creating symbolic links..."
+    
+    mkdir -p "$BIN_DIR"
+    
+    if [ -f "$OPT_DIR/nvim/bin/nvim" ]; then
+        ln -sf "$OPT_DIR/nvim/bin/nvim" "$BIN_DIR/nvim"
+        ln -sf "$OPT_DIR/nvim/bin/nvim" "$BIN_DIR/vim"
+        ln -sf "$OPT_DIR/nvim/bin/nvim" "$BIN_DIR/vi"
+        log_success "Created symlinks: nvim, vim, vi -> $BIN_DIR/"
+    else
+        log_error "Neovim binary not found at expected location"
+        return 1
+    fi
+}
+
+configure_package_manager_mirror() {
+    case "$PACKAGE_MANAGER" in
+        "apt")
+            sudo sed -i 's|http://.*.ubuntu.com|https://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
+            sudo sed -i 's|http://security.ubuntu.com|https://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
+            ;;
+        "brew")
+            git -C "$(brew --repo)" remote set-url origin https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git
+            git -C "$(brew --repo homebrew/core)" remote set-url origin https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git
+            echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles' >> ~/.bashrc
+            ;;
+        "dnf"|"yum")
+            sudo sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/*.repo
+            sudo sed -i 's|^#baseurl=http://mirror.centos.org|baseurl=https://mirrors.tuna.tsinghua.edu.cn|g' /etc/yum.repos.d/*.repo
+            ;;
+        "pacman")
+            sudo sed -i 's|^Server = https://mirrors.kernel.org|#Server = https://mirrors.kernel.org|g' /etc/pacman.d/mirrorlist
+            echo 'Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' | sudo tee -a /etc/pacman.d/mirrorlist
+            ;;
+        *)
+            log_warn "Unsupported package manager: $PACKAGE_MANAGER"
+            return 1
+            ;;
+    esac
+    
+    log_success "Mirror configured for $PACKAGE_MANAGER"
+    return 0
+}
+
+main() {
+
+	configure_package_manager_mirror
+
+	## maven can be managed by sdkman
+	# install_maven
+	
+	install_neovim
+	install_rust
+	install_miniconda
+	install_sdkman
+	install_go
+	
+	source $HOME/.bashrc
+}
+
+main "$@"

@@ -16,8 +16,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-export MAVEN_HOME="/usr/local/maven"
-
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go/lib:$HOME/go/work
 export GOPROXY=https://goproxy.cn,direct
@@ -52,3 +50,7 @@ fi
 source ~/.config/private/env
 
 . "$HOME/.cargo/env"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/admin/.sdkman"
+[[ -s "/home/admin/.sdkman/bin/sdkman-init.sh" ]] && source "/home/admin/.sdkman/bin/sdkman-init.sh"
