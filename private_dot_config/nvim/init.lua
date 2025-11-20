@@ -7,7 +7,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
 			{ out, "WarningMsg" },
 			{ "\nPress any key to exit..." },
-			}, true, {})
+		}, true, {})
 		vim.fn.getchar()
 		os.exit(1)
 	end
@@ -23,10 +23,4 @@ require("lazy").setup({
 })
 
 require("config.colortheme")
-require("config.Comment")
-require("config.toggleterm")
-require("config.neo-tree")
 require("config.lsp")
-require("config.cmp")
-require("config.none-ls")
-require("config.nvim-dap")
