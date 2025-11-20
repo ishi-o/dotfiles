@@ -1,0 +1,207 @@
+#!/bin/bash
+set -euo pipefail
+
+source {{ .chezmoi.sourceDir }}/utils.sh.tmpl
+
+trap rollback ERR
+
+configure_package_manager_mirror() {
+    case "$PACKAGE_MANAGER" in
+        "apt")
+            sudo sed -i 's|http://.*.ubuntu.com|https://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
+            sudo sed -i 's|http://security.ubuntu.com|https://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
+            ;;
+        "brew")
+            git -C "$(brew --repo)" remote set-url origin https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git
+            git -C "$(brew --repo homebrew/core)" remote set-url origin https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git
+            echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles' >> ~/.bashrc
+            ;;
+        "dnf"|"yum")
+            sudo sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/*.repo
+            sudo sed -i 's|^#baseurl=http://mirror.centos.org|baseurl=https://mirrors.tuna.tsinghua.edu.cn|g' /etc/yum.repos.d/*.repo
+            ;;
+        "pacman")
+            sudo sed -i 's|^Server = https://mirrors.kernel.org|#Server = https://mirrors.kernel.org|g' /etc/pacman.d/mirrorlist
+            echo 'Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' | sudo tee -a /etc/pacman.d/mirrorlist
+            ;;
+        *)
+            log_warn "Unsupported package manager: $PACKAGE_MANAGER"
+            return 1
+            ;;
+    esac
+    
+    log_success "Mirror configured for $PACKAGE_MANAGER"
+    return 0
+}
+
+declare -A PACKAGE_MANAGER_CMDS=(
+    ["apt-get"]="sudo apt-get update && sudo apt-get install -y"
+    ["apt"]="sudo apt update && sudo apt install -y"
+    ["dnf"]="sudo dnf install -y"
+    ["yum"]="sudo yum install -y"
+    ["pacman"]="sudo pacman -S --noconfirm"
+    ["zypper"]="sudo zypper install -y"
+    ["brew"]="brew install"
+)
+
+declare -A PACKAGE_CHECK_CMDS=(
+    ["apt-get"]="dpkg -l"
+    ["apt"]="dpkg -l"
+    ["dnf"]="rpm -q"
+    ["yum"]="rpm -q"
+    ["pacman"]="pacman -Q"
+    ["zypper"]="rpm -q"
+    ["brew"]="brew list"
+)
+
+is_package_installed() {
+    local pkg="$1"
+    local manager="$2"
+    local check_cmd="${PACKAGE_CHECK_CMDS[$manager]}"
+    
+    case "$manager" in
+        apt-get|apt)
+            if dpkg -l | grep -q "^ii  $pkg "; then
+                return 0
+            fi
+            command -v "$pkg" &> /dev/null && return 0
+            return 1
+            ;;
+        dnf|yum|zypper)
+            if rpm -q "$pkg" &> /dev/null; then
+                return 0
+            fi
+            command -v "$pkg" &> /dev/null && return 0
+            return 1
+            ;;
+        pacman)
+            if pacman -Q "$pkg" &> /dev/null; then
+                return 0
+            fi
+            command -v "$pkg" &> /dev/null && return 0
+            return 1
+            ;;
+        brew)
+            if brew list "$pkg" &> /dev/null; then
+                return 0
+            fi
+            command -v "$pkg" &> /dev/null && return 0
+            return 1
+            ;;
+        *)
+            command -v "$pkg" &> /dev/null && return 0
+            return 1
+            ;;
+    esac
+}
+
+find_missing_packages() {
+    local manager="$1"
+    local missing_packages=()
+    
+    log_info "Checking package installation status for $manager..."
+    
+    for pkg in "${RECOMMENDED_PACKAGES[@]}"; do
+        if is_package_installed "$pkg" "$manager"; then
+            log_success "$pkg (installed)"
+        else
+            log_warn "$pkg (not installed)"
+            missing_packages+=("$pkg")
+        fi
+    done
+    
+    printf '%s\n' "${missing_packages[@]}"
+}
+
+install_packages() {
+    local manager="$1"
+    local packages=("${@:2}")
+    if [ ${#packages[@]} -eq 0 ]; then
+        log_success "All recommended packages are already installed"
+        return 0
+    fi
+    echo ""
+    log_info "Installation Summary:"
+    log_info "  Package Manager: $manager"
+    log_info "  Install Command: ${PACKAGE_MANAGER_CMDS[$manager]}"
+    log_info "  Packages to Install:"
+    for pkg in "${packages[@]}"; do
+        log_info "    - $pkg"
+    done
+    echo ""
+    read -p "Do you allow installation of these packages? (y/N): " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        log_error "User denied installation permission"
+        log_warn "Please manually install the following packages:"
+        for pkg in "${packages[@]}"; do
+            log_info "  - $pkg"
+        done
+        exit 1
+    fi
+    log_info "Starting installation..."
+    echo ""
+    case "$manager" in
+        apt-get|apt)
+            log_info "Updating package lists..."
+            sudo apt-get update
+            ;;
+        apt)
+            log_info "Updating package lists..."
+            sudo apt update
+            ;;
+    esac
+    local failed_packages=()
+    for pkg in "${packages[@]}"; do
+        log_info "Installing: $pkg"
+        local install_cmd
+        case "$manager" in
+            apt-get) install_cmd="sudo apt-get install -y" ;;
+            apt) install_cmd="sudo apt install -y" ;;
+            *) install_cmd="${PACKAGE_MANAGER_CMDS[$manager]}" ;;
+        esac
+        
+        if eval "$install_cmd $pkg"; then
+            log_success "Installed: $pkg"
+        else
+            log_error "Failed to install: $pkg"
+            failed_packages+=("$pkg")
+        fi
+    done
+    if [ ${#failed_packages[@]} -eq 0 ]; then
+        log_success "All packages installed successfully"
+    else
+        log_error "The following packages failed to install:"
+        for pkg in "${failed_packages[@]}"; do
+            log_info "  - $pkg"
+        done
+        exit 1
+    fi
+}
+
+main() {
+    log_info "Platform: $PLATFORM, Arch: $ARCH"
+    log_info "Package Manager: $PACKAGE_MANAGER"
+    
+    if [[ -z "${PACKAGE_MANAGER_CMDS[$PACKAGE_MANAGER]:-}" ]]; then
+        log_error "Unsupported package manager: $PACKAGE_MANAGER"
+        log_error "Supported package managers: ${!PACKAGE_MANAGER_CMDS[@]}"
+        exit 1
+    fi
+    
+    if ! command -v "$PACKAGE_MANAGER" &> /dev/null; then
+        log_error "Package manager not available: $PACKAGE_MANAGER"
+        exit 1
+    fi
+    
+    log_info "Recommended packages: ${RECOMMENDED_PACKAGES[*]}"
+    
+    local missing_packages=()
+    missing_packages=($(find_missing_packages "$PACKAGE_MANAGER"))
+    
+    install_packages "$PACKAGE_MANAGER" "${missing_packages[@]}"
+    
+    log_success "All package operations completed successfully"
+}
+
+main "$@"
