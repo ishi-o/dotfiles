@@ -117,6 +117,13 @@ return {
 			require("config.git")
 		end,
 	},
+	{
+		"kdheepak/lazygit.nvim",
+		lazy = true,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+	},
 
 	-- conform - autoformatOnSave
 	{

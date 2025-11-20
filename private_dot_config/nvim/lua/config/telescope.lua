@@ -1,5 +1,3 @@
--- need ripgrep
-
 local telescope = require("telescope")
 local builtin = require("telescope.builtin")
 
@@ -10,25 +8,30 @@ telescope.setup({
 		mappings = {
 			i = {
 				--	["<C-h>"] = "which_key"
-			}
-		}
+			},
+		},
 	},
 	pickers = {
 		find_files = {
-			hidden = true
-		}
+			hidden = true,
+		},
 	},
 	extensions = {
 		file_browser = {
 			theme = "ivy",
 			hijack_netrw = true,
-		}
-	}
+		},
+	},
 })
 
 if vim.fn.filereadable(vim.fn.stdpath("data") .. "/lazy/telescope-fzf-native.nvim/build/libfzf.so") == 0 then
-	os.execute("cd " .. vim.fn.stdpath("data") .. "/lazy/telescope-fzf-native.nvim && cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release >/dev/null 2>&1")
+	os.execute(
+		"cd "
+			.. vim.fn.stdpath("data")
+			.. "/lazy/telescope-fzf-native.nvim && cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release >/dev/null 2>&1"
+	)
 end
+telescope.load_extension("lazygit")
 telescope.load_extension("fzf")
 telescope.load_extension("file_browser")
 
