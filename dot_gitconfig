@@ -3,3 +3,5 @@
 	email = 458457289@qq.com
 [core]
 	editor = nvim
+[url "git@github.com:"]
+	insteadOf = https://github.com/

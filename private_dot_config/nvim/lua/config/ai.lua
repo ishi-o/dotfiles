@@ -1,6 +1,15 @@
 -- require("avante").setup({})
 
 require("codecompanion").setup({
+	display = {
+		chat = {
+			window = {
+				position = "right",
+				border = "single",
+				width = math.floor(vim.o.columns * 0.35),
+			},
+		},
+	},
 	strategies = {
 		chat = {
 			adapter = "deepseek",

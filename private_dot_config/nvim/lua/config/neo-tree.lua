@@ -16,10 +16,15 @@ require("neo-tree").setup({
 		use_libuv_file_watcher = true,
 		renderer = {
 			icons = {
-				enable = true
+				enable = true,
 			},
 		},
 	},
+	window = {
+		width = function()
+			return math.floor(vim.o.columns * 0.25)
+		end,
+	},
 })
 
-vim.keymap.set({"n", "x"}, "<C-h>", ":Neotree toggle<CR>", { noremap = true })
+vim.keymap.set({ "n", "x" }, "<C-h>", ":Neotree toggle<CR>", { noremap = true })
