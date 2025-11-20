@@ -12,31 +12,38 @@ then
 fi
 export PATH
 
+# nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# end nvm
 
+# go
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go/lib:$HOME/go/work
 export GOPROXY=https://goproxy.cn,direct
+export PATH=$GOROOT/bin:$PATH
+# end go
 
-export PATH=$PATH:$MAVEN_HOME/bin:$GOROOT/bin
+export PATH=$PATH:$MAVEN_HOME/bin
 
+# alias
 alias vi=nvim
 alias vim=nvim
+# end alias
 
 shopt -s cdspell
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('~/opt/conda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('$HOME/opt/conda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "~/opt/conda3/etc/profile.d/conda.sh" ]; then
-        . "~/opt/conda3/etc/profile.d/conda.sh"
+    if [ -f "$HOME/opt/conda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/opt/conda3/etc/profile.d/conda.sh"
     else
-        export PATH="~/opt/conda3/bin:$PATH"
+        export PATH="$HOME/opt/conda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
@@ -49,8 +56,16 @@ fi
 
 source ~/.config/private/env
 
+# cargo
 . "$HOME/.cargo/env"
+# end cargo
 
+# brew
+eval "$("$HOME/.local/brew/bin/brew" shellenv)"
+# end brew
+
+# sdkman
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/admin/.sdkman"
 [[ -s "/home/admin/.sdkman/bin/sdkman-init.sh" ]] && source "/home/admin/.sdkman/bin/sdkman-init.sh"
+# end sdkman
