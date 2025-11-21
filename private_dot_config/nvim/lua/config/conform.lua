@@ -8,6 +8,7 @@ require("conform").setup({
 		-- python = { "autopep8" },
 		python = { "black" },
 		bash = { "shfmt" },
+		go = { "goimports" },
 	},
 })
 

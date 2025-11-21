@@ -19,4 +19,9 @@ return {
 		ft = "java",
 		dependencies = { "mfussenegger/nvim-dap" },
 	},
+	---- go
+	{
+		"fatih/vim-go",
+		ft = "go",
+	},
 }

@@ -14,11 +14,12 @@ require("mason-lspconfig").setup({
 		"marksman",
 		"pyright",
 		"bashls",
+		"ruff",
+		"stylua",
+		"gopls",
 	},
 	automatic_installation = true,
 })
-
--- require("java").setup()
 
 local on_attach = function(_, bufnr)
 	local opts = { buffer = bufnr, noremap = true, silent = true }
@@ -35,16 +36,6 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
 local lsp_config = vim.lsp.config
-
--- lsp_config("jdtls", {
--- 	on_attach = on_attach,
--- 	capabilities = capabilities,
--- 	settings = {
--- 		java = {
--- 			signatureHelp = { enabled = true },
--- 		},
--- 	},
--- })
 
 lsp_config("lua_ls", {
 	on_attach = on_attach,
@@ -87,11 +78,15 @@ lsp_config("clangd", {
 	capabilities = capabilities,
 })
 
-lsp_config("eslint", {
+lsp_config("gopls", {
 	on_attach = on_attach,
 	capabilities = capabilities,
 })
 
+lsp_config("eslint", {
+	on_attach = on_attach,
+	capabilities = capabilities,
+})
 lsp_config("bashls", {
 	on_attach = on_attach,
 	capabilities = capabilities,
@@ -117,18 +112,26 @@ local registry = require("mason-registry")
 local other_tools = {
 	-- DAPs
 	"codelldb",
+	"debugpy",
 	"java-debug-adapter",
+	"java-test",
+	"delve",
 	-- Linters
 	"checkstyle",
 	"luacheck",
 	"markdownlint",
 	"proselint",
 	"shellcheck",
+	"golangci-lint",
 	-- Formatters
 	"stylua",
 	"prettier",
 	"prettierd",
 	"shfmt",
+	"autopep8",
+	"black",
+	"shfmt",
+	"goimports",
 }
 for _, tool_name in ipairs(other_tools) do
 	local tool = registry.get_package(tool_name)
