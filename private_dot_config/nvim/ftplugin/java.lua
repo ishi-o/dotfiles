@@ -1,4 +1,4 @@
-vim.keymap.set("n", "<F5>", function()
+vim.keymap.set("n", "<C-F5>", function()
 	local function find_project_root()
 		-- 获取当前文件所在目录
 		local current_dir = vim.fn.expand("%:p:h")
@@ -140,3 +140,26 @@ vim.keymap.set("n", "<F5>", function()
 		end
 	end)
 end, { buffer = true, desc = "Run Java File" })
+
+local config = {
+	name = "jdtls",
+	cmd = { "jdtls" },
+	root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml" }),
+
+	init_options = {
+		bundles = {
+			vim.fn.glob(
+				vim.fn.stdpath("data")
+					.. "/mason/packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar",
+				true,
+				true
+			)[1],
+		},
+	},
+
+	on_attach = function(client, bufnr)
+		require("jdtls").setup_dap({ hotcodereplace = "auto" })
+		require("jdtls.dap").setup_dap_main_class_configs()
+	end,
+}
+require("jdtls").start_or_attach(config)

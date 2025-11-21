@@ -3,7 +3,36 @@ local builtin = require("telescope.builtin")
 
 telescope.setup({
 	defaults = {
-		file_ignore_patterns = { "node_modules/", ".git/", "target/" },
+		file_ignore_patterns = {
+			"node_modules/",
+			"target/",
+			"build/",
+			"dist/",
+			"vendor/",
+			"__pycache__/",
+			"bin/",
+			"lib/",
+			"share/",
+			"man/",
+			".git/",
+			".svn/",
+			".hg/",
+			".nvm/",
+			".cache/",
+			".m2/",
+			".sdkman/",
+			".cargo/",
+			".conda/",
+			"opt/",
+			".vscode-server/",
+			"%.swp",
+			"%.bak",
+			"%.tmp",
+			"%.so",
+			"%.dll",
+			"%.exe",
+			"%.jar",
+		},
 		path_display = { "truncate" },
 		mappings = {
 			i = {

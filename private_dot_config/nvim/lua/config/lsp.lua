@@ -35,15 +35,15 @@ capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
 local lsp_config = vim.lsp.config
 
-lsp_config("jdtls", {
-	on_attach = on_attach,
-	capabilities = capabilities,
-	settings = {
-		java = {
-			signatureHelp = { enabled = true },
-		},
-	},
-})
+-- lsp_config("jdtls", {
+-- 	on_attach = on_attach,
+-- 	capabilities = capabilities,
+-- 	settings = {
+-- 		java = {
+-- 			signatureHelp = { enabled = true },
+-- 		},
+-- 	},
+-- })
 
 lsp_config("lua_ls", {
 	on_attach = on_attach,

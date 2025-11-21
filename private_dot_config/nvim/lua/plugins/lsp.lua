@@ -13,4 +13,10 @@ return {
 	-- 	"nvim-java/nvim-java",
 	-- 	opts = false,
 	-- },
+	---- jdtls KISS
+	{
+		"mfussenegger/nvim-jdtls",
+		ft = "java",
+		dependencies = { "mfussenegger/nvim-dap" },
+	},
 }
