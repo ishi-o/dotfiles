@@ -7,6 +7,7 @@ require("conform").setup({
 		-- python = { "ruff" },
 		-- python = { "autopep8" },
 		python = { "black" },
+		bash = { "shfmt" },
 	},
 })
 

@@ -144,22 +144,21 @@ end, { buffer = true, desc = "Run Java File" })
 local config = {
 	name = "jdtls",
 	cmd = { "jdtls" },
-	root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml" }),
-
+	root_dir = vim.fs.root(0, { "gradlew", ".git", "mvnw", "pom.xml" }),
 	init_options = {
 		bundles = {
 			vim.fn.glob(
 				vim.fn.stdpath("data")
 					.. "/mason/packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar",
-				true,
-				true
-			)[1],
+				1
+			),
 		},
 	},
 
 	on_attach = function(client, bufnr)
-		require("jdtls").setup_dap({ hotcodereplace = "auto" })
-		require("jdtls.dap").setup_dap_main_class_configs()
+		local jdtls_dap = require("jdtls.dap")
+		jdtls_dap.setup_dap({ hotcodereplace = "auto" })
+		jdtls_dap.setup_dap_main_class_configs()
 	end,
 }
 require("jdtls").start_or_attach(config)

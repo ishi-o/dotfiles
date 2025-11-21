@@ -1,7 +1,7 @@
 require("mason").setup({
-	github = {
-		download_url_template = "git@github.com:%s/releases/download/%s/%s",
-	},
+	-- github = {
+	-- 	download_url_template = "git@github.com:%s/releases/download/%s/%s",
+	-- },
 })
 
 require("mason-lspconfig").setup({
@@ -13,6 +13,7 @@ require("mason-lspconfig").setup({
 		"eslint",
 		"marksman",
 		"pyright",
+		"bashls",
 	},
 	automatic_installation = true,
 })
@@ -91,31 +92,10 @@ lsp_config("eslint", {
 	capabilities = capabilities,
 })
 
-local registry = require("mason-registry")
-
-local other_tools = {
-	-- DAPs
-	"codelldb",
-	"java-debug-adapter",
-	-- Linters
-	"checkstyle",
-	"luacheck",
-	"markdownlint",
-	"proselint",
-	-- Formatters
-	"stylua",
-	"prettier",
-	"prettierd",
-}
-
-for _, tool_name in ipairs(other_tools) do
-	local tool = registry.get_package(tool_name)
-	if not tool:is_installed() then
-		tool:install():once("closed", function()
-			print("[Mason] Successfully installed: " .. tool_name)
-		end)
-	end
-end
+lsp_config("bashls", {
+	on_attach = on_attach,
+	capabilities = capabilities,
+})
 
 vim.diagnostic.config({
 	virtual_text = true,
@@ -132,3 +112,29 @@ vim.diagnostic.config({
 		prefix = "",
 	},
 })
+
+local registry = require("mason-registry")
+local other_tools = {
+	-- DAPs
+	"codelldb",
+	"java-debug-adapter",
+	-- Linters
+	"checkstyle",
+	"luacheck",
+	"markdownlint",
+	"proselint",
+	"shellcheck",
+	-- Formatters
+	"stylua",
+	"prettier",
+	"prettierd",
+	"shfmt",
+}
+for _, tool_name in ipairs(other_tools) do
+	local tool = registry.get_package(tool_name)
+	if not tool:is_installed() then
+		tool:install():once("closed", function()
+			print("[Mason] Successfully installed: " .. tool_name)
+		end)
+	end
+end
