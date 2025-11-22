@@ -36,7 +36,7 @@ blink.setup({
 			-- preset = "inherit",
 			preset = "none",
 			["<S-Tab>"] = { "select_prev", "fallback" },
-			["<Tab>"] = { "select_next", "fallback" },
+			["<Tab>"] = { "show", "select_next", "fallback" },
 		},
 		completion = {
 			menu = {
@@ -47,7 +47,7 @@ blink.setup({
 			},
 			list = {
 				selection = {
-					preselect = true,
+					preselect = false,
 					-- auto_insert = false,
 				},
 			},

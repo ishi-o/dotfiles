@@ -159,6 +159,9 @@ local config = {
 		local jdtls_dap = require("jdtls.dap")
 		jdtls_dap.setup_dap({ hotcodereplace = "auto" })
 		jdtls_dap.setup_dap_main_class_configs()
+		if client.server_capabilities.documentSymbolProvider then
+			require("nvim-navic").attach(client, bufnr)
+		end
 	end,
 }
 require("jdtls").start_or_attach(config)

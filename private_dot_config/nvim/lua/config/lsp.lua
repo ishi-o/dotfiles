@@ -21,7 +21,7 @@ require("mason-lspconfig").setup({
 	automatic_installation = true,
 })
 
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
 	local opts = { buffer = bufnr, noremap = true, silent = true }
 
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
@@ -30,6 +30,10 @@ local on_attach = function(_, bufnr)
 	vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename, opts)
 	vim.keymap.set("n", "<Leader>ca", vim.lsp.buf.code_action, opts)
 	vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+
+	if client.server_capabilities.documentSymbolProvider then
+		require("nvim-navic").attach(client, bufnr)
+	end
 end
 
 -- local capabilities = vim.lsp.protocol.make_client_capabilities()
