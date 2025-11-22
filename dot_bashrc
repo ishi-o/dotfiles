@@ -63,6 +63,15 @@ source "$HOME/.config/private/env"
 eval "$("$HOME/.local/brew/bin/brew" shellenv)"
 # end brew
 
+# rustup
+export RUSTUP_DIST_SERVER="https://mirrors.ustc.edu.cn/rust-static"
+export RUSTUP_UPDATE_ROOT="https://mirrors.ustc.edu.cn/rust-static/rustup"
+# end rustup
+
+# mise
+eval "$(~/.local/bin/mise activate bash)"
+# end mise
+
 # sdkman
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/admin/.sdkman"

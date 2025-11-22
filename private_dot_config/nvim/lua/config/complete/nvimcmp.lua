@@ -29,11 +29,6 @@ cmp.setup({
 	}),
 
 	mapping = {
-		-- open cmp
-		-- ["<C-S-c>"] = cmp.mapping.complete(),
-		-- close cmp
-		-- ["<C-S-c>"] = cmp.mapping.abort(),
-
 		-- confirm cmp
 		["<Tab>"] = cmp.mapping.confirm({ select = true }),
 
