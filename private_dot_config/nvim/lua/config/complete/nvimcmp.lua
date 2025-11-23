@@ -33,9 +33,7 @@ cmp.setup({
 		["<Tab>"] = cmp.mapping.confirm({ select = true }),
 
 		-- previous or next cmp item
-		["<C-k>"] = cmp.mapping.select_prev_item(),
-		["<C-j>"] = cmp.mapping.select_next_item(),
+		["<A-k>"] = cmp.mapping.select_prev_item(),
+		["<A-j>"] = cmp.mapping.select_next_item(),
 	},
 })
-
-require("luasnip.loaders.from_vscode").lazy_load()

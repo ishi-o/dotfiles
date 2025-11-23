@@ -1,14 +1,32 @@
--- require("noice").setup({
--- 	cmdline = { enabled = false },
--- 	messages = { enabled = false },
--- 	popupmenu = { enabled = true },
--- 	notify = { enabled = true },
--- 	lsp = {
--- 		progress = { enabled = false },
--- 		hover = { enabled = true },
--- 		signature = { enabled = true },
--- 	},
--- })
+require("noice").setup({
+	presets = {
+		bottom_search = true,
+		command_palette = true,
+		long_message_to_split = true,
+		inc_rename = false,
+		lsp_doc_border = true,
+	},
+	messages = {
+		enabled = true,
+	},
+	cmdline = {
+		enabled = true,
+	},
+	lsp = {
+		progress = { enabled = false },
+		hover = {
+			enabled = false,
+			view = "notify",
+		},
+		signature = {
+			enabled = true,
+		},
+	},
+	notify = {
+		enabled = true,
+	},
+})
+
 require("fidget").setup({
 	progress = {
 		suppress_on_insert = true,

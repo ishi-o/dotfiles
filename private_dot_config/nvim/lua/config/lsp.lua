@@ -1,35 +1,30 @@
-require("mason").setup({
-	-- github = {
-	-- 	download_url_template = "git@github.com:%s/releases/download/%s/%s",
-	-- },
-})
+local map = vim.keymap.set
 
+require("mason").setup({})
 require("mason-lspconfig").setup({
 	ensure_installed = {
 		-- LSP Servers
+		"bashls",
 		"clangd",
 		-- "jdtls",
 		"lua_ls",
 		"eslint",
+		"gopls",
 		"marksman",
 		"pyright",
-		"bashls",
 		"ruff",
 		"stylua",
-		"gopls",
 	},
 	automatic_installation = true,
 })
 
 local on_attach = function(client, bufnr)
-	local opts = { buffer = bufnr, noremap = true, silent = true }
-
-	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-	vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename, opts)
-	vim.keymap.set("n", "<Leader>ca", vim.lsp.buf.code_action, opts)
-	vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+	map("n", "gd", vim.lsp.buf.definition, { buffer = bufnr, desc = "[G]o to [D]efinition" })
+	map("n", "gi", vim.lsp.buf.implementation, { buffer = bufnr, desc = "[G]o to [I]mplementation" })
+	map("n", "gr", vim.lsp.buf.references, { buffer = bufnr, desc = "[G]o to [R]eference" })
+	map("n", "K", vim.lsp.buf.hover, { buffer = bufnr, desc = "Show documentation" })
+	map("n", "<leader>rn", vim.lsp.buf.rename, { buffer = bufnr, desc = "[R]e[n]ame" })
+	map("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "[C]ode [A]ctions" })
 
 	if client.server_capabilities.documentSymbolProvider then
 		require("nvim-navic").attach(client, bufnr)
@@ -57,6 +52,7 @@ lsp_config("lua_ls", {
 				library = {
 					[vim.fn.expand("$VIMRUNTIME/lua")] = true,
 					[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
+					[vim.fn.stdpath("config")] = true,
 				},
 				checkThirdParty = false,
 			},
@@ -70,12 +66,6 @@ lsp_config("lua_ls", {
 lsp_config("marksman", {
 	on_attach = on_attach,
 	capabilities = capabilities,
-	settings = {
-		wiki = {
-			style = "file-stem",
-		},
-	},
-	single_file_support = true,
 })
 
 lsp_config("clangd", {
@@ -91,7 +81,14 @@ lsp_config("gopls", {
 lsp_config("eslint", {
 	on_attach = on_attach,
 	capabilities = capabilities,
+	settings = {
+		eslint = {
+			enable = true,
+			validate = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+		},
+	},
 })
+
 lsp_config("bashls", {
 	on_attach = on_attach,
 	capabilities = capabilities,
@@ -118,25 +115,23 @@ local other_tools = {
 	-- DAPs
 	"codelldb",
 	"debugpy",
+	"delve",
 	"java-debug-adapter",
 	"java-test",
-	"delve",
 	-- Linters
 	"checkstyle",
+	"golangci-lint",
 	"luacheck",
 	"markdownlint",
 	"proselint",
 	"shellcheck",
-	"golangci-lint",
 	-- Formatters
-	"stylua",
+	"autopep8",
+	"black",
+	"goimports",
 	"prettier",
 	"prettierd",
 	"shfmt",
-	"autopep8",
-	"black",
-	"shfmt",
-	"goimports",
 }
 for _, tool_name in ipairs(other_tools) do
 	local tool = registry.get_package(tool_name)

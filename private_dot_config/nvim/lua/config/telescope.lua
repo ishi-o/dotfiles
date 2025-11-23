@@ -1,3 +1,4 @@
+local map = vim.keymap.set
 local telescope = require("telescope")
 local builtin = require("telescope.builtin")
 
@@ -36,8 +37,8 @@ telescope.setup({
 		},
 		path_display = { "truncate" },
 		mappings = {
-			i = {
-				--	["<C-h>"] = "which_key"
+			n = {
+				["<leader>c"] = "close",
 			},
 		},
 	},
@@ -65,8 +66,9 @@ telescope.load_extension("lazygit")
 telescope.load_extension("fzf")
 telescope.load_extension("file_browser")
 
-vim.keymap.set("n", "<C-f>", builtin.find_files, { desc = "Telescope find files" })
-vim.keymap.set("n", "<C-g>", builtin.live_grep, { desc = "Telescope live grep" })
-vim.keymap.set("n", "<C-b>", builtin.buffers, { desc = "Telescope buffers" })
-vim.keymap.set("n", "<C-?>", builtin.help_tags, { desc = "Telescope help tags" })
-vim.keymap.set("n", "<C-e>", ":Telescope file_browser<CR>", { desc = "Telescope file browser" })
+map("n", "<leader>fd", builtin.find_files, { desc = "[F]in[d] files" })
+map("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind by [G]reps" })
+map("n", "<leader>fb", builtin.buffers, { desc = "[F]ind [B]uffers" })
+map("n", "<leader>fo", builtin.oldfiles, { desc = "[F]ind [O]ldfiles" })
+map("n", "<leader>fe", "<cmd>Telescope file_browser<CR>", { desc = "[F]ile [E]xplorer" })
+map("n", "<C-?>", builtin.help_tags, { desc = "Telescope help tags" })

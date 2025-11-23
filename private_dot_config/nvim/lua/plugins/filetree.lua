@@ -9,7 +9,14 @@ return {
 			"MunifTanjim/nui.nvim",
 		},
 		config = function()
-			require("config.neo-tree")
+			require("config.filetree.neo-tree")
+		end,
+	},
+	{
+		"nvim-tree/nvim-tree.lua",
+		enabled = false,
+		config = function()
+			require("config.filetree.nvim-tree")
 		end,
 	},
 }

@@ -1,5 +1,3 @@
-vim.g.have_nerd_font = true
-
 require("neo-tree").setup({
 	close_if_last_window = false,
 	enable_git_status = true,
@@ -27,4 +25,4 @@ require("neo-tree").setup({
 	},
 })
 
-vim.keymap.set({ "n", "x" }, "<C-h>", ":Neotree toggle<CR>", { noremap = true })
+vim.keymap.set({ "n", "x", "i", "t" }, "<C-h>", "<cmd>Neotree toggle<CR>", { desc = "Toggle file tree" })

@@ -80,6 +80,7 @@ require("nvim-navic").setup({
 	-- 	return table.concat(filtered, "  ")
 	-- end,
 })
+
 require("lualine").setup({
 	options = {
 		icons_enabled = true,
@@ -132,10 +133,13 @@ require("lualine").setup({
 		lualine_a = {
 			{
 				function()
-					return require("nvim-navic").get_location()
-				end,
-				cond = function()
-					return require("nvim-navic").is_available()
+					local navic = require("nvim-navic")
+					if navic.is_available() then
+						local location = navic.get_location()
+						return location and #location > 0 and location or " "
+					else
+						return " "
+					end
 				end,
 				color = { fg = "#d4d4d4", gui = "bold" },
 			},
@@ -151,6 +155,20 @@ require("lualine").setup({
 		lualine_b = {},
 		lualine_c = { "filename" },
 		lualine_x = { "location" },
+		lualine_y = {},
+		lualine_z = {},
+	},
+	inactive_winbar = {
+		lualine_a = {
+			{
+				function()
+					return " "
+				end,
+			},
+		},
+		lualine_b = {},
+		lualine_c = {},
+		lualine_x = {},
 		lualine_y = {},
 		lualine_z = {},
 	},

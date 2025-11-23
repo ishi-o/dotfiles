@@ -1,4 +1,7 @@
-require("dapui").setup({
+local dap = require("dap")
+local dapui = require("dapui")
+
+dapui.setup({
 	layouts = {
 		{
 			elements = {
@@ -21,14 +24,11 @@ require("dapui").setup({
 	},
 })
 
-require("dap")
 require("nvim-dap-virtual-text").setup({
 	enabled = true,
 	show_stop_reason = true,
 	commented = false,
 })
-local dap = require("dap")
-local dapui = require("dapui")
 
 dap.listeners.before.attach.dapui_config = function()
 	dapui.open()

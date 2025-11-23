@@ -31,7 +31,7 @@ require("gitsigns").setup({
 	end,
 })
 
-map("n", "<leader>gg", ":Gstatus<CR>", { desc = "Git Status" })
+map("n", "<leader>gg", "<cmd>Gstatus<CR>", { desc = "Git Status" })
 map("n", "<leader>gc", ":Gcommit<CR>", { desc = "Git Commit" })
 map("n", "<leader>gp", ":Gpush<CR>", { desc = "Git Push" })
 map("n", "<leader>gl", ":Gpull<CR>", { desc = "Git Pull" })
@@ -50,8 +50,8 @@ map("v", "<leader>go", ":GBrowse<CR>", { desc = "Git Browse Selection" })
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "fugitive",
 	callback = function()
-		map("n", "q", ":q<CR>", { buffer = true, desc = "Close Fugitive" })
-		map("n", "<leader>q", ":q<CR>", { buffer = true, desc = "Close Fugitive" })
+		map("n", "q", "<cmd>q<CR>", { buffer = true, desc = "Close Fugitive" })
+		map("n", "<leader>q", "<cmd>q<CR>", { buffer = true, desc = "Close Fugitive" })
 	end,
 })
 

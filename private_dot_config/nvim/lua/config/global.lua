@@ -5,6 +5,8 @@ vim.g.mkdp_echo_preview_url = 1
 
 vim.g.mapleader = " "
 
+vim.g.have_nerd_font = true
+
 if vim.g.vscode then
 	require("config.vscode-keybinding")
 else

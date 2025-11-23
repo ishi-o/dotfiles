@@ -5,4 +5,4 @@ require("render-markdown").setup({
 	file_types = { "markdown", "codecompanion" },
 })
 
-map("n", "<C-S-s>", ":MarkdownPreview<CR>", { desc = "MarkdownPreview" })
+map("n", "<leader>md", "<cmd>MarkdownPreview<CR>", { desc = "MarkdownPreview" })
