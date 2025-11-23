@@ -107,6 +107,10 @@ require("lualine").setup({
 					unnamed = "[未命名]",
 				},
 			},
+			{
+				require("noice").api.status.message.get_hl,
+				cond = require("noice").api.status.message.has,
+			},
 		},
 		lualine_x = {
 			{

@@ -13,6 +13,8 @@ require("mason-lspconfig").setup({
 		"marksman",
 		"pyright",
 		"ruff",
+		"sqlls",
+		"sqls",
 		"stylua",
 	},
 	automatic_installation = true,
@@ -90,6 +92,11 @@ lsp_config("eslint", {
 })
 
 lsp_config("bashls", {
+	on_attach = on_attach,
+	capabilities = capabilities,
+})
+
+lsp_config("sqlls", {
 	on_attach = on_attach,
 	capabilities = capabilities,
 })

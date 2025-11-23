@@ -9,6 +9,7 @@ require("conform").setup({
 		python = { "black" },
 		bash = { "shfmt" },
 		go = { "goimports" },
+		sql = { "sql-formatter" },
 	},
 })
 

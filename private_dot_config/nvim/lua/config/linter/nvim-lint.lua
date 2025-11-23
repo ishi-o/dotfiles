@@ -12,6 +12,7 @@ lint.linters_by_ft = {
 	java = { "checkstyle" },
 	-- go = { "golangci-lint" },
 	markdown = { "markdownlint" },
+	sql = { "sqruff" },
 }
 vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
 	callback = function()
