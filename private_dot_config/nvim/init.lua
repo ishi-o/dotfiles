@@ -23,5 +23,5 @@ require("lazy").setup({
 	},
 })
 
-require("config.colortheme")
+require("config.ui.colortheme")
 require("config.lsp")

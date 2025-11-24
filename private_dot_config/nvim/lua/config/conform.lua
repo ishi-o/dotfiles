@@ -10,6 +10,8 @@ require("conform").setup({
 		bash = { "shfmt" },
 		go = { "goimports" },
 		sql = { "sql-formatter" },
+		c = { "clang-format" },
+		cpp = { "clang-format" },
 	},
 })
 

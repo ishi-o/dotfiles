@@ -15,7 +15,7 @@ dapui.setup({
 		},
 		{
 			elements = {
-				-- "console",
+				"console",
 				"repl",
 			},
 			size = 0.25,
@@ -29,6 +29,8 @@ require("nvim-dap-virtual-text").setup({
 	show_stop_reason = true,
 	commented = false,
 })
+
+-- dap.defaults.fallback.terminal_win_cmd = "tabnew"
 
 dap.listeners.before.attach.dapui_config = function()
 	dapui.open()
@@ -66,14 +68,6 @@ dap.configurations.go = {
 		program = "${file}",
 		outputMode = "remote",
 	},
-	{
-		type = "go",
-		name = "Debug (Attach)",
-		request = "attach",
-		mode = "local",
-		processId = require("dap.utils").pick_process,
-		outputMode = "remote",
-	},
 }
 
 dap.adapters.go = {
@@ -82,6 +76,69 @@ dap.adapters.go = {
 	executable = {
 		command = "dlv",
 		args = { "dap", "-l", "127.0.0.1:${port}" },
+	},
+}
+
+dap.configurations.cpp = {
+	{
+		type = "codelldb",
+		name = "C/Cpp Debug",
+		request = "launch",
+		program = function()
+			local function needs_recompile(source, output)
+				if vim.fn.filereadable(output) == 0 then
+					return true
+				end
+				local source_mtime = vim.fn.getftime(source)
+				local output_mtime = vim.fn.getftime(output)
+				return source_mtime > output_mtime
+			end
+			local source = vim.fn.expand("%:p")
+			local file_stem = vim.fn.expand("%:t:r")
+			local output_dir = "./build/"
+			local output = output_dir .. file_stem
+			vim.fn.mkdir(output_dir, "p")
+			if needs_recompile(source, output) then
+				os.execute('g++ -g "' .. source .. '" -o "' .. output .. '"')
+			end
+			return output
+		end,
+		cwd = "${workspaceFolder}",
+		args = {},
+		stopOnEntry = false,
+	},
+}
+
+dap.configurations.c = dap.configurations.cpp
+
+dap.adapters.codelldb = {
+	type = "server",
+	port = "${port}",
+	executable = {
+		command = "codelldb",
+		args = {
+			"--port",
+			"${port}",
+		},
+	},
+}
+
+dap.configurations.python = {
+	{
+		type = "python",
+		request = "launch",
+		name = "Debug File",
+		program = "${file}",
+		console = "integratedTerminal",
+	},
+}
+
+dap.adapters.python = {
+	type = "executable",
+	command = "python",
+	args = {
+		"-m",
+		"debugpy.adapter",
 	},
 }
 

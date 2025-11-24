@@ -13,6 +13,14 @@ lint.linters_by_ft = {
 	-- go = { "golangci-lint" },
 	markdown = { "markdownlint" },
 	sql = { "sqruff" },
+	c = { "cpplint" },
+	cpp = { "cpplint" },
+}
+require("lint.linters.checkstyle").args = {
+	"-c",
+	os.getenv("HOME") .. "/.config/checkstyle/checkstyle.xml",
+	"-f",
+	"json",
 }
 vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
 	callback = function()
