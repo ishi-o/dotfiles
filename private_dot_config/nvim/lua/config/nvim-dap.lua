@@ -10,8 +10,8 @@ dapui.setup({
 				"breakpoints",
 				"watches",
 			},
-			size = 40,
-			position = "left",
+			size = 0.3,
+			position = "right",
 		},
 		{
 			elements = {

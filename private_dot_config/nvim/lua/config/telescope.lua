@@ -65,6 +65,7 @@ end
 telescope.load_extension("lazygit")
 telescope.load_extension("fzf")
 telescope.load_extension("file_browser")
+telescope.load_extension("noice")
 
 map("n", "<leader>fd", builtin.find_files, { desc = "[F]in[d] files" })
 map("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind by [G]reps" })

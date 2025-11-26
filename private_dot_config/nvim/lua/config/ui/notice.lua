@@ -4,10 +4,11 @@ require("noice").setup({
 		command_palette = true,
 		long_message_to_split = true,
 		inc_rename = false,
-		lsp_doc_border = true,
+		lsp_doc_border = false,
 	},
 	messages = {
 		enabled = true,
+		view = "notify",
 	},
 	cmdline = {
 		enabled = true,
@@ -16,7 +17,7 @@ require("noice").setup({
 		progress = { enabled = false },
 		hover = {
 			enabled = false,
-			view = "notify",
+			-- view = "notify",
 		},
 		signature = {
 			enabled = true,
@@ -24,6 +25,7 @@ require("noice").setup({
 	},
 	notify = {
 		enabled = true,
+		view = "notify",
 	},
 })
 

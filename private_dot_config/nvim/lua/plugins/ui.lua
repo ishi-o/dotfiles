@@ -29,6 +29,13 @@ return {
 			require("config.ui.notice")
 		end,
 	},
+	-- picker
+	{
+		"stevearc/dressing.nvim",
+		config = function()
+			require("config.ui.picker")
+		end,
+	},
 	-- status bar
 	{
 		"nvim-lualine/lualine.nvim",

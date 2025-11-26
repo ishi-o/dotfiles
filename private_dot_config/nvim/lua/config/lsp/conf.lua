@@ -13,10 +13,15 @@ M.on_attach = function(client, bufnr)
 	if client.server_capabilities.documentSymbolProvider then
 		require("nvim-navic").attach(client, bufnr)
 	end
+
+	if client:supports_method("textDocument/inlayHint") or client.name == "jdtls" then
+		vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+	end
 end
 
 -- local capabilities = vim.lsp.protocol.make_client_capabilities()
 -- capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 M.capabilities = require("blink.cmp").get_lsp_capabilities()
+-- M.capabilities = {}
 
 return M

@@ -15,3 +15,4 @@ vim.opt.laststatus = 2
 vim.opt.clipboard = "unnamedplus"
 vim.opt.mouse = "a"
 vim.opt.mousefocus = true
+vim.opt.signcolumn = "yes:1"

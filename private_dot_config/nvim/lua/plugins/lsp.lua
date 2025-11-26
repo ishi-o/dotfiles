@@ -8,17 +8,17 @@ return {
 			require("config.lsp")
 		end,
 	},
-	---- java lsp | dap | cmp | linter | formatter
+	---- nvim-java
 	-- {
 	-- 	"nvim-java/nvim-java",
-	-- 	opts = false,
 	-- },
 	---- jdtls KISS
-	{
-		"mfussenegger/nvim-jdtls",
-		ft = "java",
-		dependencies = { "mfussenegger/nvim-dap" },
-	},
+	-- {
+	-- 	"mfussenegger/nvim-jdtls",
+	-- 	optional = true,
+	-- 	ft = "java",
+	-- 	dependencies = { "mfussenegger/nvim-dap" },
+	-- },
 	---- go
 	{
 		"fatih/vim-go",
