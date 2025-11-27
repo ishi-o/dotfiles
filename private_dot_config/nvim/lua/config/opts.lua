@@ -16,3 +16,4 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.mouse = "a"
 vim.opt.mousefocus = true
 vim.opt.signcolumn = "yes:1"
+vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
