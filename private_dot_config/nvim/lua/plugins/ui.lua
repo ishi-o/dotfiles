@@ -129,4 +129,11 @@ return {
 			require("config.ui.snacks")
 		end,
 	},
+	{
+		"gorbit99/codewindow.nvim",
+		lazy = false,
+		config = function()
+			require("config.ui.codewindow")
+		end,
+	},
 }
