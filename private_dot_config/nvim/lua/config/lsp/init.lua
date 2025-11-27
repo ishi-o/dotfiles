@@ -15,6 +15,7 @@ require("mason-lspconfig").setup({
 		"sqlls",
 		"sqls",
 		"stylua",
+		"texlab",
 	},
 	automatic_installation = true,
 })

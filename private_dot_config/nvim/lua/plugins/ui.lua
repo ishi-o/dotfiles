@@ -71,6 +71,17 @@ return {
 			require("config.ui.markdown-preview")
 		end,
 	},
+	{
+		"OXY2DEV/markview.nvim",
+		lazy = false,
+		optional = true,
+		dependencies = {
+			"saghen/blink.cmp",
+		},
+		config = function()
+			require("markview").setup({})
+		end,
+	},
 	-- snacks (dashboard, indent, bigfile)
 	{
 		"folke/snacks.nvim",
