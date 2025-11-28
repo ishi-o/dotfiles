@@ -1,5 +1,6 @@
 return {
-	-- AI
+	-- codecompanion --
+	-- AI support
 	{
 		"olimorris/codecompanion.nvim",
 		dependencies = {

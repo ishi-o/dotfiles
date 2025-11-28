@@ -1,4 +1,4 @@
-local conf = require("config.lsp.conf")
+local conf = require("config.dev.lsp.conf")
 
 vim.lsp.config("lua_ls", {
 	on_attach = conf.on_attach,

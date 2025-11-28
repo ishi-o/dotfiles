@@ -12,16 +12,16 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 		os.exit(1)
 	end
 end
-vim.opt.rtp:prepend(lazypath)
 
-require("config.global")
-require("config.opts")
+require("config.settings")
 
 require("lazy").setup({
 	spec = {
 		{ import = "plugins" },
+		{ import = "plugins/dev" },
+		{ import = "plugins/preview" },
 	},
 })
 
 require("config.ui.colortheme")
-require("config.lsp")
+require("config.dev.lsp")

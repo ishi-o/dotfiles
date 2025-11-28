@@ -1,25 +1,28 @@
 return {
-	-- lsp core
+	-- mason.nvim --
+	-- lsp manager and core
 	{
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
 		"neovim/nvim-lspconfig",
+		lazy = false,
 		config = function()
-			require("config.lsp")
+			require("config.dev.lsp")
 		end,
 	},
-	---- nvim-java
+	---- nvim-java --
 	-- {
 	-- 	"nvim-java/nvim-java",
 	-- },
-	---- jdtls KISS
+	---- nvim-jdtls (KISS) --
 	-- {
 	-- 	"mfussenegger/nvim-jdtls",
 	-- 	optional = true,
 	-- 	ft = "java",
 	-- 	dependencies = { "mfussenegger/nvim-dap" },
 	-- },
-	---- go
+	-- vim-go --
+	-- go integration
 	{
 		"fatih/vim-go",
 		ft = "go",

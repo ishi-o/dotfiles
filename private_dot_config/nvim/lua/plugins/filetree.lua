@@ -1,4 +1,5 @@
 return {
+	-- neo-tree.nvim --
 	-- file-tree
 	{
 		"nvim-neo-tree/neo-tree.nvim",

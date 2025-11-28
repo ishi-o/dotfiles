@@ -1,10 +1,11 @@
 return {
-	-- nvim-lint
+	-- nvim-lint --
+	-- linter support
 	{
 		"mfussenegger/nvim-lint",
 		event = "BufReadPost",
 		config = function()
-			require("config.linter.nvim-lint")
+			require("config.dev.linter.nvim-lint")
 		end,
 	},
 	-- null-ls
@@ -13,7 +14,7 @@ return {
 		enabled = false,
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
-			require("config.linter.null-ls")
+			require("config.dev.linter.null-ls")
 		end,
 	},
 }

@@ -1,5 +1,6 @@
 return {
-	-- toggleterm
+	-- toggleterm.nvim --
+	-- inner terminal integration
 	{
 		"akinsho/toggleterm.nvim",
 		config = function()

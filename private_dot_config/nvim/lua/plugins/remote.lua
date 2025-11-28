@@ -1,5 +1,6 @@
 return {
-	-- ssh filesystem
+	-- remote-sshfs.nvim --
+	-- ssh filesystem integration
 	{
 		"nosduco/remote-sshfs.nvim",
 		dependencies = {
@@ -10,7 +11,8 @@ return {
 			require("config.remote.sshfs")
 		end,
 	},
-	-- oil
+	-- oil.nvim --
+	-- remote file editor
 	{
 		"stevearc/oil.nvim",
 		lazy = false,

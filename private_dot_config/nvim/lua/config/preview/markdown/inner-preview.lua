@@ -1,5 +1,3 @@
-local map = vim.keymap.set
-
 require("render-markdown").setup({
 	renderer = "glow",
 	file_types = { "markdown", "codecompanion" },
@@ -15,5 +13,3 @@ require("render-markdown").setup({
 	-- },
 	completions = { lsp = { enabled = true } },
 })
-
-map("n", "<leader>md", "<cmd>MarkdownPreview<CR>", { desc = "MarkdownPreview" })

@@ -1,6 +1,6 @@
 -- require("java").setup()
 
-local conf = require("config.lsp.conf")
+local conf = require("config.dev.lsp.conf")
 
 local mason_dir = vim.fn.stdpath("data") .. "/mason"
 -- local pkg_dir = mason_dir .. "/packages"

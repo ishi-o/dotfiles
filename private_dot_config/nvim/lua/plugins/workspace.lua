@@ -1,4 +1,6 @@
 return {
+	-- auto-session --
+	-- session manager
 	{
 		"rmagatti/auto-session",
 		lazy = false,
@@ -6,6 +8,8 @@ return {
 			require("config.workspace.session")
 		end,
 	},
+	-- project.nvim --
+	-- project manager
 	{
 		"ahmedkhalf/project.nvim",
 		config = function()
