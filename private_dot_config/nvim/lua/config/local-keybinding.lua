@@ -26,5 +26,5 @@ map("n", "<leader>j", "<cmd>wincmd j<CR>", { desc = "Focus on the page below" })
 map("n", "<leader>k", "<cmd>wincmd k<CR>", { desc = "Focus on the page above" })
 map("n", "<leader>l", "<cmd>wincmd l<CR>", { desc = "Focus on the right page" })
 
-map("x", "<C-c>", '"+y', { desc = "Copy selected chars" })
+-- map("x", "<C-c>", '"+y', { desc = "Copy selected chars" })
 map({ "n", "i" }, "<C-c>", '"+yy', { desc = "Copy current line" })
