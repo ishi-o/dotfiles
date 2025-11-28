@@ -104,12 +104,13 @@ require("lualine").setup({
 				symbols = {
 					modified = " [+]",
 					readonly = " [-]",
-					unnamed = "[未命名]",
+					unnamed = "[unnamed]",
 				},
-			},
-			{
-				require("noice").api.status.message.get_hl,
-				cond = require("noice").api.status.message.has,
+				fmt = function(str)
+					local filename = str:match("([^/]*)$")
+					local path = str:sub(1, -(#filename + 1))
+					return path .. "%#markdownBold# " .. filename .. " %*"
+				end,
 			},
 		},
 		lualine_x = {
@@ -150,7 +151,12 @@ require("lualine").setup({
 		},
 		lualine_b = {},
 		lualine_c = {},
-		lualine_x = {},
+		lualine_x = {
+			{
+				require("noice").api.status.message.get_hl,
+				cond = require("noice").api.status.message.has,
+			},
+		},
 		lualine_y = {},
 		lualine_z = {},
 	},
