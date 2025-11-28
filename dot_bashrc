@@ -24,8 +24,6 @@ export GOPROXY=https://goproxy.cn,direct
 export PATH=$GOROOT/bin:$PATH
 # end go
 
-export PATH=$PATH:$MAVEN_HOME/bin
-
 # alias
 alias vi=nvim
 alias vim=nvim
@@ -59,6 +57,23 @@ source "$HOME/.config/private/env"
 . "$HOME/.cargo/env"
 # end cargo
 
+# kitty
+export DISPLAY=:0
+export GTK_IM_MODULE=fcitx5
+export QT_IM_MODULE=fcitx5
+export XMODIFIERS=@im=fcitx5
+# export GLFW_IM_MODULE=fcitx5
+export GLFW_IM_MODULE=ibus
+export XDG_SESSION_TYPE=x11
+export GDK_BACKEND=x11
+export QT_QPA_PLATFORM=xcb
+unset WAYLAND_DISPLAY
+nohup fcitx5 -d >/dev/null 2>&1 &
+# export IBUS_USE_SYSTEMD=0
+# unset WAYLAND_DISPLAY
+# ibus-daemon -drx &
+# end kitty
+
 # brew
 eval "$("$HOME/.local/brew/bin/brew" shellenv)"
 # end brew
@@ -74,6 +89,6 @@ eval "$(~/.local/bin/mise activate bash)"
 
 # sdkman
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/admin/.sdkman"
-[[ -s "/home/admin/.sdkman/bin/sdkman-init.sh" ]] && source "/home/admin/.sdkman/bin/sdkman-init.sh"
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 # end sdkman
