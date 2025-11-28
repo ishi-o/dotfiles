@@ -136,4 +136,12 @@ return {
 			require("config.ui.codewindow")
 		end,
 	},
+	-- tablines
+	{
+		"akinsho/bufferline.nvim",
+		dependencies = "nvim-tree/nvim-web-devicons",
+		config = function()
+			require("config.ui.tablines")
+		end,
+	},
 }

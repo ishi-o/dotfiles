@@ -11,12 +11,29 @@ map("i", "jj", "<Esc>", { desc = "Return to normal mode" })
 
 map("n", "<leader>s", "<cmd>w<CR>", { desc = "Save file (not !)" })
 
-multi_map("n", { "<leader>q", "q<leader>" }, "<cmd>q<CR>", { desc = "Quit file (not !)" })
+-- multi_map("n", { "<leader>Q", "Q<leader>" }, "<cmd>q<CR>", { desc = "Quit neovim (not !)" })
+multi_map("n", { "<leader>z", "z<leader>" }, "<cmd>qa<CR>", { desc = "Quit neovim (not !)" })
+multi_map("n", { "<leader>q", "q<leader>" }, function()
+	local win_count = vim.fn.winnr("$")
+	local buf_count = #vim.fn.getbufinfo({ buflisted = 1 })
+	local tab_count = #vim.fn.gettabinfo()
+	if win_count > 1 then
+		vim.cmd("q")
+	elseif buf_count > 1 then
+		vim.cmd("bp | bd #")
+	elseif tab_count > 1 then
+		vim.cmd("tabclose")
+	else
+		vim.cmd("qa")
+	end
+end, { desc = "Quit file" })
 
 map("n", "<leader>t", ":tabnew<Space>", { desc = "NewTab (input filename)" })
 -- map("n", "<leader>c", "<cmd>tabclose<CR>", { desc = "Close Tab" })
-map("n", "<leader>b", "<cmd>tabprevious<CR>", { desc = "Previous Tab" })
-map("n", "<leader>n", "<cmd>tabnext<CR>", { desc = "Next Tab" })
+map("n", "<leader>B", "<cmd>tabprevious<CR>", { desc = "Previous Tab" })
+map("n", "<leader>N", "<cmd>tabnext<CR>", { desc = "Next Tab" })
+map("n", "<leader>b", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous Buffer" })
+map("n", "<leader>n", "<cmd>BufferLineCycleNext<CR>", { desc = "Next Buffer" })
 
 map("n", "<leader>p", ":split ", { desc = "Horizontal Split (input filename)" })
 map("n", "<leader>v", ":vsplit ", { desc = "Vertical Split (input filename)" })

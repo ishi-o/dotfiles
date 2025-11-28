@@ -87,12 +87,26 @@ require("lualine").setup({
 		theme = "auto",
 		component_separators = { left = "", right = "" },
 		section_separators = { left = "", right = "" },
-		disabled_filetypes = {
-			statusline = { "NvimTree", "alpha", "dashboard" },
-		},
 		ignore_focus = {},
 		always_divide_middle = true,
 		globalstatus = true,
+		disabled_filetypes = {
+			statusline = {
+				"dap-repl",
+				"NvimTree",
+				"alpha",
+				"dashboard",
+			},
+			winbar = {
+				"dap-repl",
+				"dapui_breakpoints",
+				"dapui_console",
+				"dapui_scopes",
+				"dapui_watches",
+				"dapui_stacks",
+				"neo-tree",
+			},
+		},
 	},
 	sections = {
 		lualine_a = { "mode" },
@@ -114,6 +128,7 @@ require("lualine").setup({
 			},
 		},
 		lualine_x = {
+			"lsp_status",
 			{
 				"diagnostics",
 				sources = { "nvim_diagnostic" },
@@ -135,7 +150,8 @@ require("lualine").setup({
 		lualine_z = { "location" },
 	},
 	winbar = {
-		lualine_a = {
+		lualine_a = {},
+		lualine_b = {
 			{
 				function()
 					local navic = require("nvim-navic")
@@ -146,16 +162,14 @@ require("lualine").setup({
 						return " "
 					end
 				end,
-				color = { fg = "#d4d4d4", gui = "bold" },
 			},
 		},
-		lualine_b = {},
 		lualine_c = {},
 		lualine_x = {
-			{
-				require("noice").api.status.message.get_hl,
-				cond = require("noice").api.status.message.has,
-			},
+			-- {
+			-- 	require("noice").api.status.message.get_hl,
+			-- 	cond = require("noice").api.status.message.has,
+			-- },
 		},
 		lualine_y = {},
 		lualine_z = {},

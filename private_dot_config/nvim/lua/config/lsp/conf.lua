@@ -8,7 +8,7 @@ M.on_attach = function(client, bufnr)
 	map("n", "gr", vim.lsp.buf.references, { buffer = bufnr, desc = "[G]o to [R]eference" })
 	map("n", "K", vim.lsp.buf.hover, { buffer = bufnr, desc = "Show documentation" })
 	map("n", "<leader>rn", vim.lsp.buf.rename, { buffer = bufnr, desc = "[R]e[n]ame" })
-	map("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "[C]ode [A]ctions" })
+	map("n", "<leader>C", vim.lsp.buf.code_action, { buffer = bufnr, desc = "[C]ode actions" })
 
 	if client.server_capabilities.documentSymbolProvider then
 		require("nvim-navic").attach(client, bufnr)
