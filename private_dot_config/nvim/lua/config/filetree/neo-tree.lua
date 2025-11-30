@@ -24,5 +24,3 @@ require("neo-tree").setup({
 		end,
 	},
 })
-
-vim.keymap.set({ "n", "x", "i", "t" }, "<C-h>", "<cmd>Neotree toggle<CR>", { desc = "Toggle file tree" })

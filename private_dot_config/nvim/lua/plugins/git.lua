@@ -1,13 +1,5 @@
+local func = require("vim.func")
 return {
-	-- vim-fugitive --
-	-- git integration
-	{
-		"tpope/vim-fugitive",
-		"lewis6991/gitsigns.nvim",
-		config = function()
-			require("config.git")
-		end,
-	},
 	-- lazygit.nvim --
 	-- lazygit integration
 	{
@@ -16,5 +8,27 @@ return {
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},
+	},
+	-- gitsigns.nvim --
+	{
+		"lewis6991/gitsigns.nvim",
+		config = function()
+			require("config.git.gitsigns")
+		end,
+	},
+	-- neogit --
+	{
+		"NeogitOrg/neogit",
+		lazy = true,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"sindrets/diffview.nvim",
+
+			"nvim-telescope/telescope.nvim",
+		},
+		cmd = "Neogit",
+		config = function()
+			require("config.git.neogit")
+		end,
 	},
 }

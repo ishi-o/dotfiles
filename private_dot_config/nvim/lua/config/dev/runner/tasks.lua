@@ -8,5 +8,3 @@ require("overseer").setup({
 		"user.go",
 	},
 })
-
-vim.keymap.set("n", "<F5>", "<cmd>OverseerRun<CR>", { desc = "Build & Run" })

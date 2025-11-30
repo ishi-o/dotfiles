@@ -6,5 +6,6 @@ npairs.setup({
 	disable_in_visualblock = true,
 	check_ts = true,
 })
+npairs.add_rule(Rule("（", "）", "markdown"))
 npairs.add_rule(Rule("$", "$", "markdown"))
 npairs.add_rule(Rule("$$", "$$", "tex"))

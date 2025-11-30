@@ -1,5 +1,3 @@
-local map = vim.keymap.set
-
 require("toggleterm").setup({
 	start_in_insert = true,
 	direction = "float",
@@ -13,13 +11,11 @@ require("toggleterm").setup({
 			return math.floor(vim.o.lines * 0.3)
 		end,
 		row = function()
-			return vim.o.lines - math.floor(vim.o.lines * 0.25) - 1
+			return vim.o.lines - math.floor(vim.o.lines * 0.3) - 3
 		end,
-		col = function()
-			return math.floor((vim.o.columns - (vim.o.columns * 0.9)) / 2)
-		end,
+		col = 0,
 		border = "curved",
-		winblend = 40,
+		winblend = 20,
 	},
 	winbar = {
 		enabled = true,
@@ -28,5 +24,3 @@ require("toggleterm").setup({
 		end,
 	},
 })
-
-map("t", "<C-q>", "<C-\\><C-n>", { noremap = true })

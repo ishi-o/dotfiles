@@ -1,6 +1,4 @@
-local map = vim.keymap.set
 local telescope = require("telescope")
-local builtin = require("telescope.builtin")
 
 telescope.setup({
 	defaults = {
@@ -62,15 +60,9 @@ if vim.fn.filereadable(vim.fn.stdpath("data") .. "/lazy/telescope-fzf-native.nvi
 			.. "/lazy/telescope-fzf-native.nvim && cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release >/dev/null 2>&1"
 	)
 end
+
 telescope.load_extension("lazygit")
 telescope.load_extension("fzf")
 telescope.load_extension("file_browser")
 telescope.load_extension("noice")
 telescope.load_extension("projects")
-
-map("n", "<leader>fd", builtin.find_files, { desc = "[F]in[d] files" })
-map("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind by [G]reps" })
-map("n", "<leader>fb", builtin.buffers, { desc = "[F]ind [B]uffers" })
-map("n", "<leader>fo", builtin.oldfiles, { desc = "[F]ind [O]ldfiles" })
-map("n", "<leader>fe", "<cmd>Telescope file_browser<CR>", { desc = "[F]ile [E]xplorer" })
-map("n", "<C-?>", builtin.help_tags, { desc = "Telescope help tags" })

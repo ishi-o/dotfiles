@@ -146,14 +146,3 @@ require("persistent-breakpoints").setup()
 vim.api.nvim_create_autocmd({ "BufReadPost" }, {
 	callback = require("persistent-breakpoints.api").load_breakpoints,
 })
-
-vim.keymap.set("n", "<F6>", require("dap").continue, { desc = "Debug: Continue" })
-vim.keymap.set("n", "<F7>", require("dap").step_over, { desc = "Debug: Step Over" })
-vim.keymap.set("n", "<F8>", require("dap").step_into, { desc = "Debug: Step Into" })
--- vim.keymap.set("n", "<F9>", require("dap").toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
-vim.keymap.set(
-	"n",
-	"<F9>",
-	"<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>",
-	{ desc = "Debug: Toggle Breakpoint" }
-)

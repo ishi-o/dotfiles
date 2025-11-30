@@ -73,4 +73,12 @@ return {
 			require("config.ui.tablines")
 		end,
 	},
+	-- scope.nvim --
+	-- tab scope
+	{
+		"tiagovla/scope.nvim",
+		config = function()
+			require("scope").setup({})
+		end,
+	},
 }

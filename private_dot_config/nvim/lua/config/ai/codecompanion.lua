@@ -1,7 +1,3 @@
-local map = vim.keymap.set
-
--- require("avante").setup({})
-
 require("codecompanion").setup({
 	display = {
 		chat = {
@@ -39,7 +35,7 @@ require("codecompanion").setup({
 					},
 					opts = {
 						language = "Chinese",
-						log_level = "DEBUG",
+						-- log_level = "DEBUG",
 						temperature = 0,
 					},
 				})
@@ -61,7 +57,7 @@ require("codecompanion").setup({
 					},
 					opts = {
 						language = "Chinese",
-						log_level = "DEBUG",
+						-- log_level = "DEBUG",
 						temperature = 0.4,
 					},
 				})
@@ -69,6 +65,3 @@ require("codecompanion").setup({
 		},
 	},
 })
-
-map("n", "<leader>ac", "<cmd>CodeCompanionChat<CR>", { desc = "[A]i [C]hat" })
-map("n", "<leader>aa", "<cmd>CodeCompanionActions<CR>", { desc = "[A]i [A]ctions" })

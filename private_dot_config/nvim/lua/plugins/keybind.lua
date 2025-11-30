@@ -5,7 +5,7 @@ return {
 		"folke/which-key.nvim",
 		event = "VeryLazy",
 		config = function()
-			require("config.keybind.whichkey")
+			require("config.keybind")
 		end,
 	},
 }
