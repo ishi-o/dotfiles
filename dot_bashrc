@@ -72,6 +72,7 @@ nohup fcitx5 -d >/dev/null 2>&1 &
 # export IBUS_USE_SYSTEMD=0
 # unset WAYLAND_DISPLAY
 # ibus-daemon -drx &
+export XCURSOR_THEME="BocchiCursor"
 # end kitty
 
 # brew
