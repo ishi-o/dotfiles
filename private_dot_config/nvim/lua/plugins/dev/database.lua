@@ -3,6 +3,13 @@ return {
 	-- database connection ui support
 	{
 		"kristijanhusak/vim-dadbod-ui",
+		lazy = true,
+		cmd = {
+			"DBUI",
+			"DBUIToggle",
+			"DBUIAddConnection",
+			"DBUIFindBuffer",
+		},
 		dependencies = {
 			{
 				"tpope/vim-dadbod",
@@ -18,13 +25,6 @@ return {
 				lazy = true,
 			},
 		},
-		cmd = {
-			"DBUI",
-			"DBUIToggle",
-			"DBUIAddConnection",
-			"DBUIFindBuffer",
-		},
-		keys = {},
 		config = function()
 			require("config.dev.database")
 		end,

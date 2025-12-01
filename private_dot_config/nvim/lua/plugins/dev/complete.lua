@@ -3,8 +3,8 @@ return {
 	-- code complete
 	{
 		"saghen/blink.cmp",
+		lazy = false,
 		version = "1.*",
-		-- optional = true,
 		dependencies = {
 			"rafamadriz/friendly-snippets",
 			"onsails/lspkind.nvim",
@@ -47,8 +47,8 @@ return {
 	},
 	{
 		"neoclide/coc.nvim",
-		build = "npm install --frozen-lockfile",
 		optional = true,
+		build = "npm install --frozen-lockfile",
 		config = function()
 			require("config.dev.complete.coc")
 		end,

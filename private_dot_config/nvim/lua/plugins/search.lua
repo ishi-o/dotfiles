@@ -17,6 +17,7 @@ return {
 	-- inner search
 	{
 		"folke/flash.nvim",
+		lazy = true,
 		event = "VeryLazy",
 		config = function()
 			require("config.search.flash")

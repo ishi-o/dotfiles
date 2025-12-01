@@ -3,6 +3,8 @@ return {
 	-- predefined (build/run) tasks
 	{
 		"stevearc/overseer.nvim",
+		lazy = true,
+		cmd = "OverseerRun",
 		config = function()
 			require("config.dev.runner.tasks")
 		end,
@@ -12,6 +14,8 @@ return {
 	{
 		-- dap ui --
 		"rcarriga/nvim-dap-ui",
+		lazy = true,
+		cmd = { "DapContinue", "DapNew" },
 		dependencies = {
 			-- debug core --
 			{

@@ -25,6 +25,7 @@ return {
 	-- go integration
 	{
 		"fatih/vim-go",
+		lazy = true,
 		ft = "go",
 	},
 }

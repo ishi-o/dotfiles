@@ -5,6 +5,7 @@ return {
 	{
 		"kdheepak/lazygit.nvim",
 		lazy = true,
+		cmd = "LazyGit",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},
@@ -20,13 +21,13 @@ return {
 	{
 		"NeogitOrg/neogit",
 		lazy = true,
+		cmd = "Neogit",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"sindrets/diffview.nvim",
 
 			"nvim-telescope/telescope.nvim",
 		},
-		cmd = "Neogit",
 		config = function()
 			require("config.git.neogit")
 		end,

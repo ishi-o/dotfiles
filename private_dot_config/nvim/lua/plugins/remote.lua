@@ -3,6 +3,12 @@ return {
 	-- ssh filesystem integration
 	{
 		"nosduco/remote-sshfs.nvim",
+		lazy = true,
+		cmd = {
+			"RemoteSSHFSConnect",
+			"RemoteSSHFSFindFiles",
+			"RemoteSSHFSLiveGrep",
+		},
 		dependencies = {
 			"nvim-telescope/telescope.nvim",
 			"nvim-lua/plenary.nvim",
@@ -15,7 +21,8 @@ return {
 	-- remote file editor
 	{
 		"stevearc/oil.nvim",
-		lazy = false,
+		lazy = true,
+		cmd = "Oil",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("config.remote.oil")

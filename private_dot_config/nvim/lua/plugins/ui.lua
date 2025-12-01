@@ -3,7 +3,6 @@ return {
 	{
 		-- "folke/tokyonight.nvim",
 		"sainnhe/everforest",
-		lazy = false,
 		priority = 1000,
 		config = function()
 			require("config.ui.colortheme")
@@ -13,6 +12,7 @@ return {
 	-- notice
 	{
 		"folke/noice.nvim",
+		lazy = true,
 		event = "VeryLazy",
 		dependencies = {
 			"MunifTanjim/nui.nvim",
@@ -49,8 +49,6 @@ return {
 	{
 		"folke/snacks.nvim",
 		priority = 1000,
-		lazy = false,
-		-- enabled = false,
 		config = function()
 			require("config.ui.snacks")
 		end,
@@ -59,7 +57,8 @@ return {
 	-- mini code map
 	{
 		"gorbit99/codewindow.nvim",
-		lazy = false,
+		lazy = true,
+		module = "codewindow",
 		config = function()
 			require("config.ui.codewindow")
 		end,

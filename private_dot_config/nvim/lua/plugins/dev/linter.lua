@@ -3,6 +3,7 @@ return {
 	-- linter support
 	{
 		"mfussenegger/nvim-lint",
+		lazy = true,
 		event = "BufReadPost",
 		config = function()
 			require("config.dev.linter.nvim-lint")

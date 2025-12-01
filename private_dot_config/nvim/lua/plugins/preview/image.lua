@@ -3,7 +3,8 @@ return {
 	-- image support
 	{
 		"3rd/image.nvim",
-		optional = true,
+		lazy = true,
+		ft = "image",
 		config = function()
 			require("config.preview.image")
 		end,

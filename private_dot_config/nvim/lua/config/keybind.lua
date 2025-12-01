@@ -60,6 +60,32 @@ wk.add({
 		{ "<leader>aa", "<cmd>CodeCompanionActions<CR>", desc = "[A]i [A]ctions" },
 	},
 
+	-- code map --
+	{
+		{ "<leader>m", group = "code map" },
+
+		{
+			"<leader>mo",
+			'<cmd>lua require("codewindow").open_minimap()<CR>',
+			desc = "Open minimap",
+		},
+		{
+			"<leader>mf",
+			'<cmd>lua require("codewindow").toggle_focus()<CR>',
+			desc = "Toggle minimap focus",
+		},
+		{
+			"<leader>mc",
+			'<cmd>lua require("codewindow").close_minimap()<CR>',
+			desc = "Close minimap",
+		},
+		{
+			"<leader>mm",
+			'<cmd>lua require("codewindow").toggle_minimap()<CR>',
+			desc = "Toggle minimap",
+		},
+	},
+
 	-- neo-tree --
 	{
 		group = "neo-tree",
@@ -292,10 +318,10 @@ wk.add({
 	{
 		{ "<leader>d", group = "debug" },
 
-		{ "<F6>", require("dap").continue, desc = "Debug: Continue" },
-		{ "<F7>", require("dap").step_over, desc = "Debug: Step Over" },
-		{ "<F8>", require("dap").step_into, desc = "Debug: Step Into" },
-		-- { "<F9>", require("dap").toggle_breakpoint,desc = "Debug: Toggle Breakpoint" },
+		{ "<F6>", '<cmd>lua require("dap").continue()<CR>', desc = "Debug: Continue" },
+		{ "<F7>", '<cmd>lua require("dap").step_over()<CR>', desc = "Debug: Step Over" },
+		{ "<F8>", '<cmd>lua require("dap").step_into()<CR>', desc = "Debug: Step Into" },
+		-- { "<F9>", '<cmd>lua require("dap").toggle_breakpoint()<CR>', desc = "Debug: Toggle Breakpoint" },
 		{
 			"<F9>",
 			"<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>",
@@ -306,14 +332,14 @@ wk.add({
 			"<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>",
 			desc = "Debug: Toggle Breakpoint",
 		},
-		{ "<leader>dc", require("dap").continue, desc = "Debug: Continue" },
-		{ "<leader>dj", require("dap").down, desc = "Debug: Down Frame" },
-		{ "<leader>dk", require("dap").up, desc = "Debug: Up Frame" },
-		{ "<leader>dq", require("dap").close, desc = "Debug: Quit" },
-		{ "<leader>dQ", require("dap").terminate, desc = "Debug: Terminate" },
-		{ "<leader>dp", require("dap").pause, desc = "Debug: Pause" },
-		{ "<leader>dr", require("dap").restart, desc = "Debug: Restart" },
-		{ "<leader>dx", require("dap").disconnect, desc = "Debug: Disconnect" },
+		{ "<leader>dc", '<cmd>lua require("dap").continue()<CR>', desc = "Debug: Continue" },
+		{ "<leader>dj", '<cmd>lua require("dap").down()<CR>', desc = "Debug: Down Frame" },
+		{ "<leader>dk", '<cmd>lua require("dap").up()<CR>', desc = "Debug: Up Frame" },
+		{ "<leader>dq", '<cmd>lua require("dap").close()<CR>', desc = "Debug: Quit" },
+		{ "<leader>dQ", '<cmd>lua require("dap").terminate()<CR>', desc = "Debug: Terminate" },
+		{ "<leader>dp", '<cmd>lua require("dap").pause()<CR>', desc = "Debug: Pause" },
+		{ "<leader>dr", '<cmd>lua require("dap").restart()<CR>', desc = "Debug: Restart" },
+		{ "<leader>dx", '<cmd>lua require("dap").disconnect()<CR>', desc = "Debug: Disconnect" },
 	},
 
 	-- lsp --
@@ -328,14 +354,14 @@ wk.add({
 		{ "<leader>C", desc = "[C]ode actions" },
 	},
 
-	-- substitude --
+	-- substitute --
 	{
-		{ "g", group = "substitude" },
+		{ "g", group = "substitute" },
 
-		{ "gs", require("substitute").operator, desc = "Substitude in operator mode" },
-		{ "gss", require("substitute").line, desc = "Substitude curr line" },
-		{ "gS", require("substitute").eol, desc = "Substitude to eol" },
-		{ "gs", require("substitute").visual, mode = "x", desc = "Substitude in visual mode" },
+		{ "gs", '<cmd>lua require("substitute").operator()<CR>', desc = "Substitude in operator mode" },
+		{ "gss", '<cmd>lua require("substitute").line()<CR>', desc = "Substitude curr line" },
+		{ "gS", '<cmd>lua require("substitute").eol()<CR>', desc = "Substitude to eol" },
+		{ "gs", '<cmd>lua require("substitute").visual()<CR>', mode = "x", desc = "Substitude in visual mode" },
 	},
 
 	-- spectre --

@@ -3,8 +3,8 @@ return {
 	-- quick diagnostic
 	{
 		"folke/trouble.nvim",
+		lazy = true,
 		cmd = "Trouble",
-		lazy = false,
 		config = function()
 			require("config.dev.trouble")
 		end,
@@ -13,6 +13,7 @@ return {
 	-- lua dev lib
 	{
 		"folke/lazydev.nvim",
+		lazy = true,
 		ft = "lua",
 		opts = {
 			library = {

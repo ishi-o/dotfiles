@@ -3,6 +3,7 @@ return {
 	-- outer preview
 	{
 		"iamcco/markdown-preview.nvim",
+		lazy = true,
 		cmd = {
 			"MarkdownPreviewToggle",
 			"MarkdownPreview",
@@ -20,7 +21,6 @@ return {
 	-- inner preview
 	{
 		"MeanderingProgrammer/render-markdown.nvim",
-		-- optional = true,
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
 			"ellisonleao/glow.nvim",
@@ -31,7 +31,6 @@ return {
 	},
 	{
 		"OXY2DEV/markview.nvim",
-		lazy = false,
 		optional = true,
 		dependencies = {
 			"saghen/blink.cmp",
@@ -43,6 +42,7 @@ return {
 	-- autolist --
 	{
 		"gaoDean/autolist.nvim",
+		lazy = true,
 		ft = {
 			"markdown",
 			"text",

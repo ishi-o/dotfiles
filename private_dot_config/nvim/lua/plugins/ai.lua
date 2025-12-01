@@ -3,6 +3,13 @@ return {
 	-- AI support
 	{
 		"olimorris/codecompanion.nvim",
+		lazy = true,
+		cmd = {
+			"CodeCompanion",
+			"CodeCompanionActions",
+			"CodeCompanionChat",
+			"CodeCompanionCmd",
+		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-treesitter/nvim-treesitter",
@@ -14,12 +21,10 @@ return {
 	{
 		"yetone/avante.nvim",
 		enabled = false,
+		event = "VeryLazy",
 		build = vim.fn.has("win32") ~= 0
 				and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 			or "make",
-		event = "VeryLazy",
-		version = false,
-		lazy = false,
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
 			"MunifTanjim/nui.nvim",
