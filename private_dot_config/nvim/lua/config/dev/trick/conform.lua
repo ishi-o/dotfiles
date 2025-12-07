@@ -1,3 +1,30 @@
+require("conform").setup({
+	formatters_by_ft = {
+		javascript = { "prettier" },
+		typescript = { "prettier" },
+		lua = { "stylua" },
+		markdown = { "markdownlint", "injected" },
+		-- python = { "ruff" },
+		-- python = { "autopep8" },
+		python = {
+			"ruff_fix",
+			"ruff_format",
+			"ruff_organize_imports",
+		},
+		bash = { "shfmt" },
+		go = { "goimports" },
+		sql = { "sql-formatter" },
+		c = { "clang-format" },
+		cpp = { "clang-format" },
+		-- java = { "google-java-format" },
+	},
+
+	format_on_save = {
+		timeout_ms = 2000,
+		lsp_format = "fallback",
+	},
+})
+
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*.java",
 	callback = function(args)
@@ -15,31 +42,4 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 			vim.cmd("w")
 		end, args.buf)
 	end,
-})
-
-require("conform").setup({
-	formatters_by_ft = {
-		javascript = { "prettier" },
-		typescript = { "prettier" },
-		lua = { "stylua" },
-		markdown = { "markdownlint" },
-		-- python = { "ruff" },
-		-- python = { "autopep8" },
-		python = {
-			"ruff_fix",
-			"ruff_format",
-			"ruff_organize_imports",
-		},
-		bash = { "shfmt" },
-		go = { "goimports" },
-		sql = { "sql-formatter" },
-		c = { "clang-format" },
-		cpp = { "clang-format" },
-		-- java = { "google-java-format" },
-	},
-
-	format_on_save = {
-		timeout_ms = 500,
-		lsp_format = "fallback",
-	},
 })

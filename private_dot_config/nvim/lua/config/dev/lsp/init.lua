@@ -69,3 +69,15 @@ vim.diagnostic.config({
 		prefix = "",
 	},
 })
+
+require("config.dev.lsp.config.c-cpp")
+require("config.dev.lsp.config.go")
+require("config.dev.lsp.config.java")
+require("config.dev.lsp.config.js-family")
+require("config.dev.lsp.config.lua")
+require("config.dev.lsp.config.markdown")
+require("config.dev.lsp.config.python")
+require("config.dev.lsp.config.sh")
+require("config.dev.lsp.config.sql")
+require("config.dev.lsp.config.tex")
+require("config.dev.lsp.config.xml")

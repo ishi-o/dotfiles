@@ -1,0 +1,16 @@
+{
+  "frac": {
+    "prefix": "frac",
+    "body": [
+      "\\frac{${1}}{${2}}"
+    ],
+    "description": "LaTeX fraction"
+  },
+  "sum": {
+    "prefix": "sum",
+    "body": [
+      "\\sum_{${1:i=1}}^{${2:n}}"
+    ],
+    "description": "Summation"
+  }
+}

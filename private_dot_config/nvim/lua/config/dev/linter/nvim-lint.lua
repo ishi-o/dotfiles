@@ -22,6 +22,16 @@ require("lint.linters.checkstyle").args = {
 	"-f",
 	"json",
 }
+require("lint.linters.cpplint").args = {
+	"--filter=-whitespace/tab,-whitespace/indent",
+	"--linelength=120",
+}
+require("lint.linters.markdownlint").args = {
+	"--disable",
+	"MD010",
+	"MD046",
+	"--stdin",
+}
 vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
 	callback = function()
 		lint.try_lint()

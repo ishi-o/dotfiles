@@ -11,7 +11,13 @@ M.on_attach = function(client, bufnr)
 	map("n", "<leader>C", vim.lsp.buf.code_action, { buffer = bufnr, desc = "[C]ode actions" })
 
 	if client.server_capabilities.documentSymbolProvider then
-		require("nvim-navic").attach(client, bufnr)
+		if vim.bo[bufnr].filetype == "markdown" then
+			if client.name == "marksman" then
+				require("nvim-navic").attach(client, bufnr)
+			end
+		else
+			require("nvim-navic").attach(client, bufnr)
+		end
 	end
 
 	if client:supports_method("textDocument/inlayHint") or client.name == "jdtls" then

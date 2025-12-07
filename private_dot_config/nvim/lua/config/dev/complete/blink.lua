@@ -2,13 +2,20 @@ local blink = require("blink.cmp")
 blink.setup({
 	keymap = {
 		preset = "none",
-		["<Tab>"] = { "accept", "fallback" },
+		["<C-Space>"] = {
+			"hide",
+			"show",
+		},
+		["<Tab>"] = {
+			"accept",
+			"fallback",
+		},
+		["<Enter>"] = {
+			"snippet_forward",
+			"fallback",
+		},
 		["<A-k>"] = { "select_prev", "fallback" },
 		["<A-j>"] = { "select_next", "fallback" },
-
-		-- ["<Enter>"] = { "accept", "fallback" },
-		-- ["<S-Tab>"] = { "select_prev", "fallback" },
-		-- ["<Tab>"] = { "select_next", "fallback" },
 	},
 	appearance = {
 		nerd_font_variant = "mono",
@@ -19,6 +26,13 @@ blink.setup({
 			selection = {
 				preselect = true,
 				-- auto_insert = false,
+			},
+		},
+		accept = {
+			auto_brackets = {
+				override_brackets_for_filetypes = {
+					markdown = { "", "" },
+				},
 			},
 		},
 	},
@@ -32,7 +46,7 @@ blink.setup({
 		},
 		providers = {
 			lazydev = {
-				name = "LazyDev",
+				name = "lazydev",
 				module = "lazydev.integrations.blink",
 				score_offset = 100,
 			},
@@ -40,6 +54,7 @@ blink.setup({
 	},
 	fuzzy = { implementation = "lua" },
 	cmdline = {
+		enabled = true,
 		keymap = {
 			-- preset = "inherit",
 			preset = "none",
@@ -62,4 +77,5 @@ blink.setup({
 		},
 	},
 	snippets = { preset = "default" },
+	-- snippets = { preset = "luasnip" },
 })

@@ -8,6 +8,6 @@ vim.lsp.config("lemminx", {
 		"xsd",
 		"xsl",
 		"xslt",
-		"svg" --[[ , "jproperties" ]],
+		"svg",
 	},
 })

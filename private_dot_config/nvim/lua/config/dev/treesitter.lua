@@ -10,7 +10,7 @@ require("nvim-treesitter.configs").setup({
 		"java",
 		"sql",
 		"html",
-		-- "latex",
+		"latex",
 		"typst",
 		"yaml",
 	},

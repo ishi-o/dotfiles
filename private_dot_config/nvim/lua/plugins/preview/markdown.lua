@@ -42,6 +42,7 @@ return {
 	-- autolist --
 	{
 		"gaoDean/autolist.nvim",
+		optional = false,
 		lazy = true,
 		ft = {
 			"markdown",

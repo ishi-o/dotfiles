@@ -6,7 +6,7 @@ return {
 		lazy = true,
 		cmd = "OverseerRun",
 		config = function()
-			require("config.dev.runner.tasks")
+			require("config.dev.launcher")
 		end,
 	},
 	-- dap --
@@ -14,8 +14,8 @@ return {
 	{
 		-- dap ui --
 		"rcarriga/nvim-dap-ui",
-		lazy = true,
-		cmd = { "DapContinue", "DapNew" },
+		lazy = false,
+		-- cmd = { "DapContinue", "DapNew" },
 		dependencies = {
 			-- debug core --
 			{
@@ -35,7 +35,7 @@ return {
 			},
 		},
 		config = function()
-			require("config.dev.runner.dap")
+			require("config.dev.dap")
 		end,
 	},
 }

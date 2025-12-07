@@ -37,10 +37,6 @@ return {
 	{
 		"L3MON4D3/LuaSnip",
 		optional = true,
-		dependencies = {
-			"rafamadriz/friendly-snippets",
-			"saadparwaiz1/cmp_luasnip",
-		},
 		config = function()
 			require("config.dev.complete.luasnip")
 		end,
