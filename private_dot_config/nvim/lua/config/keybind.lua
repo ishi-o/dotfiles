@@ -384,22 +384,37 @@ wk.add({
 		{ "gs", '<cmd>lua require("substitute").visual()<CR>', mode = "x", desc = "Substitude in visual mode" },
 	},
 
-	-- spectre --
+	-- grup-far or spectre --
 	{
-		{ "<leader>s", group = "spectre" },
+		{ "<leader>s", group = "search and replace" },
 
-		{ "<leader>ss", '<cmd>lua require("spectre").toggle()<CR>', desc = "Toggle Spectre" },
 		{
-			"<leader>sw",
-			'<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
-			desc = "Search current word",
+			"<leader>ss",
+			function()
+				local grug = require("grug-far")
+				local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
+				grug.open({
+					transient = true,
+					prefills = {
+						filesFilter = ext and ext ~= "" and "*." .. ext or nil,
+					},
+				})
+			end,
+			mode = { "n", "x" },
+			desc = "Search and Replace",
 		},
-		{ "<leader>sw", '<esc><cmd>lua require("spectre").open_visual()<CR>', desc = "Search current word" },
-		{
-			"<leader>sp",
-			'<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
-			desc = "Search on current file",
-		},
+		-- { "<leader>ss", '<cmd>lua require("spectre").toggle()<CR>', desc = "Toggle Spectre" },
+		-- {
+		-- 	"<leader>sw",
+		-- 	'<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
+		-- 	desc = "Search current word",
+		-- },
+		-- { "<leader>sw", '<esc><cmd>lua require("spectre").open_visual()<CR>', desc = "Search current word" },
+		-- {
+		-- 	"<leader>sp",
+		-- 	'<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
+		-- 	desc = "Search on current file",
+		-- },
 	},
 
 	-- local keybind --
