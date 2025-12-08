@@ -6,5 +6,5 @@ require("snacks").setup({
 	input = { enabled = true },
 	-- notifier = { enabled = true },
 	picker = { enabled = true },
-	-- words = { enabled = true },
+	words = { enabled = true },
 })

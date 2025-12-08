@@ -10,3 +10,5 @@ vim.g.have_nerd_font = true
 vim.g.go_fmt_autosave = 1
 vim.g.go_highlight_types = 1
 vim.g.go_imports_mode = "goimports"
+
+vim.g.loaded_matchparen = 1

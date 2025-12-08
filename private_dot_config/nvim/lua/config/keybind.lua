@@ -134,6 +134,26 @@ wk.add({
 		{ "<leader>ghtt", "<cmd>GHToggleThread<CR>", desc = "Toggle" },
 	},
 
+	-- snacks --
+	{
+		{
+			"]]",
+			function()
+				Snacks.words.jump(vim.v.count1)
+			end,
+			desc = "Next Reference",
+			mode = { "n", "t" },
+		},
+		{
+			"[[",
+			function()
+				Snacks.words.jump(-vim.v.count1)
+			end,
+			desc = "Prev Reference",
+			mode = { "n", "t" },
+		},
+	},
+
 	-- flash --
 	{
 		group = "flash",

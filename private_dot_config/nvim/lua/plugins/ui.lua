@@ -80,4 +80,15 @@ return {
 			require("scope").setup({})
 		end,
 	},
+
+	-- sentiment --
+	-- pairs highlights
+	{
+		"utilyre/sentiment.nvim",
+		event = "VeryLazy",
+		config = function()
+			-- require("config.ui.pairs")
+			require("sentiment").setup({})
+		end,
+	},
 }

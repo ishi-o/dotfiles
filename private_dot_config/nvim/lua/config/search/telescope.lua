@@ -36,7 +36,7 @@ telescope.setup({
 		path_display = { "truncate" },
 		mappings = {
 			n = {
-				["<leader>c"] = "close",
+				["q"] = "close",
 			},
 		},
 	},

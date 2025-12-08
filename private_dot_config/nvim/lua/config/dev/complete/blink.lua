@@ -28,6 +28,9 @@ blink.setup({
 				-- auto_insert = false,
 			},
 		},
+		ghost_text = {
+			enabled = true,
+		},
 		accept = {
 			auto_brackets = {
 				override_brackets_for_filetypes = {
