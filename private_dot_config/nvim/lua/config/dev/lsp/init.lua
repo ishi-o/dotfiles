@@ -4,18 +4,29 @@ require("mason-lspconfig").setup({
 		-- LSP Servers
 		"bashls",
 		"clangd",
-		-- "jdtls",
+		"cssls",
+		"dockerls",
+		"docker_compose_language_service",
+		"html",
 		"lua_ls",
-		"eslint",
+		-- "eslint",
 		"gopls",
+		-- "jdtls",
+		"jsonls",
 		"marksman",
+		"nginx_language_server",
 		-- "pyright",
+		"taplo",
+		"tinymist",
+		"ts_ls",
 		"ty",
 		"ruff",
+		"rust_analyzer",
 		"sqlls",
 		"sqls",
 		"stylua",
 		"texlab",
+		"yamlls",
 	},
 	automatic_installation = true,
 })
@@ -29,21 +40,37 @@ local other_tools = {
 	"java-debug-adapter",
 	"java-test",
 	-- Linters
-	"cpplint",
 	"checkstyle",
+	"cpplint",
+	"eslint_d",
+	"hadolint",
+	"htmlhint",
 	"golangci-lint",
+	"jsonlint",
 	"luacheck",
-	"markdownlint",
+	"markdownlint-cli2",
 	"proselint",
 	"shellcheck",
+	-- "sqruff",
+	"stylelint",
+	"yamllint",
 	-- Formatters
 	-- "autopep8",
 	-- "black",
 	"clang-format",
 	"goimports",
+	"jq",
+	"markdown-toc",
+	"nginx-config-formatter",
 	"prettier",
 	"prettierd",
+	"rustfmt",
 	"shfmt",
+	"sqlfluff",
+	-- "sql-formatter",
+	"typstyle",
+	"xmlformatter",
+	"yamlfmt",
 }
 for _, tool_name in ipairs(other_tools) do
 	local tool = registry.get_package(tool_name)
@@ -71,13 +98,20 @@ vim.diagnostic.config({
 })
 
 require("config.dev.lsp.config.c-cpp")
+require("config.dev.lsp.config.css")
+require("config.dev.lsp.config.dockerfile")
 require("config.dev.lsp.config.go")
+require("config.dev.lsp.config.html")
 require("config.dev.lsp.config.java")
 require("config.dev.lsp.config.js-family")
 require("config.dev.lsp.config.lua")
 require("config.dev.lsp.config.markdown")
+require("config.dev.lsp.config.nginx")
 require("config.dev.lsp.config.python")
+require("config.dev.lsp.config.rust")
 require("config.dev.lsp.config.sh")
 require("config.dev.lsp.config.sql")
 require("config.dev.lsp.config.tex")
+require("config.dev.lsp.config.toml")
 require("config.dev.lsp.config.xml")
+require("config.dev.lsp.config.yaml")

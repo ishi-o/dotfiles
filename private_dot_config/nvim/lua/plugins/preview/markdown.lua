@@ -50,6 +50,7 @@ return {
 			"tex",
 			"plaintex",
 			"norg",
+			"gitcommit",
 		},
 		config = function()
 			require("config.preview.markdown.autolist")
