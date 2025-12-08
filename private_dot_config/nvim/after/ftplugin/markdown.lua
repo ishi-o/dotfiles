@@ -1,3 +1,7 @@
+vim.keymap.set("i", "（", "（）<Esc>i", { buffer = true, silent = true, desc = "插入中文小括号" })
+vim.keymap.set("i", "【", "【】<Esc>i", { buffer = true, silent = true, desc = "插入中文中括号" })
+vim.keymap.set("i", "《", "《》<Esc>i", { buffer = true, silent = true, desc = "插入书名号" })
+
 vim.bo.tabstop = 2
 vim.bo.shiftwidth = 2
 vim.bo.expandtab = false

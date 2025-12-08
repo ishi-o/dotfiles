@@ -6,9 +6,6 @@ require("luasnip.loaders.from_vscode").lazy_load({
 	override_priority = 500,
 })
 require("luasnip.loaders.from_vscode").lazy_load({
-	paths = { "~/.config/nvim/snippets" },
-})
-require("luasnip.loaders.from_vscode").lazy_load({
 	paths = vim.fn.stdpath("config") .. "/snippets",
 	override_priority = 1500,
 })

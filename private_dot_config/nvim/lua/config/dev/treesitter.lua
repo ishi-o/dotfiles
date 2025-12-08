@@ -6,6 +6,7 @@ require("nvim-treesitter.configs").setup({
 		"css",
 		"diff",
 		"dockerfile",
+		"doxygen",
 		"gitattributes",
 		"gitcommit",
 		"gitignore",
