@@ -1,4 +1,3 @@
-local func = require("vim.func")
 return {
 	-- substitude --
 	-- inner substitude
