@@ -36,7 +36,7 @@ telescope.setup({
 		path_display = { "truncate" },
 		mappings = {
 			n = {
-				["<leader>c"] = "close",
+				["q"] = "close",
 			},
 		},
 	},
@@ -66,3 +66,5 @@ telescope.load_extension("fzf")
 telescope.load_extension("file_browser")
 telescope.load_extension("noice")
 telescope.load_extension("projects")
+telescope.load_extension("harpoon")
+telescope.load_extension("refactoring")

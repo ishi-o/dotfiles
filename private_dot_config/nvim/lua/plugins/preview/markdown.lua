@@ -42,6 +42,7 @@ return {
 	-- autolist --
 	{
 		"gaoDean/autolist.nvim",
+		optional = false,
 		lazy = true,
 		ft = {
 			"markdown",
@@ -49,6 +50,7 @@ return {
 			"tex",
 			"plaintex",
 			"norg",
+			"gitcommit",
 		},
 		config = function()
 			require("config.preview.markdown.autolist")

@@ -38,8 +38,36 @@ wk.add({
 		function()
 			wk.show({ global = false })
 		end,
-		mode = { "n", "x", "i", "c", "o" },
+		mode = { "n", "x", "i", "c", "o", "t" },
 		desc = "Buffer Local Keymaps",
+	},
+
+	{ "<leader>o", "<cmd>AerialToggle<cr>", desc = "Aerial (Symbols)" },
+
+	-- todo-comments --
+	{
+		{
+			"]t",
+			function()
+				require("todo-comments").jump_next()
+			end,
+			desc = "Next Todo Comment",
+		},
+		{
+			"[t",
+			function()
+				require("todo-comments").jump_prev()
+			end,
+			desc = "Previous Todo Comment",
+		},
+		{ "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "Todo (Trouble)" },
+		{
+			"<leader>xT",
+			"<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>",
+			desc = "Todo/Fix/Fixme (Trouble)",
+		},
+		{ "<leader>st", "<cmd>TodoTelescope<CR>", desc = "Todo" },
+		{ "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<CR>", desc = "Todo/Fix/Fixme" },
 	},
 
 	-- toggleterm --
@@ -90,7 +118,7 @@ wk.add({
 	{
 		group = "neo-tree",
 
-		{ "<C-h>", "<cmd>Neotree toggle<CR>", mode = { "n", "x", "i", "t" }, desc = "Toggle file tree" },
+		-- { "<C-h>", "<cmd>Neotree toggle<CR>", mode = { "n", "x", "i", "t" }, desc = "Toggle file tree" },
 	},
 
 	-- github --
@@ -132,6 +160,210 @@ wk.add({
 		{ "<leader>ghtc", "<cmd>GHCreateThread<CR>", desc = "Create" },
 		{ "<leader>ghtn", "<cmd>GHNextThread<CR>", desc = "Next" },
 		{ "<leader>ghtt", "<cmd>GHToggleThread<CR>", desc = "Toggle" },
+	},
+
+	-- snacks --
+	{
+		{
+			"<C-h>",
+			function()
+				Snacks.explorer()
+			end,
+			mode = { "n", "x", "i", "t" },
+			desc = "Toggle file explorer",
+		},
+		{
+			"]]",
+			function()
+				Snacks.words.jump(vim.v.count1)
+			end,
+			desc = "Next Reference",
+			mode = { "n", "t" },
+		},
+		{
+			"[[",
+			function()
+				Snacks.words.jump(-vim.v.count1)
+			end,
+			desc = "Prev Reference",
+			mode = { "n", "t" },
+		},
+		{
+			"[f",
+			function()
+				Snacks.scope.jump({
+					bottom = false,
+					edge = true,
+					min_size = 1,
+					cursor = false,
+					treesitter = {
+						blocks = {
+							enabled = true,
+							"function_definition",
+							"method_definition",
+							"function_declaration",
+							"method_declaration",
+						},
+					},
+				})
+			end,
+			desc = "jump to top edge of function",
+			mode = { "n" },
+		},
+		{
+			"]f",
+			function()
+				Snacks.scope.jump({
+					bottom = true,
+					edge = true,
+					min_size = 1,
+					cursor = false,
+					treesitter = {
+						blocks = {
+							enabled = true,
+							"function_definition",
+							"method_definition",
+							"function_declaration",
+							"method_declaration",
+						},
+					},
+				})
+			end,
+			desc = "jump to bottom edge of function",
+			mode = { "n" },
+		},
+		{
+			"if",
+			function()
+				Snacks.scope.textobject({
+					min_size = 2,
+					edge = false,
+					cursor = false,
+					treesitter = {
+						blocks = {
+							enabled = true,
+							"function_definition",
+							"method_definition",
+							"function_declaration",
+							"method_declaration",
+						},
+					},
+				})
+			end,
+			desc = "inner function",
+			mode = { "x", "o" },
+		},
+		{
+			"af",
+			function()
+				Snacks.scope.textobject({
+					min_size = 2,
+					cursor = false,
+					treesitter = {
+						blocks = {
+							enabled = true,
+							"function_definition",
+							"method_definition",
+							"function_declaration",
+							"method_declaration",
+						},
+					},
+				})
+			end,
+			desc = "around function",
+			mode = { "x", "o" },
+		},
+		{
+			"ic",
+			function()
+				Snacks.scope.textobject({
+					min_size = 2,
+					edge = false,
+					cursor = false,
+					treesitter = { blocks = { enabled = true, "class_definition", "class_declaration" } },
+				})
+			end,
+			desc = "inner class",
+			mode = { "x", "o" },
+		},
+		{
+			"ac",
+			function()
+				Snacks.scope.textobject({
+					min_size = 2,
+					cursor = false,
+					treesitter = { blocks = { enabled = true, "class_definition", "class_declaration" } },
+				})
+			end,
+			desc = "around class",
+			mode = { "x", "o" },
+		},
+		{
+			"it",
+			function()
+				Snacks.scope.textobject({
+					min_size = 2,
+					edge = false,
+					cursor = false,
+					treesitter = { blocks = { enabled = true, "if_statement" } },
+				})
+			end,
+			desc = "inner if-statement",
+			mode = { "x", "o" },
+		},
+		{
+			"at",
+			function()
+				Snacks.scope.textobject({
+					min_size = 2,
+					cursor = false,
+					treesitter = { blocks = { enabled = true, "if_statement" } },
+				})
+			end,
+			desc = "around if-statement",
+			mode = { "x", "o" },
+		},
+		{
+			"il",
+			function()
+				Snacks.scope.textobject({
+					min_size = 2,
+					edge = false,
+					cursor = false,
+					treesitter = {
+						blocks = {
+							enabled = true,
+							"for_statement",
+							"while_statement",
+							"do_statement",
+							"repeat_statement",
+						},
+					},
+				})
+			end,
+			desc = "inner for-loop",
+			mode = { "x", "o" },
+		},
+		{
+			"al",
+			function()
+				Snacks.scope.textobject({
+					min_size = 2,
+					cursor = false,
+					treesitter = {
+						blocks = {
+							enabled = true,
+							"for_statement",
+							"while_statement",
+							"do_statement",
+							"repeat_statement",
+						},
+					},
+				})
+			end,
+			desc = "around for-loop",
+			mode = { "x", "o" },
+		},
 	},
 
 	-- flash --
@@ -364,22 +596,37 @@ wk.add({
 		{ "gs", '<cmd>lua require("substitute").visual()<CR>', mode = "x", desc = "Substitude in visual mode" },
 	},
 
-	-- spectre --
+	-- grup-far or spectre --
 	{
-		{ "<leader>s", group = "spectre" },
+		{ "<leader>s", group = "search and replace" },
 
-		{ "<leader>ss", '<cmd>lua require("spectre").toggle()<CR>', desc = "Toggle Spectre" },
 		{
-			"<leader>sw",
-			'<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
-			desc = "Search current word",
+			"<leader>ss",
+			function()
+				local grug = require("grug-far")
+				local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
+				grug.open({
+					transient = true,
+					prefills = {
+						filesFilter = ext and ext ~= "" and "*." .. ext or nil,
+					},
+				})
+			end,
+			mode = { "n", "x" },
+			desc = "Search and Replace",
 		},
-		{ "<leader>sw", '<esc><cmd>lua require("spectre").open_visual()<CR>', desc = "Search current word" },
-		{
-			"<leader>sp",
-			'<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
-			desc = "Search on current file",
-		},
+		-- { "<leader>ss", '<cmd>lua require("spectre").toggle()<CR>', desc = "Toggle Spectre" },
+		-- {
+		-- 	"<leader>sw",
+		-- 	'<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
+		-- 	desc = "Search current word",
+		-- },
+		-- { "<leader>sw", '<esc><cmd>lua require("spectre").open_visual()<CR>', desc = "Search current word" },
+		-- {
+		-- 	"<leader>sp",
+		-- 	'<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
+		-- 	desc = "Search on current file",
+		-- },
 	},
 
 	-- local keybind --
@@ -425,6 +672,57 @@ wk.add({
 		-- exchange line --
 		{ "<A-j>", "<cmd>m+1<CR>==", desc = "Exchange currline and nextline" },
 		{ "<A-k>", "<cmd>m-2<CR>==", desc = "Exchange currline and lastline" },
+		{
+			"<A-j>",
+			function()
+				if vim.fn.mode() ~= "V" then
+					return
+				end
+				local start_line = vim.fn.line("v")
+				local end_line = vim.fn.line(".")
+				if start_line > end_line then
+					start_line, end_line = end_line, start_line
+				end
+				local num_lines = end_line - start_line + 1
+				local last_buf_line = vim.api.nvim_buf_line_count(0)
+				if end_line >= last_buf_line then
+					return
+				end
+				vim.cmd(string.format("silent %d,%dmove %d", start_line, end_line, end_line + 1))
+				local new_start_line = start_line + 1
+				local new_end_line = new_start_line + num_lines - 1
+				vim.fn.setpos("'<", { 0, new_start_line, 1, 0 })
+				vim.fn.setpos("'>", { 0, new_end_line, 2147483647, 0 })
+				vim.cmd("normal! gv")
+			end,
+			mode = "v",
+			desc = "Move selected lines down (VISUAL LINE, no clipboard)",
+		},
+		{
+			"<A-k>",
+			function()
+				if vim.fn.mode() ~= "V" then
+					return
+				end
+				local start_line = vim.fn.line("v")
+				local end_line = vim.fn.line(".")
+				if start_line > end_line then
+					start_line, end_line = end_line, start_line
+				end
+				local num_lines = end_line - start_line + 1
+				if start_line <= 1 then
+					return
+				end
+				vim.cmd(string.format("silent %d,%dmove %d", start_line, end_line, start_line - 2))
+				local new_start_line = start_line - 1
+				local new_end_line = new_start_line + num_lines - 1
+				vim.fn.setpos("'<", { 0, new_start_line, 1, 0 })
+				vim.fn.setpos("'>", { 0, new_end_line, 2147483647, 0 })
+				vim.cmd("normal! gv")
+			end,
+			mode = "v",
+			desc = "Move selected lines up (VISUAL LINE, no clipboard)",
+		},
 
 		-- copy --
 		{ "<C-c>", '"+y', mode = "x", desc = "Copy selected chars" },
