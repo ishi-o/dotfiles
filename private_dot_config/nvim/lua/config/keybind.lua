@@ -42,6 +42,8 @@ wk.add({
 		desc = "Buffer Local Keymaps",
 	},
 
+	{ "<leader>o", "<cmd>AerialToggle<cr>", desc = "Aerial (Symbols)" },
+
 	-- todo-comments --
 	{
 		{
