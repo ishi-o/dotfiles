@@ -31,7 +31,7 @@ require("conform").setup({
 		toml = { "taplo" },
 		typescript = { "prettier" },
 		typst = { "typstyle" },
-		yaml = { "yamlfmt" },
+		-- yaml = { "yamlfmt" },
 	},
 
 	format_on_save = {

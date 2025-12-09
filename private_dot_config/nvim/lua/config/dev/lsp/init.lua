@@ -70,7 +70,7 @@ local other_tools = {
 	-- "sql-formatter",
 	"typstyle",
 	"xmlformatter",
-	"yamlfmt",
+	-- "yamlfmt",
 }
 for _, tool_name in ipairs(other_tools) do
 	local tool = registry.get_package(tool_name)

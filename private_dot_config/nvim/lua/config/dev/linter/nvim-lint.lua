@@ -44,6 +44,11 @@ require("lint.linters.markdownlint-cli2").args = {
 	os.getenv("HOME") .. "/.config/markdownlint/.markdownlint-cli2.jsonc",
 	"--stdin",
 }
+require("lint.linters.yamllint").args = {
+	"--config",
+	os.getenv("HOME") .. "/.config/yaml/.yamllint.yaml",
+	"--stdin",
+}
 vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
 	callback = function()
 		lint.try_lint()
