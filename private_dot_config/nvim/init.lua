@@ -18,10 +18,13 @@ require("config.settings")
 require("lazy").setup({
 	spec = {
 		{ import = "plugins" },
-		{ import = "plugins/dev" },
+		{ import = "plugins/langservice" },
 		{ import = "plugins/preview" },
+		{ import = "plugins/enhancement" },
+		{ import = "plugins/ui" },
+		{ import = "plugins/extra" },
 	},
 })
 
 require("config.ui.colortheme")
-require("config.dev.lsp")
+require("config.langservice.lsp.init")

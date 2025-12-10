@@ -11,8 +11,21 @@ local quit = function()
 	elseif tab_count > 1 then
 		vim.cmd("tabclose")
 	else
-		vim.cmd("qa")
+		-- vim.cmd("qa")
+		-- vim.cmd("bd")
+		Snacks.dashboard()
 	end
+end
+
+local harpoon_extra_keys = {}
+for i = 1, 9 do
+	table.insert(harpoon_extra_keys, {
+		"<leader>" .. i,
+		function()
+			require("harpoon"):list():select(i)
+		end,
+		desc = "Harpoon to File " .. i,
+	})
 end
 
 wk.setup({
@@ -42,22 +55,115 @@ wk.add({
 		desc = "Buffer Local Keymaps",
 	},
 
-	{ "<leader>o", "<cmd>AerialToggle<cr>", desc = "Aerial (Symbols)" },
+	-- refactor --
+	{
+		{ "<leader>r", "", group = "refactor", mode = { "n", "x" } },
+
+		{
+			"<leader>rr",
+			'<cmd>lua require("telescope").extensions.refactoring.refactors()<CR>',
+			mode = { "n", "x" },
+		},
+		{
+			"<leader>ri",
+			'<cmd>lua require("refactoring").refactor("Inline Variable")<CR>',
+			mode = { "n", "x" },
+			desc = "Inline Variable",
+			expr = true,
+		},
+		{
+			"<leader>rb",
+			'<cmd>lua require("refactoring").refactor("Extract Block")<CR>',
+			mode = { "n", "x" },
+			desc = "Extract Block",
+			expr = true,
+		},
+		{
+			"<leader>rf",
+			'<cmd>lua require("refactoring").refactor("Extract Block To File")<CR>',
+			mode = { "n", "x" },
+			desc = "Extract Block To File",
+			expr = true,
+		},
+		{
+			"<leader>rP",
+			'<cmd>lua require("refactoring").debug.printf({ below = false })<CR>',
+			desc = "Debug Print",
+		},
+		{
+			"<leader>rp",
+			'<cmd>lua require("refactoring").debug.print_var({ normal = true })<CR>',
+			mode = { "n", "x" },
+			desc = "Debug Print Variable",
+		},
+		{
+			"<leader>rc",
+			'<cmd>lua require("refactoring").debug.cleanup({})<CR>',
+			desc = "Debug Cleanup",
+		},
+		{
+			"<leader>rf",
+			'<cmd>lua require("refactoring").refactor("Extract Function")<CR>',
+			mode = { "n", "x" },
+			desc = "Extract Function",
+			expr = true,
+		},
+		{
+			"<leader>rF",
+			'<cmd>lua require("refactoring").refactor("Extract Function To File")<CR>',
+			mode = { "n", "x" },
+			desc = "Extract Function To File",
+			expr = true,
+		},
+		{
+			"<leader>rx",
+			'<cmd>lua require("refactoring").refactor("Extract Variable")<CR>',
+			mode = { "n", "x" },
+			desc = "Extract Variable",
+			expr = true,
+		},
+		{
+			"<leader>rp",
+			'<cmd>lua require("refactoring").debug.print_var()<CR>',
+			mode = { "n", "x" },
+			desc = "Debug Print Variable",
+		},
+	},
+
+	-- pin --
+	{
+		{
+			"<leader>M",
+			'<cmd>lua require("harpoon"):list():add()<CR>',
+			desc = "Harpoon File",
+		},
+		{
+			"<leader>mp",
+			"<cmd>Telescope harpoon marks<CR>",
+			-- function()
+			-- 	local harpoon = require("harpoon")
+			-- 	harpoon.ui:toggle_quick_menu(harpoon:list())
+			-- end,
+			desc = "Harpoon Quick Menu",
+		},
+		harpoon_extra_keys,
+	},
+
+	-- outline --
+	{
+		{ "<leader>o", "<cmd>AerialToggle<cr>", desc = "Aerial (Symbols)" },
+	},
 
 	-- todo-comments --
 	{
 		{
 			"]t",
-			function()
-				require("todo-comments").jump_next()
-			end,
+			"<cmd>lua require('todo-comments').jump_next()<CR>",
 			desc = "Next Todo Comment",
 		},
 		{
 			"[t",
-			function()
-				require("todo-comments").jump_prev()
-			end,
+			"<cmd>lua require('todo-comments').jump_prev()<CR>",
 			desc = "Previous Todo Comment",
 		},
 		{ "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "Todo (Trouble)" },
@@ -78,7 +184,7 @@ wk.add({
 	},
 
 	-- autolist --
-	-- see .config/nvim/ftplugin/markdown.lua
+	-- see ~/.config/nvim/after/ftplugin/markdown.lua
 
 	-- codecompanion --
 	{
@@ -418,61 +524,45 @@ wk.add({
 
 		{
 			"<C-a>",
-			function()
-				require("dial.map").manipulate("increment", "normal")
-			end,
+			'<cmd>lua require("dial.map").manipulate("increment", "normal")<CR>',
 			desc = "Increment constants",
 		},
 		{
 			"<C-x>",
-			function()
-				require("dial.map").manipulate("decrement", "normal")
-			end,
+			'<cmd>lua require("dial.map").manipulate("decrement", "normal")<CR>',
 			desc = "Decrement constants",
 		},
 		{
 			"g<C-a>",
-			function()
-				require("dial.map").manipulate("increment", "gnormal")
-			end,
+			'<cmd>lua require("dial.map").manipulate("increment", "gnormal")<CR>',
 			desc = "Sequence Increment constants",
 		},
 		{
 			"g<C-x>",
-			function()
-				require("dial.map").manipulate("decrement", "gnormal")
-			end,
+			'<cmd>lua require("dial.map").manipulate("decrement", "gnormal")<CR>',
 			desc = "Sequence Decrement constants",
 		},
 		{
 			"<C-a>",
-			function()
-				require("dial.map").manipulate("increment", "visual")
-			end,
+			'<cmd>lua require("dial.map").manipulate("increment", "visual")<CR>',
 			mode = "x",
 			desc = "Increment constants",
 		},
 		{
 			"<C-x>",
-			function()
-				require("dial.map").manipulate("decrement", "visual")
-			end,
+			'<cmd>lua require("dial.map").manipulate("decrement", "visual")<CR>',
 			mode = "x",
 			desc = "Decrement constants",
 		},
 		{
 			"g<C-a>",
-			function()
-				require("dial.map").manipulate("increment", "gvisual")
-			end,
+			'<cmd>lua require("dial.map").manipulate("increment", "gvisual")<CR>',
 			mode = "x",
 			desc = "Sequence Increment constants",
 		},
 		{
 			"g<C-x>",
-			function()
-				require("dial.map").manipulate("decrement", "gvisual")
-			end,
+			'<cmd>lua require("dial.map").manipulate("decrement", "gvisual")<CR>',
 			mode = "x",
 			desc = "Sequence Decrement constants",
 		},
@@ -550,28 +640,45 @@ wk.add({
 	{
 		{ "<leader>d", group = "debug" },
 
-		{ "<F6>", '<cmd>lua require("dap").continue()<CR>', desc = "Debug: Continue" },
-		{ "<F7>", '<cmd>lua require("dap").step_over()<CR>', desc = "Debug: Step Over" },
-		{ "<F8>", '<cmd>lua require("dap").step_into()<CR>', desc = "Debug: Step Into" },
+		{ "<F5>", '<cmd>lua require("dap").continue()<CR>', desc = "Debug: Run / Continue" },
+		-- <S-F5>
+		{ "<F17>", '<cmd>lua require("dap").terminate()<CR>', desc = "Debug: Terminate" },
+		-- <C-S-F5>
+		{ "<F41>", '<cmd>lua require("dap").run_last()<CR>', desc = "Debug: Run last" },
+		{ "<F6>", '<cmd>lua require("dap").pause()<CR>', desc = "Debug: Pause" },
 		-- { "<F9>", '<cmd>lua require("dap").toggle_breakpoint()<CR>', desc = "Debug: Toggle Breakpoint" },
 		{
 			"<F9>",
 			"<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>",
 			desc = "Debug: Toggle Breakpoint",
 		},
+		{ "<F10>", '<cmd>lua require("dap").step_over()<CR>', desc = "Debug: Step Over" },
+		{ "<F11>", '<cmd>lua require("dap").step_into()<CR>', desc = "Debug: Step Into" },
+		-- <S-F11>
+		{ "<F23>", '<cmd>lua require("dap").step_out()<CR>', desc = "Debug: Step Out" },
 		{
 			"<leader>db",
 			"<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>",
 			desc = "Debug: Toggle Breakpoint",
 		},
-		{ "<leader>dc", '<cmd>lua require("dap").continue()<CR>', desc = "Debug: Continue" },
+		{
+			"<leader>dB",
+			"<cmd>lua require('persistent-breakpoints.api').set_conditional_breakpoint()<CR>",
+			desc = "Debug: Breakpoint Condition",
+		},
+		{ "<leader>dc", '<cmd>lua require("dap").continue()<CR>', desc = "Debug: Run / Continue" },
+		{ "<leader>dl", '<cmd>lua require("dap").run_last()<CR>', desc = "Debug: Run last" },
+		{ "<leader>dC", '<cmd>lua require("dap").run_to_cursor()<CR>', desc = "Debug: Run to cursor" },
+		{ "<leader>di", '<cmd>lua require("dap").step_into()<CR>', desc = "Debug: Step Into" },
+		{ "<leader>do", '<cmd>lua require("dap").step_over()<CR>', desc = "Debug: Step Over" },
+		{ "<leader>dO", '<cmd>lua require("dap").step_out()<CR>', desc = "Debug: Step Out" },
+		{ "<leader>dt", '<cmd>lua require("dap").terminate()<CR>', desc = "Debug: Terminate" },
+		{ "<leader>dp", '<cmd>lua require("dap").pause()<CR>', desc = "Debug: Pause" },
+		{ "<leader>dx", '<cmd>lua require("dap").disconnect()<CR>', desc = "Debug: Disconnect" },
+		{ "<leader>dq", '<cmd>lua require("dap").close()<CR>', desc = "Debug: Close REPL" },
+		{ "<leader>dr", '<cmd>lua require("dap").restart()<CR>', desc = "Debug: Restart" },
 		{ "<leader>dj", '<cmd>lua require("dap").down()<CR>', desc = "Debug: Down Frame" },
 		{ "<leader>dk", '<cmd>lua require("dap").up()<CR>', desc = "Debug: Up Frame" },
-		{ "<leader>dq", '<cmd>lua require("dap").close()<CR>', desc = "Debug: Quit" },
-		{ "<leader>dQ", '<cmd>lua require("dap").terminate()<CR>', desc = "Debug: Terminate" },
-		{ "<leader>dp", '<cmd>lua require("dap").pause()<CR>', desc = "Debug: Pause" },
-		{ "<leader>dr", '<cmd>lua require("dap").restart()<CR>', desc = "Debug: Restart" },
-		{ "<leader>dx", '<cmd>lua require("dap").disconnect()<CR>', desc = "Debug: Disconnect" },
 	},
 
 	-- lsp --
@@ -582,6 +689,7 @@ wk.add({
 		{ "gi", desc = "[G]o to [I]mplementation" },
 		{ "gr", desc = "[G]o to [R]eference" },
 		{ "K", desc = "Show documentation" },
+		{ "<F2>", desc = "[R]e[n]ame" },
 		{ "<leader>rn", desc = "[R]e[n]ame" },
 		{ "<leader>C", desc = "[C]ode actions" },
 	},
