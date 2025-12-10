@@ -55,6 +55,18 @@ wk.add({
 		desc = "Buffer Local Keymaps",
 	},
 
+	--project --
+	{
+		{ "<leader>p", "", group = "project" },
+
+		{ "<leader>pp", "<cmd>lua require'telescope'.extensions.projects.projects{}<CR>", desc = "List Projects" },
+	},
+
+	-- session --
+	{
+		{ "<leader>sl", "<cmd>AutoSession search<CR>", desc = "List Session" },
+	},
+
 	-- refactor --
 	{
 		{ "<leader>r", "", group = "refactor", mode = { "n", "x" } },
@@ -770,18 +782,29 @@ wk.add({
 		{ "<leader>n", "<cmd>BufferLineCycleNext<CR>", desc = "[N]ext Buffer" },
 
 		-- window --
-		{ "<leader>p", ":split<Space>", desc = "Horizontal Split (input filename)" },
+		{ "<leader>V", ":split<Space>", desc = "Horizontal Split (input filename)" },
 		{ "<leader>v", ":vsplit<Space>", desc = "Vertical Split (input filename)" },
+
 		{ "<leader>h", "<cmd>wincmd h<CR>", desc = "Focus on the left page" },
 		{ "<leader>j", "<cmd>wincmd j<CR>", desc = "Focus on the page below" },
 		{ "<leader>k", "<cmd>wincmd k<CR>", desc = "Focus on the page above" },
 		{ "<leader>l", "<cmd>wincmd l<CR>", desc = "Focus on the right page" },
 
+		{ "<A-h>", require("smart-splits").resize_left, desc = "Window resize left" },
+		{ "<A-j>", require("smart-splits").resize_down, desc = "Window resize down" },
+		{ "<A-k>", require("smart-splits").resize_up, desc = "Window resize up" },
+		{ "<A-l>", require("smart-splits").resize_right, desc = "Window resize right" },
+
+		{ "<leader>H", require("smart-splits").swap_buf_left, desc = "Window swap left" },
+		{ "<leader>J", require("smart-splits").swap_buf_down, desc = "Window swap down" },
+		{ "<leader>K", require("smart-splits").swap_buf_up, desc = "Window swap up" },
+		{ "<leader>L", require("smart-splits").swap_buf_right, desc = "Window swap right" },
+
 		-- exchange line --
-		{ "<A-j>", "<cmd>m+1<CR>==", desc = "Exchange currline and nextline" },
-		{ "<A-k>", "<cmd>m-2<CR>==", desc = "Exchange currline and lastline" },
+		{ "<C-j>", "<cmd>m+1<CR>==", desc = "Exchange currline and nextline" },
+		{ "<C-k>", "<cmd>m-2<CR>==", desc = "Exchange currline and lastline" },
 		{
-			"<A-j>",
+			"<C-j>",
 			function()
 				if vim.fn.mode() ~= "V" then
 					return
@@ -803,11 +826,11 @@ wk.add({
 				vim.fn.setpos("'>", { 0, new_end_line, 2147483647, 0 })
 				vim.cmd("normal! gv")
 			end,
-			mode = "v",
+			mode = "x",
 			desc = "Move selected lines down (VISUAL LINE, no clipboard)",
 		},
 		{
-			"<A-k>",
+			"<C-k>",
 			function()
 				if vim.fn.mode() ~= "V" then
 					return
@@ -828,7 +851,7 @@ wk.add({
 				vim.fn.setpos("'>", { 0, new_end_line, 2147483647, 0 })
 				vim.cmd("normal! gv")
 			end,
-			mode = "v",
+			mode = "x",
 			desc = "Move selected lines up (VISUAL LINE, no clipboard)",
 		},
 
