@@ -11,7 +11,7 @@ require("mason-lspconfig").setup({
 		"lua_ls",
 		-- "eslint",
 		"gopls",
-		-- "jdtls",
+		"jdtls",
 		"jsonls",
 		"marksman",
 		"nginx_language_server",
@@ -22,8 +22,8 @@ require("mason-lspconfig").setup({
 		"ty",
 		"ruff",
 		"rust_analyzer",
-		"sqlls",
-		"sqls",
+		-- "sqlls",
+		-- "sqls",
 		"stylua",
 		"texlab",
 		"yamlls",
@@ -81,37 +81,26 @@ for _, tool_name in ipairs(other_tools) do
 	end
 end
 
-vim.diagnostic.config({
-	virtual_text = true,
-	signs = true,
-	update_in_insert = false,
-	underline = true,
-	severity_sort = false,
-	float = {
-		focusable = false,
-		style = "minimal",
-		border = "rounded",
-		source = true,
-		header = "",
-		prefix = "",
-	},
-})
-
-require("config.langservice.lsp.config.c-cpp")
-require("config.langservice.lsp.config.css")
-require("config.langservice.lsp.config.dockerfile")
-require("config.langservice.lsp.config.go")
-require("config.langservice.lsp.config.html")
-require("config.langservice.lsp.config.java")
-require("config.langservice.lsp.config.js-family")
-require("config.langservice.lsp.config.lua")
-require("config.langservice.lsp.config.markdown")
-require("config.langservice.lsp.config.nginx")
-require("config.langservice.lsp.config.python")
-require("config.langservice.lsp.config.rust")
-require("config.langservice.lsp.config.sh")
-require("config.langservice.lsp.config.sql")
-require("config.langservice.lsp.config.tex")
-require("config.langservice.lsp.config.toml")
-require("config.langservice.lsp.config.xml")
-require("config.langservice.lsp.config.yaml")
+local confs = {
+	"c-cpp",
+	"css",
+	"dockerfile",
+	"go",
+	"html",
+	"java",
+	"js-family",
+	"lua",
+	"markdown",
+	"nginx",
+	"python",
+	"rust",
+	"sh",
+	"sql",
+	"tex",
+	"toml",
+	"xml",
+	"yaml",
+}
+for _, conf in ipairs(confs) do
+	require("config.langservice.lsp.config." .. conf)
+end

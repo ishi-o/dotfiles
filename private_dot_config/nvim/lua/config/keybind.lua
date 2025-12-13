@@ -198,6 +198,10 @@ wk.add({
 	-- autolist --
 	-- see ~/.config/nvim/after/ftplugin/markdown.lua
 
+	{
+		{ "<leader>md", "<cmd>MarkdownPreview<CR>", desc = "MarkdownPreview" },
+	},
+
 	-- codecompanion --
 	{
 		{ "<leader>a", group = "codecompanion" },
@@ -701,6 +705,27 @@ wk.add({
 		{ "gi", desc = "[G]o to [I]mplementation" },
 		{ "gr", desc = "[G]o to [R]eference" },
 		{ "K", desc = "Show documentation" },
+		{
+			"gK",
+			function()
+				local current_config = vim.diagnostic.config().virtual_lines
+				local new_config
+				if current_config == false then
+					new_config = { current_line = true }
+				else
+					new_config = false
+				end
+				vim.diagnostic.config({ virtual_lines = new_config })
+			end,
+			desc = "Toggle diagnostic (virtual lines)",
+		},
+		{
+			"gk",
+			function()
+				vim.diagnostic.open_float({ focus = true, focus_id = "diagnostic_popup" })
+			end,
+			desc = "Toggle diagnostic (float)",
+		},
 		{ "<F2>", desc = "[R]e[n]ame" },
 		{ "<leader>rn", desc = "[R]e[n]ame" },
 		{ "<leader>C", desc = "[C]ode actions" },
@@ -714,6 +739,15 @@ wk.add({
 		{ "gss", '<cmd>lua require("substitute").line()<CR>', desc = "Substitude curr line" },
 		{ "gS", '<cmd>lua require("substitute").eol()<CR>', desc = "Substitude to eol" },
 		{ "gs", '<cmd>lua require("substitute").visual()<CR>', mode = "x", desc = "Substitude in visual mode" },
+	},
+
+	-- httpclient --
+	{
+		{ "<leader>R", group = "Http Client" },
+
+		{ "<leader>Rs", desc = "Send request" },
+		{ "<leader>Ra", desc = "Send all requests" },
+		{ "<leader>Rb", desc = "Open scratchpad" },
 	},
 
 	-- grup-far or spectre --

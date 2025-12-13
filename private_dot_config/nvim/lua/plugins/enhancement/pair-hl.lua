@@ -5,8 +5,11 @@ return {
 	{
 		"utilyre/sentiment.nvim",
 		event = "VeryLazy",
+		init = function()
+			require("config.enhancement.pair-hl").setup()
+		end,
 		config = function()
-			require("config.enhancement.pair-hl")
+			require("config.enhancement.pair-hl").load_sentiment()
 		end,
 	},
 }

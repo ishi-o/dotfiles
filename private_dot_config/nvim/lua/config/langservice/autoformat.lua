@@ -1,4 +1,34 @@
-require("conform").setup({
+local fmt = require("conform")
+fmt.setup({
+	formatters = {
+		sqlfluff = {
+			args = function()
+				local filepath = vim.api.nvim_buf_get_name(0)
+				local extension = string.match(filepath, "%.(%w+)$")
+				extension = extension and string.lower(extension) or ""
+				local dialect_map = {
+					sql = "ansi",
+					mysql = "mysql",
+					psql = "postgres",
+					bigquery = "bigquery",
+				}
+				local chosen_dialect = dialect_map[extension] or "ansi"
+				return {
+					"format",
+					"--dialect=" .. chosen_dialect,
+					"-",
+				}
+			end,
+			cwd = function(self, ctx)
+				local root = require("conform.util").root_file({
+					".sqlfluff",
+					"pyproject.toml",
+					".git",
+				})(self, ctx)
+				return root or vim.fn.expand("~/.config/sqlfluff")
+			end,
+		},
+	},
 	formatters_by_ft = {
 		bash = { "shfmt" },
 		c = { "clang-format" },
@@ -16,7 +46,10 @@ require("conform").setup({
 			"markdown-toc",
 			"injected",
 		},
+		mysql = { "sqlfluff" },
 		nginx = { "nginxfmt" },
+		pgsql = { "sqlfluff" },
+		plsql = { "sqlfluff" },
 		-- python = { "ruff" },
 		-- python = { "autopep8" },
 		python = {

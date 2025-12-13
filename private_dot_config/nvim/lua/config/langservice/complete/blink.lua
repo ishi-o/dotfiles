@@ -42,6 +42,7 @@ blink.setup({
 	sources = {
 		default = {
 			"lazydev",
+			"dadbod",
 			"lsp",
 			"path",
 			"snippets",
@@ -53,8 +54,26 @@ blink.setup({
 				module = "lazydev.integrations.blink",
 				score_offset = 100,
 			},
+			dadbod = {
+				name = "Dadbod",
+				module = "vim_dadbod_completion.blink",
+			},
+			snippets = {
+				opts = {
+					friendly_snippets = true,
+					extended_filetypes = {
+						cpp = { "unreal" },
+						markdown = { "tex", "jekyll" },
+						mysql = { "sql" },
+						pgsql = { "sql" },
+						plsql = { "sql" },
+					},
+				},
+			},
 		},
 	},
+	snippets = { preset = "default" },
+	-- snippets = { preset = "luasnip" },
 	fuzzy = { implementation = "lua" },
 	cmdline = {
 		enabled = true,
@@ -63,6 +82,10 @@ blink.setup({
 			preset = "none",
 			["<S-Tab>"] = { "select_prev", "fallback" },
 			["<Tab>"] = { "show", "select_next", "fallback" },
+			["<C-Space>"] = {
+				"hide",
+				"show",
+			},
 		},
 		completion = {
 			menu = {
@@ -79,6 +102,4 @@ blink.setup({
 			},
 		},
 	},
-	snippets = { preset = "default" },
-	-- snippets = { preset = "luasnip" },
 })

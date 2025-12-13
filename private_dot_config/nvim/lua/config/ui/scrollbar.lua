@@ -33,6 +33,8 @@ require("scrollbar").setup({
 		"dapui_scopes",
 		"dapui_watches",
 		"dapui_stacks",
+
+		"dbui",
 	},
 })
 require("scrollbar.handlers.search").setup({})

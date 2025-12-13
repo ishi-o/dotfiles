@@ -14,6 +14,7 @@ return {
 				opts = {},
 				version = not vim.g.lazyvim_blink_main and "*",
 			},
+			"kristijanhusak/vim-dadbod-completion",
 		},
 		config = function()
 			require("config.langservice.complete.blink")
@@ -41,6 +42,9 @@ return {
 	{
 		"L3MON4D3/LuaSnip",
 		optional = true,
+		dependencies = {
+			"rafamadriz/friendly-snippets",
+		},
 		config = function()
 			require("config.langservice.complete.luasnip")
 		end,

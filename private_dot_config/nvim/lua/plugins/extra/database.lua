@@ -22,6 +22,7 @@ return {
 					"sql",
 					"mysql",
 					"plsql",
+					"pgsql",
 				},
 				lazy = true,
 			},
