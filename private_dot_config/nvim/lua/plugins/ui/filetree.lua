@@ -4,8 +4,8 @@ return {
 	-- 文件树
 	{
 		"nvim-neo-tree/neo-tree.nvim",
-		optional = true,
 		branch = "v3.x",
+		optional = true,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",

@@ -32,11 +32,15 @@ require("codecompanion").setup({
 						model = {
 							default = "deepseek-chat",
 						},
+						max_tokens = {
+							default = 2048,
+						},
+						temperature = {
+							default = 0.3,
+						},
 					},
 					opts = {
 						language = "Chinese",
-						-- log_level = "DEBUG",
-						temperature = 0,
 					},
 				})
 			end,
@@ -54,11 +58,12 @@ require("codecompanion").setup({
 						model = {
 							default = "deepseek-chat",
 						},
+						temperature = {
+							default = 0,
+						},
 					},
 					opts = {
 						language = "Chinese",
-						-- log_level = "DEBUG",
-						temperature = 0,
 					},
 				})
 			end,

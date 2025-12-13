@@ -4,8 +4,8 @@ return {
 	-- 代码补全
 	{
 		"saghen/blink.cmp",
-		lazy = false,
 		version = "1.*",
+		lazy = false,
 		dependencies = {
 			"rafamadriz/friendly-snippets",
 			"onsails/lspkind.nvim",
@@ -15,6 +15,7 @@ return {
 				version = not vim.g.lazyvim_blink_main and "*",
 			},
 			"kristijanhusak/vim-dadbod-completion",
+			-- "Kaiser-Yang/blink-cmp-avante",
 		},
 		config = function()
 			require("config.langservice.complete.blink")

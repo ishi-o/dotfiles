@@ -3,12 +3,17 @@ return {
 	-- lsp manager and core
 	-- lsp 管理器及其核心
 	{
-		"williamboman/mason-lspconfig.nvim",
+		"neovim/nvim-lspconfig",
 		dependencies = {
 			"williamboman/mason.nvim",
-			"neovim/nvim-lspconfig",
+			"williamboman/mason-lspconfig.nvim",
 		},
 		lazy = false,
+		opts = {
+			servers = {
+				copilot = { enabled = false },
+			},
+		},
 		config = function()
 			require("config.langservice.lsp.init")
 		end,

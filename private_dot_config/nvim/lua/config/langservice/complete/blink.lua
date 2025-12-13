@@ -47,6 +47,8 @@ blink.setup({
 			"path",
 			"snippets",
 			"buffer",
+
+			-- "avante",
 		},
 		providers = {
 			lazydev = {
@@ -69,6 +71,10 @@ blink.setup({
 						plsql = { "sql" },
 					},
 				},
+			},
+			avante = {
+				name = "Avante",
+				module = "blink-cmp-avante",
 			},
 		},
 	},

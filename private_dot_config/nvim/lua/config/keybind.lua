@@ -204,10 +204,39 @@ wk.add({
 
 	-- codecompanion --
 	{
-		{ "<leader>a", group = "codecompanion" },
+		{ "<leader>a", group = "AI" },
 
-		{ "<leader>ac", "<cmd>CodeCompanionChat<CR>", desc = "[A]i [C]hat" },
 		{ "<leader>aa", "<cmd>CodeCompanionActions<CR>", desc = "[A]i [A]ctions" },
+		{ "<leader>ac", "<cmd>CodeCompanionChat<CR>", desc = "[A]i [C]hat" },
+		{
+			"<leader>A",
+			function()
+				vim.api.nvim_feedkeys(":", "n", false)
+				vim.defer_fn(function()
+					vim.api.nvim_feedkeys("CodeCompanion ", "n", false)
+				end, 50)
+			end,
+			desc = "[A]i [A]ll",
+			mode = { "n", "x" },
+		},
+
+		-- { "<leader>aa", "<cmd>AvanteAsk<CR>", desc = "Ask Avante" },
+		-- { "<leader>ac", "<cmd>AvanteChat<CR>", desc = "Chat with Avante" },
+		-- { "<leader>ae", "<cmd>AvanteEdit<CR>", desc = "Edit Avante" },
+		-- { "<leader>af", "<cmd>AvanteFocus<CR>", desc = "Focus Avante" },
+		-- { "<leader>ah", "<cmd>AvanteHistory<CR>", desc = "Avante History" },
+		-- { "<leader>am", "<cmd>AvanteModels<CR>", desc = "Select Avante Model" },
+		-- { "<leader>an", "<cmd>AvanteChatNew<CR>", desc = "New Avante Chat" },
+		-- { "<leader>ap", "<cmd>AvanteSwitchProvider<CR>", desc = "Switch Avante Provider" },
+		-- { "<leader>ar", "<cmd>AvanteRefresh<CR>", desc = "Refresh Avante" },
+		-- { "<leader>as", "<cmd>AvanteStop<CR>", desc = "Stop Avante" },
+		-- { "<leader>at", "<cmd>AvanteToggle<CR>", desc = "Toggle Avante" },
+
+		-- {
+		-- 	"<leader>aC",
+		-- 	"<cmd>Copilot toggle<CR>",
+		-- 	desc = "Toggle Copilot connection",
+		-- },
 	},
 
 	-- code map --
@@ -806,12 +835,31 @@ wk.add({
 		{ "q<leader>", quit, desc = "Quit file" },
 
 		-- tab --
-		{ "<leader>T", ":tabnew<Space>", desc = "New[T]ab (input filename)" },
+		{
+			"<leader>T",
+			function()
+				vim.api.nvim_feedkeys(":", "n", false)
+				vim.defer_fn(function()
+					vim.api.nvim_feedkeys("tabnew ", "n", false)
+				end, 50)
+			end,
+			desc = "New[T]ab (input filename)",
+		},
+
 		{ "<leader>B", "<cmd>tabprevious<CR>", desc = "Previous tab" },
 		{ "<leader>N", "<cmd>tabnext<CR>", desc = "[N]ext tab" },
 
 		-- buffer
-		{ "<leader>t", ":edit<Space>", desc = "NewBuffer (input filename)" },
+		{
+			"<leader>t",
+			function()
+				vim.api.nvim_feedkeys(":", "n", false)
+				vim.defer_fn(function()
+					vim.api.nvim_feedkeys("edit ", "n", false)
+				end, 50)
+			end,
+			desc = "New[T]ab (input filename)",
+		},
 		{ "<leader>b", "<cmd>BufferLineCyclePrev<CR>", desc = "Previous Buffer" },
 		{ "<leader>n", "<cmd>BufferLineCycleNext<CR>", desc = "[N]ext Buffer" },
 
@@ -835,8 +883,22 @@ wk.add({
 		{ "<leader>L", require("smart-splits").swap_buf_right, desc = "Window swap right" },
 
 		-- exchange line --
-		{ "<C-j>", "<cmd>m+1<CR>==", desc = "Exchange currline and nextline" },
-		{ "<C-k>", "<cmd>m-2<CR>==", desc = "Exchange currline and lastline" },
+		{
+			"<C-j>",
+			function()
+				vim.cmd("m+" .. vim.v.count1)
+				vim.cmd("normal! ==")
+			end,
+			desc = "Exchange currline and nextline",
+		},
+		{
+			"<C-k>",
+			function()
+				vim.cmd("m-" .. (vim.v.count1 + 1))
+				vim.cmd("normal! ==")
+			end,
+			desc = "Exchange currline and lastline",
+		},
 		{
 			"<C-j>",
 			function()
@@ -853,15 +915,15 @@ wk.add({
 				if end_line >= last_buf_line then
 					return
 				end
-				vim.cmd(string.format("silent %d,%dmove %d", start_line, end_line, end_line + 1))
-				local new_start_line = start_line + 1
+				vim.cmd(string.format("silent %d,%dmove %d", start_line, end_line, end_line + vim.v.count1))
+				local new_start_line = start_line + vim.v.count1
 				local new_end_line = new_start_line + num_lines - 1
 				vim.fn.setpos("'<", { 0, new_start_line, 1, 0 })
 				vim.fn.setpos("'>", { 0, new_end_line, 2147483647, 0 })
 				vim.cmd("normal! gv")
 			end,
 			mode = "x",
-			desc = "Move selected lines down (VISUAL LINE, no clipboard)",
+			desc = "Move selected lines down (VISUAL LINE)",
 		},
 		{
 			"<C-k>",
@@ -878,15 +940,15 @@ wk.add({
 				if start_line <= 1 then
 					return
 				end
-				vim.cmd(string.format("silent %d,%dmove %d", start_line, end_line, start_line - 2))
-				local new_start_line = start_line - 1
+				vim.cmd(string.format("silent %d,%dmove %d", start_line, end_line, start_line - (vim.v.count1 + 1)))
+				local new_start_line = start_line - vim.v.count1
 				local new_end_line = new_start_line + num_lines - 1
 				vim.fn.setpos("'<", { 0, new_start_line, 1, 0 })
 				vim.fn.setpos("'>", { 0, new_end_line, 2147483647, 0 })
 				vim.cmd("normal! gv")
 			end,
 			mode = "x",
-			desc = "Move selected lines up (VISUAL LINE, no clipboard)",
+			desc = "Move selected lines up (VISUAL LINE)",
 		},
 
 		-- copy --

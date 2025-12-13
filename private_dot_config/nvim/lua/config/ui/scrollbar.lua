@@ -35,6 +35,10 @@ require("scrollbar").setup({
 		"dapui_stacks",
 
 		"dbui",
+
+		"AvanteInput",
+		"AvanteTodos",
+		"AvanteSelectedFiles",
 	},
 })
 require("scrollbar.handlers.search").setup({})
