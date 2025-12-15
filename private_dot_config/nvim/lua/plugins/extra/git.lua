@@ -76,4 +76,5 @@ return {
 			require("config.extra.git.gh")
 		end,
 	},
+	-- TODO: add octo.nvim
 }

@@ -1,0 +1,57 @@
+-- launcher --
+return {
+	-- debug --
+	{
+		{ "<F5>", '<cmd>lua require("dap").continue()<CR>', desc = "Run / Continue" },
+		-- <S-F5>
+		{ "<F17>", '<cmd>lua require("dap").terminate()<CR>', desc = "Terminate" },
+		-- <C-S-F5>
+		{ "<F41>", '<cmd>lua require("dap").run_last()<CR>', desc = "Run last" },
+		{ "<F6>", '<cmd>lua require("dap").pause()<CR>', desc = "Pause" },
+		-- { "<F9>", '<cmd>lua require("dap").toggle_breakpoint()<CR>', desc = "Toggle Breakpoint" },
+		{
+			"<F9>",
+			'<cmd>lua require("persistent-breakpoints.api").toggle_breakpoint()<CR>',
+			desc = "Toggle Breakpoint",
+		},
+		{ "<F10>", '<cmd>lua require("dap").step_over()<CR>', desc = "Step Over" },
+		{ "<F11>", '<cmd>lua require("dap").step_into()<CR>', desc = "Step Into" },
+		-- <S-F11>
+		{ "<F23>", '<cmd>lua require("dap").step_out()<CR>', desc = "Step Out" },
+
+		{
+			"<leader>db",
+			'<cmd>lua require("persistent-breakpoints.api").toggle_breakpoint()<CR>',
+			desc = "Toggle Breakpoint",
+		},
+		{
+			"<leader>dB",
+			'<cmd>lua require("persistent-breakpoints.api").set_conditional_breakpoint()<CR>',
+			desc = "Breakpoint Condition",
+		},
+		{ "<leader>dc", '<cmd>lua require("dap").continue()<CR>', desc = "Run / Continue" },
+		{ "<leader>dl", '<cmd>lua require("dap").run_last()<CR>', desc = "Run last" },
+		{ "<leader>dC", '<cmd>lua require("dap").run_to_cursor()<CR>', desc = "Run to cursor" },
+		{ "<leader>di", '<cmd>lua require("dap").step_into()<CR>', desc = "Step Into" },
+		{ "<leader>do", '<cmd>lua require("dap").step_over()<CR>', desc = "Step Over" },
+		{ "<leader>dO", '<cmd>lua require("dap").step_out()<CR>', desc = "Step Out" },
+		{ "<leader>dt", '<cmd>lua require("dap").terminate()<CR>', desc = "Terminate" },
+		{ "<leader>dp", '<cmd>lua require("dap").pause()<CR>', desc = "Pause" },
+		{ "<leader>dx", '<cmd>lua require("dap").disconnect()<CR>', desc = "Disconnect" },
+		{ "<leader>dq", '<cmd>lua require("dap").close()<CR>', desc = "Close REPL" },
+		{ "<leader>dr", '<cmd>lua require("dap").restart()<CR>', desc = "Restart" },
+		{ "<leader>dj", '<cmd>lua require("dap").down()<CR>', desc = "Down Frame" },
+		{ "<leader>dk", '<cmd>lua require("dap").up()<CR>', desc = "Up Frame" },
+	},
+
+	-- tasks --
+	{
+		{ "<F4>", "<cmd>OverseerRun Build<CR>", desc = "Build" },
+		{ "<F5>", "<cmd>OverseerRun Build & Run<CR>", desc = "Build & run" },
+
+		{ "<leader>yb", "<cmd>OverseerRun Build<CR>", desc = "Build" },
+		{ "<leader>yr", "<cmd>OverseerRun Build & Run<CR>", desc = "Build & run" },
+		{ "<leader>yy", "<cmd>OverseerToggle<CR>", desc = "Toggle: overseer panel" },
+		{ "<leader>fy", "<cmd>OverseerTaskAction<CR>", desc = "Task actions" },
+	},
+}

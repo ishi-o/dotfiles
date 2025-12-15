@@ -15,7 +15,7 @@ return {
 			},
 		},
 		config = function()
-			require("config.langservice.lsp.init")
+			require("config.langservice.lsp")
 		end,
 	},
 	-- vim-go --

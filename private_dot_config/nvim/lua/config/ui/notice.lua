@@ -28,6 +28,7 @@ require("noice").setup({
 		view = "notify",
 	},
 })
+require("telescope").load_extension("noice")
 
 require("fidget").setup({
 	progress = {

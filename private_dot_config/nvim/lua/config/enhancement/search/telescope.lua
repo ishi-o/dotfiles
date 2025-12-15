@@ -61,7 +61,5 @@ if vim.fn.filereadable(vim.fn.stdpath("data") .. "/lazy/telescope-fzf-native.nvi
 	)
 end
 
-telescope.load_extension("fzf")
-telescope.load_extension("file_browser")
-telescope.load_extension("noice")
-telescope.load_extension("projects")
+-- telescope.load_extension("fzf")
+-- telescope.load_extension("file_browser")

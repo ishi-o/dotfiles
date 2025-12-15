@@ -1,6 +1,6 @@
 return {
-	-- substitude.nvim --
-	-- inner substitude
+	-- substitute.nvim --
+	-- inner substitute
 	-- 文件内粘贴, 将 v obj p 优化为 prefix obj
 	{
 		"gbprod/substitute.nvim",
@@ -11,7 +11,7 @@ return {
 		end,
 	},
 	-- nvim-spectre --
-	-- ripgrep substitude
+	-- ripgrep substitute
 	-- 跨文件替换, 依赖 rg 命令行工具
 	{
 		"nvim-pack/nvim-spectre",
@@ -23,7 +23,7 @@ return {
 		end,
 	},
 	-- grup-far.nvim --
-	-- ripgrep substitude
+	-- ripgrep substitute
 	-- 跨文件替换, 依赖 rg 命令行工具
 	{
 		"MagicDuck/grug-far.nvim",

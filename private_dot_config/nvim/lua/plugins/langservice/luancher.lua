@@ -5,7 +5,11 @@ return {
 	{
 		"stevearc/overseer.nvim",
 		lazy = true,
-		cmd = "OverseerRun",
+		cmd = {
+			"OverseerRun",
+			"OverseerToggle",
+			"OverseerTaskAction",
+		},
 		config = function()
 			require("config.langservice.launcher")
 		end,

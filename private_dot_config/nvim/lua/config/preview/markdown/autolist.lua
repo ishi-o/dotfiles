@@ -1,23 +1,23 @@
 require("autolist").setup()
 
-require("which-key").add({
-	{
-		group = "markdown autolist",
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function(args)
+		local bufnr = args.buf
+		local map = vim.keymap.set
 
-		{ "<Tab>", "<cmd>AutolistTab<CR>", mode = "i", desc = "Tab markdown indent" },
-		{ "<S-Tab>", "<cmd>AutolistShiftTab<CR>", mode = "i", desc = "Shift Tab markdown indent" },
-		{ "<CR>", "<CR><cmd>AutolistNewBullet<CR>", mode = "i", desc = "New line with bullet" },
-		{ "o", "o<cmd>AutolistNewBullet<CR>", desc = "New line with bullet" },
-		{ "O", "O<cmd>AutolistNewBulletBefore<CR>", desc = "New line with bullet" },
-		{ "<CR>", "<cmd>AutolistToggleCheckbox<CR><CR>", desc = "New line with bullet" },
-		{ "<C-r>", "<cmd>AutolistRecalculate<CR>", desc = "Recalculate markdown list nbr" },
+		map("i", "<CR>", "<CR><cmd>AutolistNewBullet<CR>", { buffer = bufnr, desc = "New line with bullet" })
+		map("n", "o", "o<cmd>AutolistNewBullet<CR>", { buffer = bufnr, desc = "New line with bullet" })
+		map("n", "O", "O<cmd>AutolistNewBulletBefore<CR>", { buffer = bufnr, desc = "New line with bullet" })
+		map("n", "<CR>", "<cmd>AutolistToggleCheckbox<CR><CR>", { buffer = bufnr, desc = "New line with bullet" })
+		map("n", "<C-r>", "<cmd>AutolistRecalculate<CR>", { buffer = bufnr, desc = "Recalculate markdown list nbr" })
 
-		{ "<leader>cn", require("autolist").cycle_next_dr, expr = true },
-		{ "<leader>cp", require("autolist").cycle_prev_dr, expr = true },
+		map("n", "<leader>cn", require("autolist").cycle_next_dr, { buffer = bufnr, expr = true })
+		map("n", "<leader>cp", require("autolist").cycle_prev_dr, { buffer = bufnr, expr = true })
 
-		{ ">>", ">><cmd>AutolistRecalculate<CR>", desc = "Recalculate list nbr when >>" },
-		{ "<<", "<<<cmd>AutolistRecalculate<CR>", desc = "Recalculate list nbr when <<" },
-		{ "dd", "dd<cmd>AutolistRecalculate<CR>", desc = "Recalculate list nbr when dd" },
-		{ "d", "d<cmd>AutolistRecalculate<CR>", mode = "v", desc = "Recalculate list nbr when d" },
-	},
+		map("n", ">>", ">><cmd>AutolistRecalculate<CR>", { buffer = bufnr, desc = "Recalculate list nbr when >>" })
+		map("n", "<<", "<<<cmd>AutolistRecalculate<CR>", { buffer = bufnr, desc = "Recalculate list nbr when <<" })
+		map("n", "dd", "dd<cmd>AutolistRecalculate<CR>", { buffer = bufnr, desc = "Recalculate list nbr when dd" })
+		map("v", "d", "d<cmd>AutolistRecalculate<CR>", { buffer = bufnr, desc = "Recalculate list nbr when d" })
+	end,
 })

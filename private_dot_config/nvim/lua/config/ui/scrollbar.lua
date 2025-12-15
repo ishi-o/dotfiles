@@ -39,6 +39,8 @@ require("scrollbar").setup({
 		"AvanteInput",
 		"AvanteTodos",
 		"AvanteSelectedFiles",
+
+		"grug-far",
 	},
 })
 require("scrollbar.handlers.search").setup({})

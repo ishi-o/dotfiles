@@ -1,3 +1,4 @@
+-- TODO: zen mode
 require("snacks").setup({
 	bigfile = { enabled = true },
 	dashboard = { enabled = true },
@@ -7,6 +8,19 @@ require("snacks").setup({
 	notifier = { enabled = false },
 	picker = {
 		enabled = true,
+		win = {
+			input = {
+				keys = {
+					["<C-c>"] = { "cancel", mode = { "i", "n" } },
+				},
+			},
+			list = {
+				keys = {
+					["<C-c>"] = { "cancel", mode = { "i", "n" } },
+				},
+			},
+		},
+		layout = { layout = { backdrop = false } },
 		sources = {
 			explorer = {
 				layout = {

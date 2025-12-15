@@ -72,10 +72,10 @@ blink.setup({
 					},
 				},
 			},
-			avante = {
-				name = "Avante",
-				module = "blink-cmp-avante",
-			},
+			-- avante = {
+			-- 	name = "Avante",
+			-- 	module = "blink-cmp-avante",
+			-- },
 		},
 	},
 	snippets = { preset = "default" },
