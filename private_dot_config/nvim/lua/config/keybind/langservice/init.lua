@@ -1,4 +1,5 @@
 return {
+	require("config.keybind.langservice.comment"),
 	require("config.keybind.langservice.complete"),
 	require("config.keybind.langservice.diagnostic"),
 	require("config.keybind.langservice.fold"),
