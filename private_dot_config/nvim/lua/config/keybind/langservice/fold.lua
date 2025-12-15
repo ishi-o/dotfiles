@@ -1,6 +1,6 @@
 -- fold --
 return {
 	-- nvim-ufo --
-	{ "zR", require("ufo").openAllFolds },
-	{ "", "n", "zM", require("ufo").closeAllFolds },
+	{ "zR", '<cmd>lua require("ufo").openAllFolds<CR>' },
+	{ "zM", '<cmd>lua require("ufo").closeAllFolds<CR>' },
 }

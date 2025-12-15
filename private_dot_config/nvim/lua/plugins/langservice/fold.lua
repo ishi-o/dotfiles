@@ -3,6 +3,7 @@ return {
 		-- nvim-ufo --
 		-- better fold --
 		"kevinhwang91/nvim-ufo",
+		-- module = "ufo",
 		dependencies = {
 			"kevinhwang91/promise-async",
 		},

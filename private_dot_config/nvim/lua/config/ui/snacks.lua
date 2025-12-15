@@ -1,7 +1,7 @@
--- TODO: zen mode
 require("snacks").setup({
 	bigfile = { enabled = true },
 	dashboard = { enabled = true },
+	dim = { enabled = true },
 	explorer = { enabled = true },
 	indent = { enabled = true },
 	input = { enabled = true },
@@ -35,4 +35,5 @@ require("snacks").setup({
 	scope = { enabled = true },
 	scroll = { enabled = true },
 	words = { enabled = true },
+	zen = { enabled = true },
 })

@@ -1,3 +1,4 @@
+-- TODO: background color (toggleterm, trouble, which-key) --
 vim.opt.rtp:prepend(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")
 vim.opt.encoding = "utf-8"
 vim.opt.syntax = "on"
@@ -37,4 +38,4 @@ vim.opt.foldtext =
 	"v:lua.vim.fn.printf(' %s  [%d lines]', substitute(getline(v:foldstart), '\\t', repeat(' ', &tabstop), 'g'), v:foldend - v:foldstart + 1)"
 
 vim.opt.breakindent = true
-vim.opt.showbreak = "↪"
+-- vim.opt.showbreak = "↪"

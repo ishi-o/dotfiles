@@ -27,7 +27,7 @@ return {
 	{ "<leader>R", group = "Rest API (only ft=http)" },
 	{ "<leader>s", group = "Search & Replace", mode = { "n", "x" } },
 	{ "<leader>S", group = "Session" },
-	{ "<leader>u", group = "Setting" },
+	{ "<leader>u", group = "Ui settings" },
 	{ "<leader>x", group = "Diagnostics" },
 	{ "<leader>y", group = "Launchers" },
 	{ "<leader><tab>", group = "Tab" },
