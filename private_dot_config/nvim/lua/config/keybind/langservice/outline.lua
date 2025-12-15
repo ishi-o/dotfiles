@@ -1,12 +1,50 @@
 -- outline --
 return {
-	-- Aerial.nvim --
+	-- aerial.nvim --
 	{
 		{ "<leader>o", "<cmd>AerialToggle<CR>", desc = "Toggle: outline (Symbols)" },
-		{ "[s", "<cmd>" .. vim.v.count1 .. "AerialPrev<CR>", desc = "Goto: prev symbol" },
-		{ "]s", "<cmd>" .. vim.v.count1 .. "AerialNext<CR>", desc = "Goto: next symbol" },
-		{ "]S", "<cmd>" .. vim.v.count1 .. "AerialPrev<CR>", desc = "Goto: prev symbol" },
-		{ "[S", "<cmd>" .. vim.v.count1 .. "AerialNext<CR>", desc = "Goto: next symbol" },
+		{
+			"[s",
+			function()
+				vim.cmd(vim.v.count1 .. "AerialPrev")
+			end,
+			desc = "Goto: prev symbol",
+		},
+		{
+			"]s",
+			function()
+				vim.cmd(vim.v.count1 .. "AerialNext")
+			end,
+			desc = "Goto: next symbol",
+		},
+		{
+			"]S",
+			function()
+				vim.cmd(vim.v.count1 .. "AerialPrev")
+			end,
+			desc = "Goto: prev symbol",
+		},
+		{
+			"[S",
+			function()
+				vim.cmd(vim.v.count1 .. "AerialNext")
+			end,
+			desc = "Goto: next symbol",
+		},
+		{
+			"(",
+			function()
+				vim.cmd(vim.v.count1 .. "AerialPrev")
+			end,
+			desc = "Goto: prev symbol",
+		},
+		{
+			")",
+			function()
+				vim.cmd(vim.v.count1 .. "AerialNext")
+			end,
+			desc = "Goto: next symbol",
+		},
 	},
 
 	-- trouble.nvim --

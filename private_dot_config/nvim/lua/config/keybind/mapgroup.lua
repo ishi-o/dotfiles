@@ -1,5 +1,10 @@
 -- map group --
 return {
+	{ "[", group = "Prev" },
+	{ "]", group = "Next" },
+	{ "g", group = "Goto" },
+	{ "z", group = "Fold" },
+
 	{ "<leader>a", group = "AI", mode = { "n", "x" } },
 	{ "<leader>b", group = "Buffer" },
 	{ "<leader>d", group = "Debug" },
@@ -14,6 +19,7 @@ return {
 	{ "<leader>ghp", group = "Pull Request" },
 	{ "<leader>ghr", group = "Review" },
 	{ "<leader>ght", group = "Threads" },
+	{ "<leader>h", group = "Hunks" },
 	{ "<leader>m", group = "Code map" },
 	{ "<leader>p", group = "Pin" },
 	{ "<leader>P", group = "Projects" },
@@ -21,7 +27,7 @@ return {
 	{ "<leader>R", group = "Rest API (only ft=http)" },
 	{ "<leader>s", group = "Search & Replace", mode = { "n", "x" } },
 	{ "<leader>S", group = "Session" },
-	{ "<leader>u", group = "Unset" },
+	{ "<leader>u", group = "Setting" },
 	{ "<leader>x", group = "Diagnostics" },
 	{ "<leader>y", group = "Launchers" },
 	{ "<leader><tab>", group = "Tab" },
