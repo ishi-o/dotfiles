@@ -7,7 +7,7 @@ return {
 	{ "gD", desc = "Goto: declaration" },
 	{ "K", desc = "Show: documentation" },
 	{ "gK", desc = "Show: signature help" },
-	{ "gs", desc = "Show: symbols" },
+	-- { "gs", desc = "Show: symbols" },
 	{ "gai", desc = "Show: incoming calls" },
 	{ "gao", desc = "Show: outgoing calls" },
 }

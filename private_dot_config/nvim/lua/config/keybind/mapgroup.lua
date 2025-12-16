@@ -3,6 +3,7 @@ return {
 	{ "[", group = "Prev" },
 	{ "]", group = "Next" },
 	{ "g", group = "Goto" },
+	{ "gs", group = "Surround" },
 	{ "z", group = "Fold" },
 
 	{ "<leader>a", group = "AI", mode = { "n", "x" } },

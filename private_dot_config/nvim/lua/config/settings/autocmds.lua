@@ -62,3 +62,13 @@ autocmd("FileType", {
 		map("n", "<leader>cv", "<cmd>:VenvSelect<CR>", { buffer = true })
 	end,
 })
+
+autocmd("FileType", {
+	pattern = "markdown",
+	callback = function()
+		local map = vim.keymap.set
+		map("i", "（", "（）<Esc>i", { buffer = true, silent = true, desc = "Insert pair （）" })
+		map("i", "【", "【】<Esc>i", { buffer = true, silent = true, desc = "Insert pair 【】" })
+		map("i", "《", "《》<Esc>i", { buffer = true, silent = true, desc = "Insert pair 《》" })
+	end,
+})
