@@ -54,3 +54,11 @@ autocmd("FileType", {
 		map("n", "<leader>Rt", "<cmd>lua require('kulala').toggle_view()<CR>", { buffer = true })
 	end,
 })
+
+autocmd("FileType", {
+	pattern = "python",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>cv", "<cmd>:VenvSelect<CR>", { buffer = true })
+	end,
+})

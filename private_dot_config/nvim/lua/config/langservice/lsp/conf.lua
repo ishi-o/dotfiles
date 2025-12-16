@@ -15,7 +15,9 @@ M.on_attach = function(client, bufnr)
 	-- map("n", "gao", vim.lsp.buf.outgoing_calls, { buffer = bufnr })
 	map("n", "<F2>", vim.lsp.buf.rename, { buffer = bufnr })
 	map("n", "<leader>rn", vim.lsp.buf.rename, { buffer = bufnr })
+	map("n", "<leader>cr", vim.lsp.buf.rename, { buffer = bufnr })
 	map("n", "<leader>C", vim.lsp.buf.code_action, { buffer = bufnr })
+	map("n", "<leader>cc", vim.lsp.buf.code_action, { buffer = bufnr })
 
 	if client.server_capabilities.documentSymbolProvider then
 		require("nvim-navic").attach(client, bufnr)

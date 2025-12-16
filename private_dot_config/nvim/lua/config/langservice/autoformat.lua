@@ -64,6 +64,7 @@ fmt.setup({
 		toml = { "taplo" },
 		typescript = { "prettier" },
 		typst = { "typstyle" },
+		xml = { "xmlformatter" },
 		-- yaml = { "yamlfmt" },
 	},
 

@@ -9,6 +9,9 @@ return {
 		end,
 	},
 
+	-- neogen --
+	-- add document smartly
+	-- 文档型注释支持
 	{
 		"danymat/neogen",
 		lazy = true,

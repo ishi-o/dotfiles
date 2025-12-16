@@ -10,7 +10,4 @@ return {
 	{ "gs", desc = "Show: symbols" },
 	{ "gai", desc = "Show: incoming calls" },
 	{ "gao", desc = "Show: outgoing calls" },
-	{ "<F2>", desc = "Rename" },
-	{ "<leader>rn", desc = "Rename" },
-	{ "<leader>C", desc = "Code actions" },
 }

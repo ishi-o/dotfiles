@@ -1,5 +1,7 @@
 -- refactor --
 return {
+	{ "<F2>", desc = "Rename" },
+	{ "<leader>rn", desc = "Rename" },
 	{
 		"<leader>fr",
 		'<cmd>lua require("telescope").extensions.refactoring.refactors()<CR>',
