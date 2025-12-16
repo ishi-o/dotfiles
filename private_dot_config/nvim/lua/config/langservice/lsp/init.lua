@@ -95,7 +95,7 @@ local confs = {
 	"nginx",
 	"python",
 	"rust",
-	"scala",
+	-- "scala",
 	"sh",
 	"sql",
 	"tex",

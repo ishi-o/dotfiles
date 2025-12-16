@@ -60,4 +60,15 @@ return {
 	-- 	ft = "java",
 	-- 	dependencies = { "mfussenegger/nvim-dap" },
 	-- },
+	{
+		"scalameta/nvim-metals",
+		lazy = true,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		ft = { "scala", "sbt" },
+		config = function()
+			require("config.langservice.lsp.extra.scala")
+		end,
+	},
 }

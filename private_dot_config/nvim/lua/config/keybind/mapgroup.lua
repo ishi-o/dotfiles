@@ -7,6 +7,8 @@ return {
 
 	{ "<leader>a", group = "AI", mode = { "n", "x" } },
 	{ "<leader>b", group = "Buffer" },
+	{ "<leader>c", group = "Codes" },
+	{ "<leader>cm", group = "Code map" },
 	{ "<leader>d", group = "Debug" },
 	{ "<leader>D", group = "Database" },
 	{ "<leader>e", group = "File picker" },
@@ -20,7 +22,7 @@ return {
 	{ "<leader>ghr", group = "Review" },
 	{ "<leader>ght", group = "Threads" },
 	{ "<leader>h", group = "Hunks" },
-	{ "<leader>m", group = "Code map" },
+	{ "<leader>m", group = "Metals" },
 	{ "<leader>p", group = "Pin" },
 	{ "<leader>P", group = "Projects" },
 	{ "<leader>r", group = "Refactor", mode = { "n", "x" } },
