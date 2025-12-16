@@ -82,7 +82,12 @@ return {
 		"<leader>uc",
 		function()
 			local bg = vim.opt.background:get() or "light"
-			vim.opt.background = (bg == "light") and "dark" or "light"
+			if bg == "light" then
+				vim.opt.background = "dark"
+			else
+				vim.opt.background = "light"
+				vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#E8DFC8", fg = "#5C6A72" })
+			end
 			-- local bg = vim.o.background or "light"
 			-- vim.o.background = bg == "light" and "dark" or "light"
 		end,

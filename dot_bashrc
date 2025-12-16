@@ -84,6 +84,10 @@ export RUSTUP_DIST_SERVER="https://mirrors.ustc.edu.cn/rust-static"
 export RUSTUP_UPDATE_ROOT="https://mirrors.ustc.edu.cn/rust-static/rustup"
 # end rustup
 
+# coursier
+export PATH="$HOME/.local/share/coursier/bin:$PATH"
+# end coursier
+
 # mise
 eval "$(~/.local/bin/mise activate bash)"
 # end mise
