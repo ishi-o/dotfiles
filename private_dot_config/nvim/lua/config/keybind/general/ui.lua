@@ -79,6 +79,16 @@ return {
 		desc = "Toggle smooth scroll",
 	},
 	{
+		"<leader>uc",
+		function()
+			local bg = vim.opt.background:get() or "light"
+			vim.opt.background = (bg == "light") and "dark" or "light"
+			-- local bg = vim.o.background or "light"
+			-- vim.o.background = bg == "light" and "dark" or "light"
+		end,
+		desc = "Switch colorscheme (light / dark)",
+	},
+	{
 		"<leader>uC",
 		function()
 			Snacks.picker.colorschemes()

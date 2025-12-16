@@ -1,4 +1,3 @@
--- TODO: noice ui --
 require("noice").setup({
 	presets = {
 		bottom_search = true,
@@ -13,12 +12,29 @@ require("noice").setup({
 	},
 	cmdline = {
 		enabled = true,
+		opts = {
+			size = {
+				min_width = math.floor(vim.o.columns * 0.6),
+				max_width = math.floor(vim.o.columns * 0.6),
+			},
+			win_options = {
+				wrap = true,
+				linebreak = true,
+			},
+		},
 	},
 	lsp = {
 		progress = { enabled = false },
 		hover = {
-			enabled = false,
-			-- view = "notify",
+			enabled = true,
+			opts = {
+				-- win_options = {
+				-- 	winhighlight = {
+				-- 		Normal = "Normal",
+				-- 		FloatBorder = "Normal",
+				-- 	},
+				-- },
+			},
 		},
 		signature = {
 			enabled = true,
@@ -30,14 +46,3 @@ require("noice").setup({
 	},
 })
 require("telescope").load_extension("noice")
-
-require("fidget").setup({
-	progress = {
-		suppress_on_insert = true,
-		display = {
-			done_ttl = 1,
-		},
-		ignore_empty_message = true,
-		ignore_done_already = true,
-	},
-})

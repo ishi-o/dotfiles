@@ -8,11 +8,24 @@ return {
 		event = "VeryLazy",
 		dependencies = {
 			"MunifTanjim/nui.nvim",
-			"rcarriga/nvim-notify",
-			"j-hui/fidget.nvim",
+			{
+				"rcarriga/nvim-notify",
+				config = function()
+					require("config.ui.notice.notify")
+				end,
+			},
 		},
 		config = function()
-			require("config.ui.notice")
+			require("config.ui.notice.noice")
+		end,
+	},
+
+	-- fidget.nvim --
+	-- lsp load notice in the bottom right corner
+	{
+		"j-hui/fidget.nvim",
+		config = function()
+			require("config.ui.notice.fidget")
 		end,
 	},
 }

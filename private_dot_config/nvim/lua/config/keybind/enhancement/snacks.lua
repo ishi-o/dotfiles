@@ -41,9 +41,10 @@ return {
 		},
 		{
 			"<leader>n",
-			function()
-				Snacks.picker.notifications()
-			end,
+			"<cmd>Telescope noice<CR>",
+			-- function()
+			-- 	Snacks.picker.notifications()
+			-- end,
 			desc = "Notification History",
 		},
 		-- find
@@ -88,6 +89,11 @@ return {
 				Snacks.picker.recent()
 			end,
 			desc = "Recent",
+		},
+		{
+			"<leader>fn",
+			"<cmd>Telescope noice<CR>",
+			desc = "Notification History",
 		},
 		-- git
 		{
