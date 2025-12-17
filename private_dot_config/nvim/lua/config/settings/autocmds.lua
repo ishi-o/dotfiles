@@ -70,6 +70,7 @@ autocmd("FileType", {
 		map("i", "（", "（）<Esc>i", { buffer = true, silent = true, desc = "Insert pair （）" })
 		map("i", "【", "【】<Esc>i", { buffer = true, silent = true, desc = "Insert pair 【】" })
 		map("i", "《", "《》<Esc>i", { buffer = true, silent = true, desc = "Insert pair 《》" })
+		map("n", "<leader>M", "<cmd>MarkdownPreview<CR>", { buffer = true })
 	end,
 })
 
@@ -79,4 +80,20 @@ autocmd("BufReadPost", {
 		vim.cmd("CsvViewEnable display_mode=border header_lnum=1")
 	end,
 	desc = "Preprocess Csv File",
+})
+
+autocmd("FileType", {
+	pattern = "csv",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>M", "<cmd>CsvViewToggle display_mode=border header_lnum=1<CR>", { buffer = true })
+	end,
+})
+
+autocmd("FileType", {
+	pattern = "typst",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>M", "<cmd>TypstPreview<CR>", { buffer = true })
+	end,
 })
