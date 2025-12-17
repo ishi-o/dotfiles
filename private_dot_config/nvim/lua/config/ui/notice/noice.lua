@@ -26,23 +26,24 @@ require("noice").setup({
 	lsp = {
 		progress = { enabled = false },
 		hover = {
-			enabled = true,
-			opts = {
-				-- win_options = {
-				-- 	winhighlight = {
-				-- 		Normal = "Normal",
-				-- 		FloatBorder = "Normal",
-				-- 	},
-				-- },
-			},
+			enabled = false,
 		},
 		signature = {
-			enabled = true,
+			enabled = false,
 		},
 	},
 	notify = {
 		enabled = true,
 		view = "notify",
+	},
+	views = {
+		hover = {
+			border = "single",
+			position = {
+				row = 2,
+				col = 0,
+			},
+		},
 	},
 })
 require("telescope").load_extension("noice")

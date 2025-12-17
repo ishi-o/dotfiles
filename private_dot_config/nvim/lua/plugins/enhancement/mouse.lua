@@ -1,11 +1,13 @@
 return {
+	-- eagle.nvim --
+	-- mouse hover lsp/diagnostic documentatoin
 	{
 		"soulis-1256/eagle.nvim",
 		config = function()
-			require("eagle").setup({
-				keyboard_mode = true,
-			})
-			vim.keymap.set("n", "<Tab>", ":EagleWin<CR>", { noremap = true, silent = true })
+			require("config.enhancement.mouse")
 		end,
 	},
+
+	-- gesture.nvim --
+	-- if you want mouse gesture
 }

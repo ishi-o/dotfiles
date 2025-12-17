@@ -1,4 +1,3 @@
-require("gitsigns").setup()
 require("scrollbar").setup({
 	handle = { color = "#93B259", color_nr = 150 },
 	marks = {

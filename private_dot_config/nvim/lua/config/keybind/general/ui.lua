@@ -87,6 +87,7 @@ return {
 			else
 				vim.opt.background = "light"
 				vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#E8DFC8", fg = "#5C6A72" })
+				vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
 			end
 			-- local bg = vim.o.background or "light"
 			-- vim.o.background = bg == "light" and "dark" or "light"
