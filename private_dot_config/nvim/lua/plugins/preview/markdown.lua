@@ -23,6 +23,7 @@ return {
 	-- 内部即时预览
 	{
 		"MeanderingProgrammer/render-markdown.nvim",
+		optional = false,
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
 			"ellisonleao/glow.nvim",
@@ -33,15 +34,25 @@ return {
 	},
 	-- markview.nvim --
 	-- inner preview
-	-- 内部即时预览
+	-- 内部即时预览 (不好用)
 	{
 		"OXY2DEV/markview.nvim",
 		optional = true,
+		-- markview is already lazy-loaded
+		lazy = false,
 		dependencies = {
 			"saghen/blink.cmp",
 		},
 		config = function()
-			require("markview").setup({})
+			require("markview").setup({
+				preview = {
+					enable = true,
+					enable_hybrid_mode = true,
+					linewise_hybrid_mode = false,
+					hybrid_modes = { "n" },
+					filetypes = { "markdown", "quarto", "rmd", "typst", "codecompanion", "Avante" },
+				},
+			})
 		end,
 	},
 	-- autolist.nvim --

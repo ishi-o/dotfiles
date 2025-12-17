@@ -1,4 +1,3 @@
--- TODO: background color (toggleterm, trouble, which-key) --
 vim.opt.rtp:prepend(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")
 vim.opt.encoding = "utf-8"
 vim.opt.syntax = "on"
@@ -17,7 +16,9 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = false
 
-vim.opt.laststatus = 2
+-- vim.opt.laststatus = 2
+vim.opt.laststatus = 3
+
 vim.opt.clipboard = "unnamedplus"
 
 vim.opt.mouse = "a"
@@ -41,3 +42,9 @@ vim.opt.foldtext =
 
 vim.opt.breakindent = true
 -- vim.opt.showbreak = "↪"
+
+vim.opt.splitkeep = "screen"
+
+vim.opt.termguicolors = true
+vim.opt.background = "light"
+-- vim.opt.background = "dark"

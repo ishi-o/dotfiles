@@ -1,8 +1,8 @@
 -- preview --
 return {
-	-- markdown preview --
+	-- markdown / typst preview --
 	{
 		-- outer-preview --
-		{ "<leader>M", "<cmd>MarkdownPreview<CR>", desc = "MarkdownPreview" },
+		{ "<leader>M", desc = "Preview (browser)" },
 	},
 }
