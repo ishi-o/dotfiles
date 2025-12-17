@@ -108,6 +108,7 @@ require("lualine").setup({
 				"AvanteTodos",
 				"AvanteInput",
 				"AvanteSelectedFiles",
+				"toggleterm",
 			},
 		},
 	},

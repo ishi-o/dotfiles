@@ -9,11 +9,3 @@ require("csvview").setup({
 		jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
 	},
 })
-
-vim.api.nvim_create_autocmd("BufRead", {
-	pattern = "*.csv",
-	callback = function()
-		vim.cmd("CsvViewEnable display_mode=border header_lnum=1")
-	end,
-	desc = "Preprocess Csv File",
-})

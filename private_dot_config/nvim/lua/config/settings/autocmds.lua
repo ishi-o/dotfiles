@@ -72,3 +72,11 @@ autocmd("FileType", {
 		map("i", "《", "《》<Esc>i", { buffer = true, silent = true, desc = "Insert pair 《》" })
 	end,
 })
+
+autocmd("BufReadPost", {
+	pattern = "*.csv",
+	callback = function()
+		vim.cmd("CsvViewEnable display_mode=border header_lnum=1")
+	end,
+	desc = "Preprocess Csv File",
+})

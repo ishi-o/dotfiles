@@ -1,26 +1,4 @@
 require("bufferline").setup({
-	highlights = {
-		buffer_selected = { underline = true, bold = true, italic = true },
-		indicator_selected = { underline = true },
-
-		tab_selected = { underline = true },
-		tab_separator_selected = { underline = true },
-		close_button_selected = { underline = true },
-		numbers_selected = { underline = true, bold = true, italic = true },
-		diagnostic_selected = { underline = true, bold = true, italic = true },
-		hint_selected = { underline = true, bold = true, italic = true },
-		hint_diagnostic_selected = { underline = true, bold = true, italic = true },
-		info_selected = { underline = true, bold = true, italic = true },
-		info_diagnostic_selected = { underline = true, bold = true, italic = true },
-		warning_selected = { underline = true, bold = true, italic = true },
-		warning_diagnostic_selected = { underline = true, bold = true, italic = true },
-		error_selected = { underline = true, bold = true, italic = true },
-		error_diagnostic_selected = { underline = true, bold = true, italic = true },
-		modified_selected = { underline = true },
-		duplicate_selected = { underline = true, italic = true },
-		separator_selected = { underline = true },
-		pick_selected = { underline = true, bold = true, italic = true },
-	},
 	options = {
 		hover = {
 			enabled = true,
