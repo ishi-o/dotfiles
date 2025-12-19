@@ -48,6 +48,8 @@ zplug load
 
 # User configuration
 
+fpath=($HOME/.zfunc $fpath)
+
 ### START_KEYBIND
 bindkey -M viins 'jj' vi-cmd-mode
 bindkey '^ ' autosuggest-accept
@@ -83,7 +85,6 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-fpath=(/home/ishio/opt/conda3 $fpath)
 ### END_CONDA
 
 ### START_CARGO
