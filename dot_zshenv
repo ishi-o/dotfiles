@@ -1,16 +1,16 @@
-### bin
+### START_BIN
 if ! [[ "$PATH" =~ $HOME/.local/bin:$HOME/bin: ]]; then
 	PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 export PATH
-### end bin
+### END_BIN
 
-### editor
+### START_EDITOR
 export EDITOR='nvim'
 export VISUAL='nvim'
-### end editor
+### END_EDITOR
 
-### kitty
+### START_KITTY
 export DISPLAY=:0
 export GTK_IM_MODULE=fcitx5
 export QT_IM_MODULE=fcitx5
@@ -24,30 +24,30 @@ unset WAYLAND_DISPLAY
 # export IBUS_USE_SYSTEMD=0
 # ibus-daemon -drx &
 export XCURSOR_THEME="BocchiCursor"
-### end kitty
+### END_KITTY
 
-### go
+### START_GO
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go/lib:$HOME/go/work
 export GOPROXY=https://goproxy.cn,direct
 export PATH=$GOROOT/bin:$PATH
-### end go
+### END_GO
 
-### rustup
+### START_RUSTUP
 export RUSTUP_DIST_SERVER="https://mirrors.ustc.edu.cn/rust-static"
 export RUSTUP_UPDATE_ROOT="https://mirrors.ustc.edu.cn/rust-static/rustup"
-### end rustup
+### END_RUSTUP
 
-### coursier
+### START_COURSIER
 export PATH="$HOME/.local/share/coursier/bin:$PATH"
-### end coursier
+### END_COURSIER
 
 ### AI_env
 . "$HOME/.config/private/env"
-### end AI_env
+### END_AI_ENV
 
-### fcitx5
+### START_FCITX5
 if ! pgrep -x fcitx5 > /dev/null 2>&1; then
     nohup /usr/bin/fcitx5 -d > /dev/null 2>&1 &
 fi
-### end fcitx5
+### END_FCITX5
