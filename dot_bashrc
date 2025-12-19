@@ -70,7 +70,6 @@ export QT_QPA_PLATFORM=xcb
 unset WAYLAND_DISPLAY
 nohup fcitx5 -d >/dev/null 2>&1 &
 # export IBUS_USE_SYSTEMD=0
-# unset WAYLAND_DISPLAY
 # ibus-daemon -drx &
 export XCURSOR_THEME="BocchiCursor"
 # end kitty
@@ -92,8 +91,13 @@ export PATH="$HOME/.local/share/coursier/bin:$PATH"
 eval "$(~/.local/bin/mise activate bash)"
 # end mise
 
+# fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# end fzf
+
 # sdkman
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 # end sdkman
+
