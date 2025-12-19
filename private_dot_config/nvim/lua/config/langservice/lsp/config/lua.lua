@@ -9,7 +9,9 @@ vim.lsp.config("lua_ls", {
 				version = "LuaJIT",
 			},
 			diagnostics = {
-				globals = { "vim" },
+				globals = {
+					"vim",
+				},
 			},
 			workspace = {
 				library = {
@@ -28,9 +30,9 @@ vim.lsp.config("lua_ls", {
 
 require("lazydev").setup({
 	library = {
+		"lazy.nvim",
 		{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
 		{ path = "LazyVim", words = { "LazyVim" } },
 		{ path = "snacks.nvim", words = { "Snacks" } },
-		{ path = "lazy.nvim", words = { "LazyVim" } },
 	},
 })

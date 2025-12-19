@@ -89,7 +89,9 @@ require("lualine").setup({
 		section_separators = { left = "", right = "" },
 		ignore_focus = {},
 		always_divide_middle = true,
+		-- true <-> vim.opt.laststatus = 3
 		globalstatus = true,
+		-- globalstatus = false,
 		disabled_filetypes = {
 			statusline = {
 				"dap-repl",
@@ -105,6 +107,17 @@ require("lualine").setup({
 				"dapui_watches",
 				"dapui_stacks",
 				"neo-tree",
+				"AvanteTodos",
+				"AvanteInput",
+				"AvanteSelectedFiles",
+				"snacks_picker_input",
+				"snacks_picker_list",
+				"snacks_layout_box",
+				"toggleterm",
+				"trouble",
+				"aerial",
+				"snacks_terminal",
+				"grug-far",
 			},
 		},
 	},

@@ -4,10 +4,10 @@ return {
 	-- 置顶一些文件
 	{
 		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
 		lazy = true,
 		cmd = "Telescope harpoon marks",
 		module = "harpoon",
-		branch = "harpoon2",
 		config = function()
 			require("config.enhancement.pin")
 		end,

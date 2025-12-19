@@ -3,6 +3,12 @@ require("bufferline").setup({
 		hover = {
 			enabled = true,
 			delay = 200,
+			reveal = { "close" },
+		},
+
+		indicator = {
+			icon = "▌",
+			-- style = "underline",
 		},
 
 		offsets = {
@@ -11,6 +17,12 @@ require("bufferline").setup({
 				text = "Directory",
 				highlight = "Directory",
 				separator = true,
+			},
+			{
+				filetype = "snacks_layout_box",
+				-- text = "Explorer",
+				-- highlight = "Directory",
+				-- separator = true,
 			},
 		},
 
@@ -22,7 +34,10 @@ require("bufferline").setup({
 
 		show_buffer_close_icons = true,
 		show_close_icon = true,
-		separator_style = "slant",
+		-- separator_style = "slant",
+		-- separator_style = "slope",
+		separator_style = "thick",
+		-- separator_style = "thin",
 
 		-- close_command = "bdelete! %d",
 		-- right_mouse_command = "bdelete! %d",

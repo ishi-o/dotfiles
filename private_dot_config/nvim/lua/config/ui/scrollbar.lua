@@ -1,4 +1,3 @@
-require("gitsigns").setup()
 require("scrollbar").setup({
 	handle = { color = "#93B259", color_nr = 150 },
 	marks = {
@@ -33,6 +32,16 @@ require("scrollbar").setup({
 		"dapui_scopes",
 		"dapui_watches",
 		"dapui_stacks",
+
+		"dbui",
+
+		"AvanteInput",
+		"AvanteTodos",
+		"AvanteSelectedFiles",
+
+		"grug-far",
+
+		"toggleterm",
 	},
 })
 require("scrollbar.handlers.search").setup({})

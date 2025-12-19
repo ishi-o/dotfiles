@@ -1,15 +1,3 @@
-vim.o.foldcolumn = "1"
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
-vim.o.foldenable = true
-
-vim.o.fillchars = "eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:"
-vim.o.foldtext =
-	"v:lua.vim.fn.printf(' %s  [%d lines]', substitute(getline(v:foldstart), '\\t', repeat(' ', &tabstop), 'g'), v:foldend - v:foldstart + 1)"
-
-vim.keymap.set("n", "zR", require("ufo").openAllFolds)
-vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
-
 local handler = function(virtText, lnum, endLnum, width, truncate)
 	local newVirtText = {}
 	local suffix = (" 󰁂 %d "):format(endLnum - lnum)

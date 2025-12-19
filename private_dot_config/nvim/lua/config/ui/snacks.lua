@@ -1,12 +1,26 @@
 require("snacks").setup({
 	bigfile = { enabled = true },
 	dashboard = { enabled = true },
+	dim = { enabled = true },
 	explorer = { enabled = true },
 	indent = { enabled = true },
 	input = { enabled = true },
 	notifier = { enabled = false },
 	picker = {
 		enabled = true,
+		win = {
+			input = {
+				keys = {
+					["<C-c>"] = { "cancel", mode = { "i", "n" } },
+				},
+			},
+			list = {
+				keys = {
+					["<C-c>"] = { "cancel", mode = { "i", "n" } },
+				},
+			},
+		},
+		layout = { layout = { backdrop = false } },
 		sources = {
 			explorer = {
 				layout = {
@@ -21,4 +35,5 @@ require("snacks").setup({
 	scope = { enabled = true },
 	scroll = { enabled = true },
 	words = { enabled = true },
+	zen = { enabled = true },
 })

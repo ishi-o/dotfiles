@@ -1,4 +1,5 @@
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+local autocmd = vim.api.nvim_create_autocmd
+autocmd({ "BufRead", "BufNewFile" }, {
 	pattern = {
 		"*.png",
 		"*.jpg",
@@ -34,3 +35,65 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	end,
 })
 
+autocmd("FileType", {
+	pattern = "http",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>Rb", "<cmd>lua require('kulala').scratchpad()<CR>", { buffer = true })
+		map("n", "<leader>Rc", "<cmd>lua require('kulala').copy()<CR>", { buffer = true })
+		map("n", "<leader>RC", "<cmd>lua require('kulala').from_curl()<CR>", { buffer = true })
+		map("n", "<leader>Re", "<cmd>lua require('kulala').set_selected_env()<CR>", { buffer = true })
+		map("n", "<leader>Rg", "<cmd>lua require('kulala').download_graphql_schema()<CR>", { buffer = true })
+		map("n", "<leader>Ri", "<cmd>lua require('kulala').inspect()<CR>", { buffer = true })
+		map("n", "<leader>Rn", "<cmd>lua require('kulala').jump_next()<CR>", { buffer = true })
+		map("n", "<leader>Rp", "<cmd>lua require('kulala').jump_prev()<CR>", { buffer = true })
+		map("n", "<leader>Rq", "<cmd>lua require('kulala').close()<CR>", { buffer = true })
+		map("n", "<leader>Rr", "<cmd>lua require('kulala').replay()<CR>", { buffer = true })
+		map("n", "<leader>Rs", "<cmd>lua require('kulala').run()<CR>", { buffer = true })
+		map("n", "<leader>RS", "<cmd>lua require('kulala').show_stats()<CR>", { buffer = true })
+		map("n", "<leader>Rt", "<cmd>lua require('kulala').toggle_view()<CR>", { buffer = true })
+	end,
+})
+
+autocmd("FileType", {
+	pattern = "python",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>cv", "<cmd>:VenvSelect<CR>", { buffer = true })
+	end,
+})
+
+autocmd("FileType", {
+	pattern = "markdown",
+	callback = function()
+		local map = vim.keymap.set
+		map("i", "（", "（）<Esc>i", { buffer = true, silent = true, desc = "Insert pair （）" })
+		map("i", "【", "【】<Esc>i", { buffer = true, silent = true, desc = "Insert pair 【】" })
+		map("i", "《", "《》<Esc>i", { buffer = true, silent = true, desc = "Insert pair 《》" })
+		map("n", "<leader>M", "<cmd>MarkdownPreview<CR>", { buffer = true })
+	end,
+})
+
+autocmd("BufReadPost", {
+	pattern = "*.csv",
+	callback = function()
+		vim.cmd("CsvViewEnable display_mode=border header_lnum=1")
+	end,
+	desc = "Preprocess Csv File",
+})
+
+autocmd("FileType", {
+	pattern = "csv",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>M", "<cmd>CsvViewToggle display_mode=border header_lnum=1<CR>", { buffer = true })
+	end,
+})
+
+autocmd("FileType", {
+	pattern = "typst",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>M", "<cmd>TypstPreview<CR>", { buffer = true })
+	end,
+})

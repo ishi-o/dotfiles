@@ -7,6 +7,10 @@ EnumerateForwardKeys=
 EnumerateBackwardKeys=
 # Skip first input method while enumerating
 EnumerateSkipFirst=False
+# Default Previous Candidate
+PrevCandidate=
+# Default Next Candidate
+NextCandidate=
 
 [Hotkey/TriggerKeys]
 0=Shift+Shift_L
@@ -29,15 +33,9 @@ EnumerateSkipFirst=False
 0=Hangul_Romaja
 
 [Hotkey/PrevPage]
-0=Up
-
-[Hotkey/NextPage]
-0=Down
-
-[Hotkey/PrevCandidate]
 0=Shift+Tab
 
-[Hotkey/NextCandidate]
+[Hotkey/NextPage]
 0=Tab
 
 [Hotkey/TogglePreedit]

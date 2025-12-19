@@ -1,0 +1,35 @@
+[sqlfluff]
+dialect = ansi
+templater = jinja
+max_line_length = 100
+sql_file_exts = .sql,.sql.j2,.dml,.ddl
+
+[sqlfluff:layout:type:comma]
+line_position = leading
+
+[sqlfluff:layout:type:binary_operator]
+line_position = leading
+
+[sqlfluff:layout:type:comparison_operator]
+line_position = leading
+
+[sqlfluff:layout:type:join_clause]
+keyword_line_position = leading
+
+[sqlfluff:layout:type:join_on_condition]
+keyword_line_position = trailing
+
+[sqlfluff:indentation]
+indented_joins = true
+indented_on_contents = true
+indented_using_on = true
+
+[sqlfluff:layout:type:select_clause]
+spacing_after = line
+
+[sqlfluff:layout:type:from_clause]
+spacing_before = line
+
+[sqlfluff:layout:type:where_clause]
+spacing_before = line
+keyword_line_position = leading

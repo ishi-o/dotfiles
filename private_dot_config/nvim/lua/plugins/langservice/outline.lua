@@ -5,7 +5,7 @@ return {
 	{
 		"stevearc/aerial.nvim",
 		lazy = true,
-		cmd = "AerialToggle",
+		cmd = { "AerialToggle", "AerialPrev", "AerialNext" },
 		config = function()
 			require("config.langservice.outline")
 		end,

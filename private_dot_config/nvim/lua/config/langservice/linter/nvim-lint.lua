@@ -11,8 +11,11 @@ lint.linters_by_ft = {
 	javascript = { "eslint_d" },
 	javascriptreact = { "eslint_d" },
 	json = { "jsonlint" },
-	lua = { "luacheck" },
+	-- lua = { "luacheck" },
 	markdown = { "markdownlint-cli2" },
+	mysql = { "sqlfluff" },
+	pgsql = { "sqlfluff" },
+	plsql = { "sqlfluff" },
 	python = { "ruff" },
 	scss = { "stylelint" },
 	sh = { "shellcheck" },
@@ -23,32 +26,41 @@ lint.linters_by_ft = {
 	yaml = { "yamllint" },
 	zsh = { "shellcheck" },
 }
-require("lint.linters.checkstyle").args = {
+lint.linters.checkstyle.args = {
 	"-c",
 	os.getenv("HOME") .. "/.config/checkstyle/checkstyle.xml",
 	"-f",
 	"json",
 }
-require("lint.linters.cpplint").args = {
+lint.linters.cpplint.args = {
 	"--filter=-whitespace/tab,-whitespace/indent",
 	"--linelength=120",
 }
-require("lint.linters.markdownlint").args = {
+lint.linters.markdownlint.args = {
 	"--disable",
 	"MD010",
 	"MD046",
 	"--stdin",
 }
-require("lint.linters.markdownlint-cli2").args = {
+lint.linters["markdownlint-cli2"].args = {
 	"--config",
 	os.getenv("HOME") .. "/.config/markdownlint/.markdownlint-cli2.jsonc",
 	"--stdin",
 }
-require("lint.linters.yamllint").args = {
+lint.linters["yamllint"].args = {
 	"--config",
 	os.getenv("HOME") .. "/.config/yaml/.yamllint.yaml",
 	"--stdin",
 }
+lint.linters["sqlfluff"].args = {
+	"lint",
+	"--config",
+	os.getenv("HOME") .. "/.config/sqlfluff/.sqlfluff",
+	"--format",
+	"json",
+	"-",
+}
+lint.linters["sqlfluff"].stdin = true
 vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
 	callback = function()
 		lint.try_lint()

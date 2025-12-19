@@ -6,31 +6,33 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # User specific environment
+shopt -s cdspell
+
 if ! [[ "$PATH" =~ $HOME/.local/bin:$HOME/bin: ]]; then
 	PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 export PATH
 
-# nvm
+### START_NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-# end nvm
+### END_NVM
 
-# go
+### START_GO
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go/lib:$HOME/go/work
 export GOPROXY=https://goproxy.cn,direct
 export PATH=$GOROOT/bin:$PATH
-# end go
+### END_GO
 
-# alias
+### START_ALIAS
 alias vi=nvim
 alias vim=nvim
-# end alias
+### END_ALIAS
 
-shopt -s cdspell
 
+### START_CONDA
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('$HOME/opt/conda3/bin/conda' 'shell.bash' 'hook' 2>/dev/null)"
@@ -45,19 +47,17 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+### END_CONDA
 
-if [[ -n "$TMUX" ]]; then
-	echo ""
-	clear
-fi
-
+### START_AI_KEY
 source "$HOME/.config/private/env"
+### END_AI_KEY
 
-# cargo
+### START_CARGO
 . "$HOME/.cargo/env"
-# end cargo
+### END_CARGO
 
-# kitty
+### START_KITTY
 export DISPLAY=:0
 export GTK_IM_MODULE=fcitx5
 export QT_IM_MODULE=fcitx5
@@ -70,26 +70,33 @@ export QT_QPA_PLATFORM=xcb
 unset WAYLAND_DISPLAY
 nohup fcitx5 -d >/dev/null 2>&1 &
 # export IBUS_USE_SYSTEMD=0
-# unset WAYLAND_DISPLAY
 # ibus-daemon -drx &
 export XCURSOR_THEME="BocchiCursor"
-# end kitty
+### END_KITTY
 
-# brew
+### START_BREW
 eval "$("$HOME/.local/brew/bin/brew" shellenv)"
-# end brew
+### END_BREW
 
 # rustup
 export RUSTUP_DIST_SERVER="https://mirrors.ustc.edu.cn/rust-static"
 export RUSTUP_UPDATE_ROOT="https://mirrors.ustc.edu.cn/rust-static/rustup"
 # end rustup
 
-# mise
-eval "$(~/.local/bin/mise activate bash)"
-# end mise
+### START_COURSIER
+export PATH="$HOME/.local/share/coursier/bin:$PATH"
+### END_COURSIER
 
-# sdkman
+### START_MISE
+eval "$(~/.local/bin/mise activate bash)"
+### END_MISE
+
+### START_FZF
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+### END_FZF
+
+### START_SDKMAN
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-# end sdkman
+### END_SDKMAN

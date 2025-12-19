@@ -16,7 +16,12 @@ dap.listeners.before.event_exited.dapui_config = function()
 	dapui.close()
 end
 
-require("config.langservice.dap.config.c-cpp")
-require("config.langservice.dap.config.go")
-require("config.langservice.dap.config.java")
-require("config.langservice.dap.config.python")
+local confs = {
+	"c-cpp",
+	"go",
+	"java",
+	"python",
+}
+for _, conf in ipairs(confs) do
+	require("config.langservice.dap.config." .. conf)
+end

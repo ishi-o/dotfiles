@@ -1,4 +1,103 @@
+### START_ZPLUG
+source $HOME/.zplug/init.zsh
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/admin/.sdkman"
-[[ -s "/home/admin/.sdkman/bin/sdkman-init.sh" ]] && source "/home/admin/.sdkman/bin/sdkman-init.sh"
+## START_OHMYZSH
+ZSH_THEME="gozilla"
+# ZSH_THEME="simple"
+# ZSH_THEME="gnzh"
+zplug "ohmyzsh/ohmyzsh", use:"oh-my-zsh.sh", defer:0
+
+zplug "plugins/git",       from:oh-my-zsh, defer:1
+zplug "plugins/z",         from:oh-my-zsh, defer:1
+zplug "plugins/sudo",      from:oh-my-zsh, defer:1
+zplug "plugins/extract",   from:oh-my-zsh, defer:1
+zplug "plugins/fzf",       from:oh-my-zsh, defer:1
+
+VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+VI_MODE_SET_CURSOR=true
+zplug "plugins/vi-mode",   from:oh-my-zsh, defer:2
+## END_OHMYZSH
+
+## START_SYNTAX_HIGHLIGHT
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
+## END_SYNTAX_HIGHLIGHT
+
+## START_AUTOSUGGESTION
+zplug "zsh-users/zsh-autosuggestions", defer:2
+## END_AUTOSUGGESTION
+
+## START_COMPLETIONS
+zplug "zsh-users/zsh-completions", defer:2
+zplug "conda-incubator/conda-zsh-completion", defer:2
+zplug "Aloxaf/fzf-tab", defer:2
+## END_COMPLETIONS
+
+## START_ZSHVIMODE
+# ZVM_VI_INSERT_ESCAPE_BINDKEY=jj
+# zplug "jeffreytse/zsh-vi-mode", defer:2
+## END_ZSHVIMODE
+
+if ! zplug check; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+zplug load
+### END_ZPLUG
+
+# User configuration
+
+fpath=($HOME/.zfunc $fpath)
+
+### START_KEYBIND
+bindkey -M viins 'jj' vi-cmd-mode
+bindkey '^ ' autosuggest-accept
+### END_KEYBIND
+
+### START_ALIAS 
+alias vi='nvim'
+alias vim='nvim'
+### END_ALIAS
+
+# ### START_MISE
+# eval "$(~/.local/bin/mise activate bash)"
+# ### END_MISE
+
+### START_NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+### END_NVM
+
+### START_CONDA
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('$HOME/opt/conda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "$HOME/opt/conda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/opt/conda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/ishio/opt/conda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+### END_CONDA
+
+### START_CARGO
+. "$HOME/.cargo/env"
+### END_CARGO
+
+### START_BREW
+eval "$("$HOME/.local/brew/bin/brew" shellenv)"
+### END_BREW
+
+# ### START_SDKMAN
+# #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# export SDKMAN_DIR="$HOME/.sdkman"
+# [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+# ### END_SDKMAN
+autoload -Uz compinit && compinit

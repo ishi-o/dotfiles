@@ -13,4 +13,4 @@ require("nvim-tree").setup({
 	},
 })
 
-vim.keymap.set("n", "<C-g>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file tree" })
+vim.keymap.set("n", "<C-g>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle: file tree" })

@@ -3,7 +3,9 @@ return {
 	-- AI support
 	{
 		"olimorris/codecompanion.nvim",
-		lazy = true,
+		version = "v17.33.0",
+		optional = false,
+		lazy = false,
 		cmd = {
 			"CodeCompanion",
 			"CodeCompanionActions",
@@ -22,7 +24,7 @@ return {
 	-- AI support
 	{
 		"yetone/avante.nvim",
-		enabled = false,
+		optional = true,
 		event = "VeryLazy",
 		build = vim.fn.has("win32") ~= 0
 				and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
@@ -33,24 +35,22 @@ return {
 			"stevearc/dressing.nvim",
 			"folke/snacks.nvim",
 			"nvim-tree/nvim-web-devicons",
-			"zbirenbaum/copilot.lua",
-			{
-				"HakonHarnes/img-clip.nvim",
-				event = "VeryLazy",
-				opts = {
-					default = {
-						embed_image_as_base64 = false,
-						prompt_for_file_name = false,
-						drag_and_drop = {
-							insert_mode = true,
-						},
-						use_absolute_path = true,
-					},
-				},
-			},
+			"Kaiser-Yang/blink-cmp-avante",
 		},
 		config = function()
 			require("config.extra.ai.avante")
+		end,
+	},
+	-- copilot.lua --
+	-- AI support
+	{
+		"zbirenbaum/copilot.lua",
+		optional = true,
+		cmd = "Copilot",
+		build = ":Copilot auth",
+		event = "BufReadPost",
+		config = function()
+			require("config.extra.ai.copilot")
 		end,
 	},
 }

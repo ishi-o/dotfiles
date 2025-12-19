@@ -9,3 +9,4 @@ require("project_nvim").setup({
 		"CMakeLists.txt",
 	},
 })
+require("telescope").load_extension("projects")
