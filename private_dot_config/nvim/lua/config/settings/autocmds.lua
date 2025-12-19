@@ -97,3 +97,13 @@ autocmd("FileType", {
 		map("n", "<leader>M", "<cmd>TypstPreview<CR>", { buffer = true })
 	end,
 })
+
+autocmd("BufWrite", {
+	pattern = "*.java",
+	callback = function()
+		vim.lsp.buf.code_action({
+			context = { only = { "source.organizeImports" } },
+			apply = true,
+		})
+	end,
+})

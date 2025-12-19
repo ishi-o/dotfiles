@@ -19,7 +19,7 @@ end
 local confs = {
 	"c-cpp",
 	"go",
-	"java",
+	-- "java",
 	"python",
 }
 for _, conf in ipairs(confs) do

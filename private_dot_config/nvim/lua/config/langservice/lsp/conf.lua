@@ -13,7 +13,7 @@ M.on_attach = function(client, bufnr)
 			border = "single",
 		})
 	end, { buffer = bufnr })
-	map("n", "gk", function()
+	map("n", "gK", function()
 		vim.lsp.buf.signature_help({
 			border = "single",
 		})

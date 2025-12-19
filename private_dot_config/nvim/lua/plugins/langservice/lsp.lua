@@ -25,6 +25,11 @@ return {
 		"fatih/vim-go",
 		lazy = true,
 		ft = "go",
+		init = function()
+			vim.g.go_fmt_autosave = 1
+			vim.g.go_highlight_types = 1
+			vim.g.go_imports_mode = "goimports"
+		end,
 	},
 	-- schemastore.nvim --
 	-- json / yaml schema
@@ -33,11 +38,6 @@ return {
 		"b0o/schemastore.nvim",
 		lazy = true,
 		ft = { "json", "yaml" },
-		init = function()
-			vim.g.go_fmt_autosave = 1
-			vim.g.go_highlight_types = 1
-			vim.g.go_imports_mode = "goimports"
-		end,
 	},
 	-- lazydev.nvim --
 	-- lua dev lib
@@ -49,9 +49,14 @@ return {
 	},
 	---- nvim-java --
 	---- 较重的 java lsp 集成
-	-- {
-	-- 	"nvim-java/nvim-java",
-	-- },
+	{
+		"nvim-java/nvim-java",
+		lazy = true,
+		ft = "java",
+		config = function()
+			require("config.langservice.lsp.extra.java")
+		end,
+	},
 	---- nvim-jdtls --
 	---- 较轻的 java lsp 集成
 	-- {
