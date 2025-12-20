@@ -34,7 +34,7 @@ fmt.setup({
 		c = { "clang-format" },
 		cpp = { "clang-format" },
 		css = { "prettier" },
-		go = { "goimports" },
+		go = { "goimports", "gofumpt" },
 		html = { "prettier" },
 		-- java = { "google-java-format" },
 		javascript = { "prettier" },

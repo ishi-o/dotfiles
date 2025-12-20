@@ -35,9 +35,7 @@ M.on_attach = function(client, bufnr)
 		require("nvim-navic").attach(client, bufnr)
 	end
 
-	-- if client:supports_method("textDocument/inlayHint") or client.name == "jdtls" then
-	-- FIX: see ~/.config/nvim/lua/config/langservice/lsp/extra/java.lua
-	if client:supports_method("textDocument/inlayHint") then
+	if client:supports_method("textDocument/inlayHint") or client.name == "jdtls" then
 		vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 	end
 

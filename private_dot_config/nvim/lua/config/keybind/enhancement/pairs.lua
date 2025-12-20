@@ -5,8 +5,8 @@ return {
 		{ "gsf", desc = "Find Right Surrounding" },
 		{ "gsF", desc = "Find Left Surrounding" },
 		{ "gsh", desc = "Highlight Surrounding" },
-		{ "gsr", require("mini.surround").mappings.replace, desc = "Replace Surrounding" },
-		{ "gsn", require("mini.surround").mappings.update_n_lines, desc = "Update `MiniSurround.config.n_lines`" },
+		{ "gsr", desc = "Replace Surrounding" },
+		{ "gsn", desc = "Update `MiniSurround.config.n_lines`" },
 	},
 
 	{

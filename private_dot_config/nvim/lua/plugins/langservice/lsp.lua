@@ -18,12 +18,12 @@ return {
 			require("config.langservice.lsp")
 		end,
 	},
-	-- TODO: remove vim-go --
 	-- vim-go --
 	-- go integration
 	-- go lsp 集成
 	{
 		"fatih/vim-go",
+		optional = true,
 		lazy = true,
 		ft = "go",
 		init = function()

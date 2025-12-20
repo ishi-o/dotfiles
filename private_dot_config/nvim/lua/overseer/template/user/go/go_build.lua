@@ -1,12 +1,11 @@
--- TODO: go tasks
 return {
-	name = "BuildRun",
+	name = "Build",
 	builder = function()
 		return {
 			cmd = "go",
-			args = { "run", vim.fn.expand("%:p") },
+			args = { "build" },
 			components = {
-				"open_output",
+				"on_complete_notify",
 				"default",
 			},
 		}

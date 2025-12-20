@@ -59,7 +59,10 @@ local other_tools = {
 	-- "autopep8",
 	-- "black",
 	"clang-format",
+	"gofumpt",
 	"goimports",
+	"gomodifytags",
+	"impl", -- go: generates method stubs for implementing an interface
 	"jq",
 	"markdown-toc",
 	"nginx-config-formatter",
