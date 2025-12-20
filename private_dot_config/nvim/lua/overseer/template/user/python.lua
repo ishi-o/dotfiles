@@ -1,5 +1,5 @@
 return {
-	name = "Run Python",
+	name = "BuildRun",
 	builder = function()
 		return {
 			cmd = "python",

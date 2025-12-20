@@ -107,3 +107,11 @@ autocmd("BufWrite", {
 		})
 	end,
 })
+
+autocmd("FileType", {
+	pattern = "java",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>yr", "<cmd>JavaRunnerRunMain<CR>", { buffer = true })
+	end,
+})

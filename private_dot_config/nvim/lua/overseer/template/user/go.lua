@@ -1,5 +1,6 @@
+-- TODO: go tasks
 return {
-	name = "Run Go",
+	name = "BuildRun",
 	builder = function()
 		return {
 			cmd = "go",

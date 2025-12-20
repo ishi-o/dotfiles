@@ -5,8 +5,8 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
-			"williamboman/mason.nvim",
-			"williamboman/mason-lspconfig.nvim",
+			"mason-org/mason.nvim",
+			"mason-org/mason-lspconfig.nvim",
 		},
 		lazy = false,
 		opts = {
@@ -18,6 +18,7 @@ return {
 			require("config.langservice.lsp")
 		end,
 	},
+	-- TODO: remove vim-go --
 	-- vim-go --
 	-- go integration
 	-- go lsp 集成

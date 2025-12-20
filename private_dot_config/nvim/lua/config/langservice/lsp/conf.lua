@@ -13,6 +13,10 @@ M.on_attach = function(client, bufnr)
 			border = "single",
 		})
 	end, { buffer = bufnr })
+	-- FIX: signature_help with wrong highlight
+	-- use gK to popup signature_help
+	-- however, LspSignatureActiveParameter link to Search
+	-- bg color is covered by another bg (possibly markdown)
 	map("n", "gK", function()
 		vim.lsp.buf.signature_help({
 			border = "single",
@@ -31,7 +35,9 @@ M.on_attach = function(client, bufnr)
 		require("nvim-navic").attach(client, bufnr)
 	end
 
-	if client:supports_method("textDocument/inlayHint") or client.name == "jdtls" then
+	-- if client:supports_method("textDocument/inlayHint") or client.name == "jdtls" then
+	-- FIX: see ~/.config/nvim/lua/config/langservice/lsp/extra/java.lua
+	if client:supports_method("textDocument/inlayHint") then
 		vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 	end
 

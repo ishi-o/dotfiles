@@ -39,6 +39,13 @@ blink.setup({
 			},
 		},
 	},
+	signature = {
+		enabled = true,
+		window = {
+			border = "single",
+			winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
+		},
+	},
 	sources = {
 		default = {
 			"lazydev",

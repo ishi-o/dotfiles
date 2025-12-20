@@ -1,5 +1,5 @@
 return {
-	name = "Run C/Cpp",
+	name = "Run",
 	builder = function()
 		local file_name = vim.fn.expand("%:t:r")
 		local build_dir = "./build/"
