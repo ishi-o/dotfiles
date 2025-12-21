@@ -52,20 +52,30 @@ return {
 	---- 较重的 java lsp 集成
 	{
 		"nvim-java/nvim-java",
+		optional = false,
+		version = "4.0.0",
 		lazy = true,
-		ft = "java",
+		ft = { "java", "jproperties", "yaml", "yml" },
 		config = function()
 			require("config.langservice.lsp.extra.java")
 		end,
 	},
-	---- nvim-jdtls --
-	---- 较轻的 java lsp 集成
-	-- {
-	-- 	"mfussenegger/nvim-jdtls",
-	-- 	optional = true,
-	-- 	ft = "java",
-	-- 	dependencies = { "mfussenegger/nvim-dap" },
-	-- },
+	-- nvim-jdtls --
+	-- 较轻的 java lsp 集成
+	{
+		"mfussenegger/nvim-jdtls",
+		optional = true,
+		enabled = false,
+		ft = { "java", "jproperties", "yaml", "yml" },
+		dependencies = {
+			"mfussenegger/nvim-dap",
+		},
+		config = function()
+			require("config.langservice.lsp.extra.jdtls")
+		end,
+	},
+	-- nvim-metals --
+	-- scala
 	{
 		"scalameta/nvim-metals",
 		lazy = true,
