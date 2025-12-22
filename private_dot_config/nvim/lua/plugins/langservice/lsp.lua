@@ -53,7 +53,6 @@ return {
 	{
 		"nvim-java/nvim-java",
 		optional = false,
-		version = "4.0.0",
 		lazy = true,
 		ft = { "java", "jproperties", "yaml", "yml" },
 		config = function()
