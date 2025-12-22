@@ -15,9 +15,15 @@ vim.lsp.config("jdtls", {
 -- > either a result or an error must be sent to the server in response
 -- However, it caused an issue where the spring-boot LS could not start normally
 -- see https://github.com/nvim-java/nvim-java/issues/399#issuecomment-3678627120
-local f = vim.lsp.handlers["workspace/executeClientCommand"]
-vim.lsp.handlers["workspace/executeClientCommand"] = function(err, result, ctx, config)
-	f(err, result, ctx, config)
-	return true
+--     https://github.com/nvim-java/nvim-java/issues/399#issuecomment-3678667874
+local orig_handler = vim.lsp.handlers["workspace/executeClientCommand"]
+vim.lsp.handlers["workspace/executeClientCommand"] = function(...)
+	local _, params, ctx, _ = ...
+	local client = vim.lsp.get_client_by_id(ctx.client_id)
+	if client and params.command == "editor.action.triggerParameterHints" and client.name == "jdtls" then
+		vim.lsp.buf.signature_help()
+		return true
+	end
+	return orig_handler(...)
 end
 vim.lsp.enable("jdtls")

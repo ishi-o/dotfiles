@@ -6,7 +6,13 @@ function M.setup()
 			current_line = true,
 		},
 		-- virtual_lines = true,
-		virtual_text = false,
+		virtual_text = {
+			enabled = true,
+			-- format = function(diagnostic)
+			-- 	local message = diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
+			-- 	return message
+			-- end,
+		},
 		signs = true,
 		update_in_insert = false,
 		underline = true,
