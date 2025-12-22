@@ -24,6 +24,7 @@ require("scrollbar").setup({
 		"TelescopePrompt",
 		"snacks_picker_list",
 		"snacks_picker_input",
+		"snacks_input",
 		"snacks_dashboard",
 
 		"dap-repl",
@@ -42,6 +43,8 @@ require("scrollbar").setup({
 		"grug-far",
 
 		"toggleterm",
+
+		"OverseerList",
 	},
 })
 require("scrollbar.handlers.search").setup({})

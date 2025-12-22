@@ -34,7 +34,7 @@ fmt.setup({
 		c = { "clang-format" },
 		cpp = { "clang-format" },
 		css = { "prettier" },
-		go = { "goimports" },
+		go = { "goimports", "gofumpt" },
 		html = { "prettier" },
 		-- java = { "google-java-format" },
 		javascript = { "prettier" },
@@ -72,23 +72,4 @@ fmt.setup({
 		timeout_ms = 2000,
 		lsp_format = "fallback",
 	},
-})
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*.java",
-	callback = function(args)
-		local clients = vim.lsp.get_clients({ name = "jdtls", bufnr = args.buf })
-		if #clients == 0 then
-			return
-		end
-
-		local client = clients[1]
-		local params = {
-			command = "java.edit.organizeImports",
-			arguments = { vim.uri_from_bufnr(args.buf) },
-		}
-		client:request("workspace/executeCommand", params, function(err, result)
-			vim.cmd("w")
-		end, args.buf)
-	end,
 })

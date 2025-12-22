@@ -1,10 +1,9 @@
-require("overseer").setup({
+local overseer = require("overseer")
+overseer.setup({
 	templates = {
 		"builtin",
-		"user.cpp_build",
-		"user.cpp_run",
-		"user.cpp_build-run",
-		"user.java",
+		"user.cpp.cpp",
+		"user.java.java",
 		"user.go",
 	},
 })

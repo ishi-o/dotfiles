@@ -97,3 +97,56 @@ autocmd("FileType", {
 		map("n", "<leader>M", "<cmd>TypstPreview<CR>", { buffer = true })
 	end,
 })
+
+autocmd("BufWrite", {
+	pattern = "*.java",
+	callback = function()
+		vim.lsp.buf.code_action({
+			context = { only = { "source.organizeImports" } },
+			apply = true,
+		})
+	end,
+})
+
+autocmd("FileType", {
+	pattern = "java",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>yr", "<cmd>JavaRunnerRunMain<CR>", { buffer = true })
+	end,
+})
+
+autocmd("FileType", {
+	pattern = "go",
+	callback = function()
+		local map = vim.keymap.set
+		map("n", "<leader>ci", function()
+			local inputs = {}
+			local function ask(prompt, default, callback)
+				vim.ui.input({ prompt = prompt, default = default }, function(value)
+					if value and value ~= "" then
+						table.insert(inputs, value)
+						if callback then
+							callback()
+						end
+					end
+				end)
+			end
+			ask("Receiver type (e.g., *MyStruct): ", "*", function()
+				ask("Parameter name: ", "", function()
+					ask("Interface name (e.g., io.Reader): ", "", function()
+						local cmd = string.format("impl '%s %s' %s", inputs[2], inputs[1], inputs[3])
+						local handle = io.popen(cmd)
+						if handle then
+							local result = handle:read("*a")
+							handle:close()
+							if result and result ~= "" then
+								vim.api.nvim_put(vim.split(result, "\n"), "l", false, true)
+							end
+						end
+					end)
+				end)
+			end)
+		end, { desc = "Generate go implementation" })
+	end,
+})

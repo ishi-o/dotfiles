@@ -49,10 +49,13 @@ zplug load
 # User configuration
 
 fpath=($HOME/.zfunc $fpath)
+autoload -Uz compinit && compinit
 
 ### START_KEYBIND
 bindkey -M viins 'jj' vi-cmd-mode
 bindkey '^ ' autosuggest-accept
+# zstyle ':fzf-tab:*' continuous-trigger ''
+# zstyle ':fzf-tab:*' fzf-bindings 'tab:accept'
 ### END_KEYBIND
 
 ### START_ALIAS 
@@ -95,9 +98,9 @@ unset __conda_setup
 eval "$("$HOME/.local/brew/bin/brew" shellenv)"
 ### END_BREW
 
-# ### START_SDKMAN
-# #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-# export SDKMAN_DIR="$HOME/.sdkman"
-# [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-# ### END_SDKMAN
-autoload -Uz compinit && compinit
+
+### START_SDKMAN
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+### END_SDKMAN

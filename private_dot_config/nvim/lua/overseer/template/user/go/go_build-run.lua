@@ -2,8 +2,8 @@ return {
 	name = "BuildRun",
 	builder = function()
 		return {
-			cmd = "python",
-			args = { vim.fn.expand("%:p") },
+			cmd = "go",
+			args = { "run", vim.fn.expand(".") },
 			components = {
 				"open_output",
 				"default",
@@ -11,6 +11,6 @@ return {
 		}
 	end,
 	condition = {
-		filetype = { "python" },
+		filetype = { "go" },
 	},
 }

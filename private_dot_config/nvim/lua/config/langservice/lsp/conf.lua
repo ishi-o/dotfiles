@@ -13,7 +13,7 @@ M.on_attach = function(client, bufnr)
 			border = "single",
 		})
 	end, { buffer = bufnr })
-	map("n", "gk", function()
+	map("n", "gK", function()
 		vim.lsp.buf.signature_help({
 			border = "single",
 		})
@@ -31,7 +31,9 @@ M.on_attach = function(client, bufnr)
 		require("nvim-navic").attach(client, bufnr)
 	end
 
-	if client:supports_method("textDocument/inlayHint") or client.name == "jdtls" then
+	-- FIX: jdtls inlay hints
+	-- if client:supports_method("textDocument/inlayHint") or client.name == "jdtls" then
+	if client:supports_method("textDocument/inlayHint") then
 		vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 	end
 

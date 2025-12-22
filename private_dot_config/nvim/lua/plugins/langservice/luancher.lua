@@ -52,6 +52,12 @@ return {
 				end,
 			},
 			"nvim-neotest/nvim-nio",
+			-- nvim-dap-go --
+			-- go dap
+			{
+				"leoluz/nvim-dap-go",
+				opts = {},
+			},
 		},
 		config = function()
 			require("config.langservice.dap.dapui")
