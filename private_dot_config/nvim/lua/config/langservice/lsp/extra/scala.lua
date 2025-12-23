@@ -1,6 +1,9 @@
 -- use nvim-metals rather than lspconfig --
 local metals_config = require("metals").bare_config()
-metals_config.init_options.statusBarProvider = "off"
+metals_config.init_options = {
+	statusBarProvider = "off",
+	-- decorationProvider = false,
+}
 metals_config.settings = {
 	verboseCompilation = true,
 	showImplicitArguments = true,
@@ -13,6 +16,7 @@ metals_config.settings = {
 		"com.github.swagger.akka.javadsl",
 	},
 	testUserInterface = "Test Explorer",
+	enableSemanticHighlighting = false,
 }
 metals_config.on_attach = function(_, _)
 	require("metals").setup_dap()
