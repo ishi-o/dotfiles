@@ -23,8 +23,8 @@
   },
   "soft_wrap": "preferred_line_length",
   "preferred_line_length": 80,
-  "ui_font_family": "Consolas ligaturized v3",
-  "buffer_font_family": "Consolas ligaturized v3",
+  "ui_font_family": "Consolas",
+  "buffer_font_family": "Consolas",
   "vim_mode": true,
   "vim": {
     "use_system_clipboard": "always",
