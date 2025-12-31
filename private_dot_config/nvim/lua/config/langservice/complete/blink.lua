@@ -2,7 +2,7 @@ local blink = require("blink.cmp")
 blink.setup({
 	keymap = {
 		preset = "none",
-		["<C-Space>"] = {
+		["<C-y>"] = {
 			"hide",
 			"show",
 		},
@@ -95,7 +95,7 @@ blink.setup({
 			preset = "none",
 			["<S-Tab>"] = { "select_prev", "fallback" },
 			["<Tab>"] = { "show", "select_next", "fallback" },
-			["<C-Space>"] = {
+			["<C-y>"] = {
 				"hide",
 				"show",
 			},

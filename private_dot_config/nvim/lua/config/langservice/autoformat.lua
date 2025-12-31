@@ -50,6 +50,7 @@ fmt.setup({
 		nginx = { "nginxfmt" },
 		pgsql = { "sqlfluff" },
 		plsql = { "sqlfluff" },
+		proto = { "buf" },
 		-- python = { "ruff" },
 		-- python = { "autopep8" },
 		python = {

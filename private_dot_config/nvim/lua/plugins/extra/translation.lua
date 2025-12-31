@@ -2,19 +2,20 @@ return {
 	{
 		"JuanZoran/Trans.nvim",
 		dependencies = { "kkharji/sqlite.lua" },
-		optional = true,
+		optional = false,
 		build = function()
 			require("Trans").install()
 		end,
 		lazy = true,
-		cmd = "Translate",
+		cmd = { "Translate", "TransPlay" },
 		keys = {
-			{ "<leader>T", mode = { "n", "x" }, "<cmd>Translate<CR>", desc = "󰊿 Translate" },
-			-- { "<leader>T", mode = { "n", "x" }, "<cmd>TransPlay<CR>", desc = " Auto Play" },
+			{ "<leader>TT", mode = { "n", "x" }, "<cmd>Translate<CR>", desc = "󰊿 Translate" },
+			{ "<leader>TP", mode = { "n", "x" }, "<cmd>TransPlay<CR>", desc = " Auto Play" },
 		},
 		opts = {
 			frontend = {
 				default = {
+					auto_play = false,
 					animation = {
 						open = false,
 						close = false,
@@ -30,7 +31,7 @@ return {
 		module = "pantran",
 		keys = {
 			{
-				"<leader>TT",
+				"<leader>TO",
 				function()
 					return require("pantran").motion_translate()
 				end,
