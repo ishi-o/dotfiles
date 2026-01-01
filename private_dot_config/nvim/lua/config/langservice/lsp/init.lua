@@ -3,6 +3,7 @@ require("mason-lspconfig").setup({
 	ensure_installed = {
 		-- LSP Servers
 		"bashls",
+		"buf_ls",
 		"clangd",
 		"cssls",
 		"dockerls",
@@ -96,6 +97,7 @@ local confs = {
 	"lua",
 	"markdown",
 	"nginx",
+	"protobuf",
 	"python",
 	"rust",
 	-- "scala",

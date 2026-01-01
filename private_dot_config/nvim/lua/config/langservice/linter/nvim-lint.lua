@@ -16,6 +16,7 @@ lint.linters_by_ft = {
 	mysql = { "sqlfluff" },
 	pgsql = { "sqlfluff" },
 	plsql = { "sqlfluff" },
+	proto = { "buf_lint" },
 	python = { "ruff" },
 	scss = { "stylelint" },
 	sh = { "shellcheck" },

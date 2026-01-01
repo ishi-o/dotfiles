@@ -16,5 +16,5 @@ return {
 		{ "<S-Tab>", desc = "Next complete item" },
 	},
 
-	{ "<C-Space>", desc = "Toggle: complete panel", mode = { "i", "c" } },
+	{ "<C-y>", desc = "Toggle: complete panel", mode = { "i", "c" } },
 }

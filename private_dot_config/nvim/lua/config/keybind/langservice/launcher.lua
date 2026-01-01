@@ -53,6 +53,7 @@ return {
 		{ "<leader>yr", "<cmd>OverseerRun BuildRun<CR>", desc = "Build & run" },
 		{ "<leader>yR", "<cmd>OverseerRun Run<CR>", desc = "Run" },
 		{ "<leader>yy", "<cmd>OverseerToggle<CR>", desc = "Toggle: overseer panel" },
-		{ "<leader>fy", "<cmd>OverseerTaskAction<CR>", desc = "Task actions" },
+		{ "<leader>fy", "<cmd>OverseerRun<CR>", desc = "Run lists" },
+		{ "<leader>fY", "<cmd>OverseerTaskAction<CR>", desc = "Task actions" },
 	},
 }

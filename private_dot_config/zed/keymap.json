@@ -1,0 +1,164 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-t": "terminal_panel::Toggle",
+    },
+  },
+  {
+    "context": "Workspace && !(vim_mode == normal || vim_mode == visual || vim_mode == insert || vim_mode == operator || vim_mode == replace)",
+    "bindings": {
+      "ctrl-e": "workspace::ToggleLeftDock",
+      "space d q": "workspace::ToggleBottomDock",
+      "space o": "workspace::ToggleLeftDock",
+    },
+  },
+  {
+    "context": "Workspace && !(vim_mode == normal || vim_mode == visual || vim_mode == insert || vim_mode == operator || vim_mode == replace) && !not_editing",
+    "bindings": {
+      "j j": ["workspace::SendKeystrokes", "escape"],
+      "space q": "pane::CloseActiveItem",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      "j j": "vim::NormalBefore",
+      "ctrl-t": "terminal_panel::Toggle",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "space w": "workspace::Save",
+      "space q": "pane::CloseActiveItem",
+      "space z": "workspace::CloseWindow",
+      "space -": "pane::SplitHorizontal",
+      "space |": "pane::SplitVertical",
+      "space h": "workspace::ActivatePaneLeft",
+      "space j": "workspace::ActivatePaneDown",
+      "space k": "workspace::ActivatePaneUp",
+      "space l": "workspace::ActivatePaneRight",
+      "ctrl-e": "project_panel::ToggleFocus",
+      "space b p": "pane::TogglePinTab",
+      "space b P": ["pane::CloseAllItems", { "close_pinned": false }],
+      "space e e": ["workspace::SendKeystrokes", ": e space"],
+      "space e n": "workspace::NewFile",
+      "space b H": "pane::CloseItemsToTheLeft",
+      "space b L": "pane::CloseItemsToTheRight",
+      "space b o": "pane::CloseOtherItems",
+      "space b l": "pane::ActivateLastItem",
+      // NOTE: when the buffer is pinned, :bdelete doesn't work.
+      "space b d": ["workspace::SendKeystrokes", ": b d enter"],
+      "space b s": ["tab_switcher::Toggle", { "select_last": true }],
+      "alt-j": "vim::ResizePaneDown",
+      "alt-k": "vim::ResizePaneUp",
+      "alt-h": "vim::ResizePaneLeft",
+      "alt-l": "vim::ResizePaneRight",
+      "space u r": ["workspace::SendKeystrokes", ": n o h enter"],
+      "space H": "workspace::SwapPaneLeft",
+      "space J": "workspace::SwapPaneDown",
+      "space K": "workspace::SwapPaneUp",
+      "space L": "workspace::SwapPaneRight",
+      "space c c": "editor::ToggleCodeActions",
+      "space C": "editor::ToggleCodeActions",
+      "space r n": "editor::Rename",
+      "space c r": "editor::Rename",
+      "space c o": "editor::OrganizeImports",
+      "space o": "outline_panel::ToggleFocus",
+      "space d b": "editor::ToggleBreakpoint",
+      "space d c": "debugger::Continue",
+      "space d C": "debugger::RunToCursor",
+      "space d i": "debugger::StepInto",
+      "space d o": "debugger::StepOver",
+      "space d O": "debugger::StepOut",
+      "space d t": "debugger::Stop",
+      "space d p": "debugger::Pause",
+      "space d x": "debugger::Stop",
+      "space d r": "debugger::Restart",
+      "space d l": "debugger::Rerun",
+      "space d q": "debug_panel::ToggleFocus",
+      "space y r": "task::Spawn",
+      "space s s": ["pane::DeploySearch", { "replace_enabled": true }],
+      "space /": "pane::DeploySearch",
+      "[ B": "pane::SwapItemLeft",
+      "] B": "pane::SwapItemRight",
+      "H": "vim::GoToPreviousTab",
+      "L": "vim::GoToTab",
+      "z v": "editor::UnfoldLines",
+      "g i": "editor::GoToImplementation",
+      "space space": "file_finder::Toggle",
+      "space g g": "git_panel::ToggleFocus",
+      "space n": "workspace::ToggleRightDock",
+    },
+  },
+
+  {
+    "context": "GitPanel && !(vim_mode == insert)",
+    "bindings": {
+      "space q": "git_panel::Close",
+    },
+  },
+
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "space l": "workspace::ActivatePaneRight",
+      "l": "project_panel::OpenPermanent",
+    },
+  },
+
+  {
+    "context": "Editor && (showing_code_actions || showing_completions)",
+    "bindings": {
+      "alt-k": "editor::ContextMenuPrevious",
+    },
+  },
+  {
+    "context": "Editor && (showing_code_actions || showing_completions)",
+    "bindings": {
+      "alt-j": "editor::ContextMenuNext",
+    },
+  },
+  {
+    "context": "((vim_mode == normal || vim_mode == visual) || vim_mode == operator)",
+    "bindings": {
+      "ctrl-k": "editor::MoveLineUp",
+    },
+  },
+  {
+    "context": "((vim_mode == normal || vim_mode == visual) || vim_mode == operator)",
+    "bindings": {
+      "ctrl-j": "editor::MoveLineDown",
+    },
+  },
+  {
+    "context": "Picker > Editor",
+    "bindings": {
+      "alt-j": "menu::SelectNext",
+    },
+  },
+  {
+    "bindings": {
+      "alt-j": "menu::SelectNext",
+    },
+  },
+  {
+    "context": "Picker > Editor",
+    "bindings": {
+      "alt-k": "menu::SelectPrevious",
+    },
+  },
+  {
+    "bindings": {
+      "alt-k": "menu::SelectPrevious",
+    },
+  },
+]

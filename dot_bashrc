@@ -21,7 +21,7 @@ export NVM_DIR="$HOME/.nvm"
 
 ### START_GO
 export GOROOT=/usr/local/go
-export GOPATH=$HOME/go/lib:$HOME/go/work
+export GOPATH=$HOME/opt/go
 export GOPROXY=https://goproxy.cn,direct
 export PATH=$GOROOT/bin:$PATH
 ### END_GO

@@ -29,6 +29,14 @@ require("snacks").setup({
 						min_width = 0.3,
 					},
 				},
+				win = {
+					list = {
+						keys = { ["<C-t>"] = "" },
+					},
+					input = {
+						keys = { ["<C-t>"] = "" },
+					},
+				},
 			},
 		},
 	},

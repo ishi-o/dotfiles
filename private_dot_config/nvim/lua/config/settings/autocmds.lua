@@ -150,3 +150,16 @@ autocmd("FileType", {
 		end, { desc = "Generate go implementation" })
 	end,
 })
+
+vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
+	pattern = "*",
+	callback = function()
+		vim.defer_fn(function()
+			if vim.bo.buftype == "" then
+				vim.schedule(function()
+					vim.cmd("normal! zz")
+				end)
+			end
+		end, 200)
+	end,
+})
