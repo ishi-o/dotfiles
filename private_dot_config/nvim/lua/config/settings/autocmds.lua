@@ -160,6 +160,6 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
 					vim.cmd("normal! zz")
 				end)
 			end
-		end, 50)
+		end, 200)
 	end,
 })
