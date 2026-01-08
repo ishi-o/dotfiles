@@ -4,8 +4,10 @@ vim.lsp.config("jdtls", {
 	on_attach = conf.on_attach,
 	capabilities = conf.capabilities,
 	settings = {
-		-- signatureHelp and inlayHints is enabled by default
-		java = {},
+		java = {
+			signatureHelp = { enabled = true },
+			inlayHints = { enabled = false },
+		},
 	},
 })
 -- NOTE: `editor.action.triggerParameterHints` is a VSCode client method

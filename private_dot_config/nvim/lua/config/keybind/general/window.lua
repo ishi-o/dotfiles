@@ -24,7 +24,7 @@ return {
 		},
 		{ "<leader>-", "<cmd>split<CR>", desc = "Horizontal Split" },
 		{ "<leader>|", "<cmd>vsplit<CR>", desc = "Vertical Split" },
-		{ "<leader>wd", "<cmd>close<CR>", desc = "Delete window" },
+		{ "<leader>Wd", "<cmd>close<CR>", desc = "Delete window" },
 		{ "<leader>q", "<cmd>close<CR>", desc = "Delete window" },
 		-- window switch --
 		{ "<leader>h", "<cmd>wincmd h<CR>", desc = "Focus on the left page", hidden = true },
