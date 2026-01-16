@@ -163,3 +163,14 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
 		end, 200)
 	end,
 })
+
+-- vim.api.nvim_create_autocmd("BufWritePost", {
+-- 	pattern = "*.java",
+-- 	callback = function()
+-- 		vim.fn.jobstart("mvn compile", {
+-- 			stdout_buffered = true,
+-- 			stderr_buffered = true,
+-- 		})
+-- 	end,
+-- 	desc = "Auto compile all Java files on save",
+-- })

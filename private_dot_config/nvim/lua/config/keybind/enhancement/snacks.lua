@@ -3,11 +3,17 @@ return {
 	-- picker --
 	{
 		-- Top Pickers & Explorer
+		-- {
+		-- 	"<C-e>",
+		-- 	function()
+		-- 		Snacks.explorer()
+		-- 	end,
+		-- 	mode = { "n", "x", "i", "t" },
+		-- 	desc = "Toggle: file explorer",
+		-- },
 		{
 			"<C-e>",
-			function()
-				Snacks.explorer()
-			end,
+			"<cmd>Neotree toggle<CR>",
 			mode = { "n", "x", "i", "t" },
 			desc = "Toggle: file explorer",
 		},
