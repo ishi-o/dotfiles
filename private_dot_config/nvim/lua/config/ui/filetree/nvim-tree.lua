@@ -3,7 +3,7 @@ vim.g.loaded_netrwPlugin = 1
 require("nvim-tree").setup({
 	sort_by = "case_sensitive",
 	view = {
-		width = math.floor(vim.o.columns * 0.25),
+		width = math.floor(vim.o.columns * 0.3),
 	},
 	renderer = {
 		group_empty = true,
@@ -13,4 +13,4 @@ require("nvim-tree").setup({
 	},
 })
 
-vim.keymap.set("n", "<C-g>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle: file tree" })
+vim.keymap.set("n", "<C-e>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle: file tree" })

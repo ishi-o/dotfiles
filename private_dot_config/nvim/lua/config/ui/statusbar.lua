@@ -141,6 +141,14 @@ require("lualine").setup({
 			},
 		},
 		lualine_x = {
+			function()
+				local r = vim.fn.reg_recording()
+				if r ~= "" then
+					return "recording:@" .. r
+				else
+					return ""
+				end
+			end,
 			"lsp_status",
 			{
 				"diagnostics",

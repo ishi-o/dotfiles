@@ -27,6 +27,9 @@ require("scrollbar").setup({
 		"snacks_input",
 		"snacks_dashboard",
 
+		"neo-tree",
+		"neo-tree-popup",
+
 		"dap-repl",
 		"dapui_breakpoints",
 		"dapui_console",

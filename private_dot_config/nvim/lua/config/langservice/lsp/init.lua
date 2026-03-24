@@ -74,7 +74,6 @@ local other_tools = {
 	"sqlfluff",
 	-- "sql-formatter",
 	"typstyle",
-	"xmlformatter",
 	-- "yamlfmt",
 }
 for _, tool_name in ipairs(other_tools) do

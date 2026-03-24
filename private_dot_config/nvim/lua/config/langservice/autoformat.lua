@@ -3,16 +3,16 @@ fmt.setup({
 	formatters = {
 		sqlfluff = {
 			args = function()
-				local filepath = vim.api.nvim_buf_get_name(0)
-				local extension = string.match(filepath, "%.(%w+)$")
-				extension = extension and string.lower(extension) or ""
+				local filetype = vim.api.nvim_get_option_value("filetype", { buf = 0, scope = "local" })
+				filetype = string.lower(filetype)
 				local dialect_map = {
 					sql = "ansi",
 					mysql = "mysql",
-					psql = "postgres",
+					pgsql = "postgres",
+					postgresql = "postgres",
 					bigquery = "bigquery",
 				}
-				local chosen_dialect = dialect_map[extension] or "ansi"
+				local chosen_dialect = dialect_map[filetype] or "ansi"
 				return {
 					"format",
 					"--dialect=" .. chosen_dialect,
@@ -27,6 +27,30 @@ fmt.setup({
 				})(self, ctx)
 				return root or vim.fn.expand("~/.config/sqlfluff")
 			end,
+		},
+		xmllint = {
+			command = "xmllint",
+			args = {
+				"--format",
+				"--encode",
+				"UTF-8",
+				"--nsclean",
+				"--recover",
+				"-",
+			},
+		},
+		tidy = {
+			command = "tidy",
+			args = {
+				"-xml",
+				"-indent",
+				"--indent-spaces",
+				"4",
+				"--quiet",
+				"--tidy-mark",
+				"no",
+				"-utf8",
+			},
 		},
 	},
 	formatters_by_ft = {
@@ -65,12 +89,14 @@ fmt.setup({
 		toml = { "taplo" },
 		typescript = { "prettier" },
 		typst = { "typstyle" },
-		xml = { "xmlformatter" },
+		-- xml = { "xmlformatter" },
+		-- xml = { "lsp" },
+		-- xml = { "xmllint" },
 		-- yaml = { "yamlfmt" },
 	},
 
 	format_on_save = {
-		timeout_ms = 2000,
+		timeout_ms = 3000,
 		lsp_format = "fallback",
 	},
 })

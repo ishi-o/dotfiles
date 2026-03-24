@@ -3,7 +3,6 @@ return {
 	-- AI support
 	{
 		"olimorris/codecompanion.nvim",
-		version = "v17.33.0",
 		optional = false,
 		lazy = false,
 		cmd = {
@@ -51,6 +50,16 @@ return {
 		event = "BufReadPost",
 		config = function()
 			require("config.extra.ai.copilot")
+		end,
+	},
+	{
+		"ravitemer/mcphub.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		build = "npm install -g mcp-hub@latest",
+		config = function()
+			require("config.extra.ai.mcphub")
 		end,
 	},
 }

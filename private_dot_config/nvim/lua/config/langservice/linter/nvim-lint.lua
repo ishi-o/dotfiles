@@ -1,3 +1,20 @@
+local function get_sql_dialect()
+	local current_file = vim.api.nvim_buf_get_name(0)
+	if string.find(current_file, "mysql/") then
+		return "mysql"
+	elseif string.find(current_file, "postgres/") then
+		return "postgres"
+	elseif string.match(current_file, "%.mysql%.sql$") then
+		return "mysql"
+	elseif string.match(current_file, "%.pg%.sql$") then
+		return "postgres"
+	elseif string.match(current_file, "%.oracle%.sql$") then
+		return "oracle"
+	else
+		return "mysql"
+	end
+end
+
 local lint = require("lint")
 lint.linters_by_ft = {
 	bash = { "shellcheck" },
@@ -57,6 +74,8 @@ lint.linters["sqlfluff"].args = {
 	"lint",
 	"--config",
 	os.getenv("HOME") .. "/.config/sqlfluff/.sqlfluff",
+	"--dialect",
+	get_sql_dialect(),
 	"--format",
 	"json",
 	"-",

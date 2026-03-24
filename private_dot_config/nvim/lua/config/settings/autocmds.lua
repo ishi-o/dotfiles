@@ -157,9 +157,25 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
 		vim.defer_fn(function()
 			if vim.bo.buftype == "" then
 				vim.schedule(function()
-					vim.cmd("normal! zz")
+					local mode = vim.api.nvim_get_mode().mode
+					if mode == "n" then
+						vim.api.nvim_win_call(0, function()
+							vim.cmd("normal! zz")
+						end)
+					end
 				end)
 			end
 		end, 200)
 	end,
 })
+
+-- vim.api.nvim_create_autocmd("BufWritePost", {
+-- 	pattern = "*.java",
+-- 	callback = function()
+-- 		vim.fn.jobstart("mvn compile", {
+-- 			stdout_buffered = true,
+-- 			stderr_buffered = true,
+-- 		})
+-- 	end,
+-- 	desc = "Auto compile all Java files on save",
+-- })

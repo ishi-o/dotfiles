@@ -33,7 +33,7 @@ M.on_attach = function(client, bufnr)
 
 	-- FIX: jdtls inlay hints
 	-- if client:supports_method("textDocument/inlayHint") or client.name == "jdtls" then
-	if client:supports_method("textDocument/inlayHint") then
+	if client:supports_method("textDocument/inlayHint") and client.name ~= "jdtls" then
 		vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 	end
 

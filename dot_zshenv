@@ -51,3 +51,7 @@ if ! pgrep -x fcitx5 > /dev/null 2>&1; then
     nohup /usr/bin/fcitx5 -d > /dev/null 2>&1 &
 fi
 ### END_FCITX5
+
+### START_KITTY
+export PATH="$HOME/.local/kitty.app/bin:$PATH"
+### END_KITTY

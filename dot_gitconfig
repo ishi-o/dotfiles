@@ -1,9 +1,41 @@
 [user]
-	name = ishi-o
+	name = Ishio
 	email = 458457289@qq.com
 [core]
 	editor = nvim
+	pager = delta
 [url "git@github.com:"]
 	insteadOf = https://github.com/
 [init]
 	defaultBranch = main
+[alias]
+	aa = add -A
+	au = add -u
+	ap = add -p
+	av = add -v
+	diffn = diff --name-only
+	review = diff main...HEAD
+	br = branch -vv
+	ba = branch -a
+	last = switch -
+	ll = log --pretty=format:'%C(yellow)%h %C(blue)%ad %C(green)%an %Creset%s' --date=short
+	lg = log --oneline --graph --decorate --all
+	recent = log --oneline -10
+	cm = commit -m
+	amend = commit --amend
+	nb = switch -c
+	dw = diff --word-diff
+	diffs = diff --staged
+	st = status -sb
+[difftool "nvimdiff"]
+	cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
+[diff]
+	tool = nvimdiff
+[difftool]
+	prompt = false
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+[merge]
+	conflictStyle = zdiff3

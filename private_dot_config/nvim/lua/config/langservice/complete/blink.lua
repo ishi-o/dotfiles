@@ -10,8 +10,16 @@ blink.setup({
 			"accept",
 			"fallback",
 		},
-		["<Enter>"] = {
+		-- ["<Enter>"] = {
+		-- 	"snippet_forward",
+		-- 	"fallback",
+		-- },
+		["<C-n>"] = {
 			"snippet_forward",
+			"fallback",
+		},
+		["<C-p>"] = {
+			"snippet_backward",
 			"fallback",
 		},
 		["<A-k>"] = { "select_prev", "fallback" },
@@ -54,6 +62,7 @@ blink.setup({
 			"path",
 			"snippets",
 			"buffer",
+			"mybatis",
 
 			-- "avante",
 		},
@@ -66,6 +75,10 @@ blink.setup({
 			dadbod = {
 				name = "Dadbod",
 				module = "vim_dadbod_completion.blink",
+			},
+			mybatis = {
+				name = "Mybatis",
+				module = "nvim-mybatis.completion.blink",
 			},
 			snippets = {
 				opts = {

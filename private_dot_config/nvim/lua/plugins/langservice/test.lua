@@ -13,9 +13,6 @@ return {
 				vim.system({ "go", "install", "gotest.tools/gotestsum@latest" }):wait()
 			end,
 		},
-		-- TODO: wait for origin to fix up
-		-- origin is being refactored to escape from nvim-jdtls
-		-- and use vim.lsp.Client
 		{
 			"rcasia/neotest-java",
 			build = ":NeotestJava setup",

@@ -451,12 +451,17 @@ tmux_conf_uninstall_plugins_on_reload=false
 # visit https://github.com/tmux-plugins for available plugins
 #set -g @plugin 'tmux-plugins/tmux-copycat'
 #set -g @plugin 'tmux-plugins/tmux-cpu'
-#set -g @plugin 'tmux-plugins/tmux-resurrect'
-#set -g @plugin 'tmux-plugins/tmux-continuum'
-#set -g @continuum-restore 'on'
 set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @resurrect-capture-pane-contents 'on'
+set -g @continuum-restore 'on'
+set -g @continuum-save-interval '30'
 set -g @plugin 'egel/tmux-gruvbox'
 set -g @tmux-gruvbox 'light'
+#set -g @tmux-gruvbox-statusbar-alpha 'true'
+set -g @tmux-gruvbox-right-status-z '#h #{tmux_mode_indicator}'
+set -g @plugin 'MunifTanjim/tmux-mode-indicator'
 
 # -- custom variables ----------------------------------------------------------
 
@@ -514,6 +519,8 @@ set -g @tmux-gruvbox 'light'
 
 bind v split-window -h -c "#{pane_current_path}"
 bind V split-window -v -c "#{pane_current_path}"
+bind-key | split-window -h -c "#{pane_current_path}"
+bind-key - split-window -v -c "#{pane_current_path}"
 
 bind -n M-h if -F "#{@pane-is-vim}" 'send-keys M-h' 'resize-pane -L 3'
 bind -n M-j if -F "#{@pane-is-vim}" 'send-keys M-j' 'resize-pane -D 3'
