@@ -8,7 +8,7 @@ require("codecompanion").setup({
 			},
 		},
 	},
-	strategies = {
+	interactions = {
 		chat = {
 			adapter = "deepseek_chat",
 		},
@@ -81,10 +81,10 @@ require("codecompanion").setup({
 				{
 					role = "user",
 					content = [[
-						限制：只回答一个你觉得最好的方案；用中文回答；不要输出我没有问你的东西；最多使用四个标题
+限制：只回答一个你觉得最好的方案；用中文回答；不要输出我没有问你的东西；最多使用四个标题
 
-						问题：
-						#{input}
+问题：
+#{input}
 					]],
 				},
 			},
@@ -100,12 +100,38 @@ require("codecompanion").setup({
 				{
 					role = "user",
 					content = [[
-						限制：一句话回答
+限制：一句话回答
 
-						问题：
-						#{input}
+问题：
+#{input}
 					]],
 				},
+			},
+		},
+		["agent"] = {
+			strategy = "chat",
+			description = "Quickly agent call",
+			opts = {
+				short_name = "agent",
+				index = 1,
+			},
+			prompts = {
+				{
+					role = "user",
+					content = [[
+@{agent} #{input}
+					]],
+				},
+			},
+		},
+	},
+	extensions = {
+		mcphub = {
+			callback = "mcphub.extensions.codecompanion",
+			opts = {
+				make_vars = true,
+				make_slash_commands = true,
+				show_result_in_chat = true,
 			},
 		},
 	},

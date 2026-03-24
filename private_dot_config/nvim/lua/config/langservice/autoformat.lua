@@ -28,6 +28,30 @@ fmt.setup({
 				return root or vim.fn.expand("~/.config/sqlfluff")
 			end,
 		},
+		xmllint = {
+			command = "xmllint",
+			args = {
+				"--format",
+				"--encode",
+				"UTF-8",
+				"--nsclean",
+				"--recover",
+				"-",
+			},
+		},
+		tidy = {
+			command = "tidy",
+			args = {
+				"-xml",
+				"-indent",
+				"--indent-spaces",
+				"4",
+				"--quiet",
+				"--tidy-mark",
+				"no",
+				"-utf8",
+			},
+		},
 	},
 	formatters_by_ft = {
 		bash = { "shfmt" },
@@ -66,7 +90,8 @@ fmt.setup({
 		typescript = { "prettier" },
 		typst = { "typstyle" },
 		-- xml = { "xmlformatter" },
-		xml = { "lsp" },
+		-- xml = { "lsp" },
+		-- xml = { "xmllint" },
 		-- yaml = { "yamlfmt" },
 	},
 

@@ -1,5 +1,6 @@
 require("avante").setup({
-	mode = "legacy", -- "agentic"
+	-- mode = "legacy",
+	mode = "agentic",
 	provider = "deepseek",
 	providers = {
 		deepseek = {
