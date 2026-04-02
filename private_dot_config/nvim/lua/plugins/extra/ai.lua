@@ -3,7 +3,7 @@ return {
 	-- AI support
 	{
 		"olimorris/codecompanion.nvim",
-		optional = false,
+		optional = true,
 		lazy = false,
 		cmd = {
 			"CodeCompanion",
@@ -23,8 +23,9 @@ return {
 	-- AI support
 	{
 		"yetone/avante.nvim",
-		optional = true,
+		optional = false,
 		event = "VeryLazy",
+		version = false,
 		build = vim.fn.has("win32") ~= 0
 				and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 			or "make",
@@ -54,6 +55,7 @@ return {
 	},
 	{
 		"ravitemer/mcphub.nvim",
+		enabled = false,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},

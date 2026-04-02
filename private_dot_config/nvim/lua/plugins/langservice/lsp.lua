@@ -86,4 +86,6 @@ return {
 			require("config.langservice.lsp.extra.scala")
 		end,
 	},
+
+	{ "qvalentin/helm-ls.nvim", ft = "helm" },
 }

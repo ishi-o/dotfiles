@@ -98,15 +98,15 @@ autocmd("FileType", {
 	end,
 })
 
-autocmd("BufWrite", {
-	pattern = "*.java",
-	callback = function()
-		vim.lsp.buf.code_action({
-			context = { only = { "source.organizeImports" } },
-			apply = true,
-		})
-	end,
-})
+-- autocmd("BufWrite", {
+-- 	pattern = "*.java",
+-- 	callback = function()
+-- 		vim.lsp.buf.code_action({
+-- 			context = { only = { "source.organizeImports" } },
+-- 			apply = true,
+-- 		})
+-- 	end,
+-- })
 
 autocmd("FileType", {
 	pattern = "java",

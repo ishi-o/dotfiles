@@ -16,6 +16,7 @@ local fts = {
 	"gosum",
 	"gowork",
 	"graphql",
+	"helm",
 	"html",
 	"http",
 	"java",
@@ -45,6 +46,7 @@ local fts = {
 	"typescript",
 	"vim",
 	"vimdoc",
+	"vue",
 	"xml",
 	"yaml",
 }
