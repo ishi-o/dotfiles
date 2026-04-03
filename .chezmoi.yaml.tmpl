@@ -1,0 +1,154 @@
+{{ $has_sudo := default false (promptBoolOnce . "has_sudo" "Do you have sudo/root access? [false]") -}}
+{{ $brew_enable := default false (promptBoolOnce . "brew_enable" "Install Homebrew? [false]") -}}
+
+{{ $brew_install_mode := "" -}}
+{{ if $brew_enable -}}
+  {{ if $has_sudo -}}
+    {{ $brew_install_mode = default "homebrew_default" (promptChoiceOnce . "brew_mode" "How to install Homebrew? [homebrew_default]" "homebrew_default" "custom_prefix") -}}
+  {{ else -}}
+    {{ $brew_install_mode = "custom_prefix" -}}
+  {{ end -}}
+  {{ if eq $brew_install_mode "custom_prefix" -}}
+    {{ $brew_prefix := default (.chezmoi.homeDir + "/.local/brew") (promptStringOnce . "brew_prefix" "Enter custom installation prefix [" + .chezmoi.homeDir + "/.local/brew]: ") -}}
+  {{ end -}}
+{{ end -}}
+
+{{ $selected_suites := default (list "necessary_tools" "convenience_tools" "neovim" "go" "java") (promptMultiChoiceOnce . "selected_suites" "Select suites to install [1,2,3,4,5]:" 
+    "necessary_tools"
+    "convenience_tools"
+    "neovim"
+    "go"
+    "java"
+    "node"
+    "python"
+    "rust"
+) -}}
+
+{{ $username := default "ishi-o" (promptStringOnce . "username" "Your git username: ") -}}
+{{ $email := default "458457289@qq.com" (promptStringOnce . "email" "Your git email: ") -}}
+
+{{ $necessary_tools := list -}}
+{{ if has $selected_suites "convenience_tools" -}}
+{{ $necessary_tools = default (list "git") (promptMultiChoiceOnce . "necessary_tools" "Select necessary tools [zsh, fzf, fd]:" 
+    "git"
+) -}}
+{{ end -}}
+
+{{ $convenience_tools := list -}}
+{{ if has $selected_suites "convenience_tools" -}}
+{{ $convenience_tools = default (list "zsh" "find" "fzf" "fd") (promptMultiChoiceOnce . "convenience_tools" "Select convenience tools [1,2,3,4]:" 
+    "zsh"
+    "find"
+    "fzf"
+    "fd"
+    "lazygit"
+    "yazi"
+    "gh"
+) -}}
+{{ end -}}
+
+{{ $nvim_extensions := list -}}
+{{ if has $selected_suites "neovim" -}}
+{{ $nvim_extensions = default (list) (promptMultiChoiceOnce . "nvim_extensions" "Select neovim extensions []:" 
+) -}}
+{{ end -}}
+
+
+{{ $go_extensions := list -}}
+{{ if has $selected_suites "go" -}}
+  {{ $go_extensions = default (list "air" "goimpl") (promptMultiChoiceOnce . "go_extensions" "Select go extensions [air, goimpl]:" 
+    "air"
+    "goimpl"
+  ) -}}
+{{ end -}}
+
+{{ $java_extensions := list -}}
+{{ if has $selected_suites "java" -}}
+  {{ $java_extensions = default (list) (promptMultiChoiceOnce . "java_extensions" "Select java extensions []:" 
+    "sdkman"
+    "gradle"
+    "maven"
+  ) -}}
+{{ end -}}
+
+
+{{ $node_extensions := list -}}
+{{ if has $selected_suites "node" -}}
+{{ $node_extensions = default (list "pnpm") (promptMultiChoiceOnce . "node_extensions" "Select node extensions [pnpm]:" 
+    "pnpm"
+    "yarn"
+    "typescript"
+) -}}
+{{ end -}}
+
+{{ $python_extensions := list -}}
+{{ if has $selected_suites "python" -}}
+  {{ $python_extensions = default (list "miniconda") (promptMultiChoiceOnce . "python_extensions" "Select python extensions [miniconda]:" 
+    "miniconda"
+    "anaconda3"
+  ) -}}
+{{ end -}}
+
+{{ $rust_extensions := list -}}
+{{ if has $selected_suites "rust" -}}
+  {{ $rust_extensions = default (list "cargo-watch") (promptMultiChoiceOnce . "rust_extensions" "Select rust extensions [cargo-watch]:" 
+    "cargo-watch"
+    "cargo-tarpaulin"
+  ) -}}
+{{ end -}}
+
+encryption: "age"
+age:
+  recipient: "age1lqfj2wt2376ephe4r4a0qas5nlq5hgtj5j7dzd926ukk346k5paqd9vvu5"
+  identity: "~/.age/key.txt"
+
+edit:
+  command: "nvim"
+  args: []
+
+data:
+  has_sudo: {{ $has_sudo }}
+  brew_enable: {{ $brew_enable }}
+  brew_mode: {{ $brew_install_mode | quote }}
+  brew_custom_prefix: {{ if eq $brew_install_mode "custom_prefix" }}{{ $brew_prefix | quote }}{{ else }}""{{ end }}
+  
+  username: {{ $username | quote }}
+  email: {{ $email | quote }}
+
+  selected_suites: {{ $selected_suites | toJson }}
+
+  nvim_extensions: {{ $nvim_extensions | toJson }}
+  necessary_tools: {{ $necessary_tools | toJson }}
+  convenience_tools: {{ $convenience_tools | toJson }}
+  go_extensions: {{ $go_extensions | toJson }}
+  java_extensions: {{ $java_extensions | toJson }}
+  node_extensions: {{ $node_extensions | toJson }}
+  python_extensions: {{ $python_extensions | toJson }}
+  rust_extensions: {{ $rust_extensions | toJson }}
+
+  suites:
+    nvim:
+      enable: {{ has $selected_suites "neovim" }}
+      build_from_source: true
+      version: "nightly"
+    convenience:
+      zsh: {{ has $convenience_tools "zsh" }}
+      yazi: {{ has $convenience_tools "yazi" }}
+      fzf: {{ has $convenience_tools "fzf" }}
+      fd: {{ has $convenience_tools "fd" }}
+      find: {{ has $convenience_tools "find" }}
+      lazygit: {{ has $convenience_tools "lazygit" }}
+    go:
+      enable: {{ has $selected_suites "go" }}
+      version: "1.23"
+    java:
+      enable: {{ has $selected_suites "java" }}
+      sdkman_java: "21.0.5-tem"
+    rust:
+      enable: {{ has $selected_suites "rust" }}
+    node:
+      enable: {{ has $selected_suites "node" }}
+      nvm_node: "20"
+    python:
+      enable: {{ has $selected_suites "python" }}
+      pyenv_version: "3.12"

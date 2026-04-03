@@ -1,0 +1,29 @@
+{{ if has $selected_suites "neovim" }}
+  "{{ .chezmoi.os }}/{{ .chezmoi.arch }}/nvim":
+    type: "archive"
+    url: "https://github.com/neovim/neovim/releases/download/nightly/nvim-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
+    exact: true
+    stripComponents: 1
+    refreshPeriod: "168h"
+{{ end }}
+
+{{ if has $convenience_tools "yazi" }}
+  "bin/yazi":
+    type: "file"
+    url: "https://github.com/sxyazi/yazi/releases/latest/download/yazi-{{ .chezmoi.arch }}-unknown-linux-gnu.zip"
+    executable: true
+{{ end }}
+
+{{ if has $convenience_tools "fzf" }}
+  "bin/fzf":
+    type: "file"
+    url: "https://github.com/junegunn/fzf/releases/latest/download/fzf-{{ .chezmoi.os }}_{{ .chezmoi.arch }}.tar.gz"
+    executable: true
+{{ end }}
+
+{{ if has $convenience_tools "lazygit" }}
+  "bin/lazygit":
+    type: "file"
+    url: "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_{{ .chezmoi.os }}_{{ .chezmoi.arch }}.tar.gz"
+    executable: true
+{{ end }}
