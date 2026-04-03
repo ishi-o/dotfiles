@@ -1,0 +1,19 @@
+#!/bin/bash
+
+{{ if not .data.brew_enable }}
+exit 0
+{{ end }}
+
+if command -v brew &>/dev/null; then
+    exit 0
+fi
+
+{{ if eq .data.brew_mode "custom_prefix" }}
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" -- --prefix={{ .data.brew_custom_prefix }}
+{{ else }}
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+{{ end }}
+
+{{ if eq .chezmoi.os "linux" }}
+eval "$($(brew --prefix)/bin/brew shellenv)"
+{{ end }}

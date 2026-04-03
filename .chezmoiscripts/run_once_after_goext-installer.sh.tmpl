@@ -1,0 +1,17 @@
+#!/bin/bash
+
+{{ if not .data.suites.go.enable }}
+exit 0
+{{ end }}
+
+while ! command -v go &>/dev/null; do
+    sleep 1
+done
+
+{{ if has .data.go_extensions "air" }}
+go install github.com/air-verse/air@latest
+{{ end }}
+
+{{ if has .data.go_extensions "impl" }}
+go install github.com/josharian/impl@latest
+{{ end }}

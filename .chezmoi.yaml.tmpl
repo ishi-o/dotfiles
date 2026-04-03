@@ -28,7 +28,7 @@
 {{ $email := default "458457289@qq.com" (promptStringOnce . "email" "Your git email: ") -}}
 
 {{ $necessary_tools := list -}}
-{{ if has $selected_suites "convenience_tools" -}}
+{{ if has $selected_suites "necessary_tools" -}}
 {{ $necessary_tools = default (list "git") (promptMultiChoiceOnce . "necessary_tools" "Select necessary tools [zsh, fzf, fd]:" 
     "git"
 ) -}}
@@ -54,12 +54,16 @@
 {{ end -}}
 
 
+{{ $go_version := default "1.26.0" "" -}}
+{{ $go_path := default (.chezmoi.homeDir + "/.local/go") "" -}}
 {{ $go_extensions := list -}}
 {{ if has $selected_suites "go" -}}
-  {{ $go_extensions = default (list "air" "goimpl") (promptMultiChoiceOnce . "go_extensions" "Select go extensions [air, goimpl]:" 
+  {{ $go_version = promptStringOnce . "go_version" "Enter Go version [1.26.0]: " -}}
+  {{ $go_path = promptStringOnce . "go_path" "Enter Go install path [" + .chezmoi.homeDir + "/.local/go]: " -}}
+  {{ $go_extensions = promptMultiChoiceOnce . "go_extensions" "Select go extensions [air, impl]:" 
     "air"
-    "goimpl"
-  ) -}}
+    "impl"
+  -}}
 {{ end -}}
 
 {{ $java_extensions := list -}}
@@ -140,7 +144,8 @@ data:
       lazygit: {{ has $convenience_tools "lazygit" }}
     go:
       enable: {{ has $selected_suites "go" }}
-      version: "1.23"
+      version: {{ $go_version | quote }}
+      root: {{ $go_install_path | quote }}
     java:
       enable: {{ has $selected_suites "java" }}
       sdkman_java: "21.0.5-tem"

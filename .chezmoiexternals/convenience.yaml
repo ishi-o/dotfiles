@@ -1,0 +1,25 @@
+{{ if has .data.convenience_tools "fzf" }}
+"{{ .chezmoi.homeDir }}/.local/bin/fzf":
+  type: "archive"
+  url: "https://github.com/junegunn/fzf/releases/latest/download/fzf-{{ .chezmoi.os }}_{{ .chezmoi.arch }}.tar.gz"
+  exact: true
+  executable: true
+{{ end }}
+
+{{ if has .data.convenience_tools "yazi" }}
+"{{ .chezmoi.homeDir }}/.local/bin/yazi":
+  type: "archive"
+  url: "https://github.com/sxyazi/yazi/releases/latest/download/yazi-{{ .chezmoi.arch }}-unknown-linux-gnu.zip"
+  exact: true
+  stripComponents: 1
+  executable: true
+{{ end }}
+
+{{ if has .data.convenience_tools "lazygit" }}
+"{{ .chezmoi.homeDir }}/.local/bin/lazygit":
+  type: "archive"
+  url: "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_{{ .chezmoi.os }}_{{ .chezmoi.arch }}.tar.gz"
+  exact: true
+  executable: true
+{{ end }}
+
