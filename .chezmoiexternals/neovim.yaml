@@ -1,5 +1,5 @@
 {{ if has .data.selected_suites "neovim" }}
-"{{ .chezmoi.homeDir }}/.local/nvim":
+"{{ .data.base_path }}/nvim":
   type: "archive"
   url: "https://github.com/neovim/neovim/releases/download/nightly/nvim-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
   exact: true

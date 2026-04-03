@@ -4,9 +4,15 @@
 exit 0
 {{ end }}
 
+{{ if .data.brew.enable }}
+if ! command -v go &>/dev/null; then
+    brew install go@{{ .data.suites.go.version }}
+fi
+{{ else }}
 while ! command -v go &>/dev/null; do
     sleep 1
 done
+{{ end }}
 
 {{ if has .data.go_extensions "air" }}
 go install github.com/air-verse/air@latest

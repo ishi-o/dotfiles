@@ -1,3 +1,4 @@
+{{ if not .data.brew.enable }}
 {{ if .data.suites.go.enable }}
 "{{ .data.suites.go.root }}":
   type: "archive"
@@ -5,4 +6,5 @@
   exact: true
   stripComponents: 1
   refreshPeriod: "168h"
+{{ end }}
 {{ end }}

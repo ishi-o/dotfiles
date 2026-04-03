@@ -1,6 +1,10 @@
 {{ $has_sudo := default false (promptBoolOnce . "has_sudo" "Do you have sudo/root access? [false]") -}}
-{{ $brew_enable := default false (promptBoolOnce . "brew_enable" "Install Homebrew? [false]") -}}
+{{ $base_path := default (.chezmoi.homeDir + "/.local") (promptStringOnce . "base_path" "Enter base path [" + .chezmoi.homeDir + "/.local]") }}
 
+{{ $username := default "ishi-o" (promptStringOnce . "username" "Your git username: ") -}}
+{{ $email := default "458457289@qq.com" (promptStringOnce . "email" "Your git email: ") -}}
+
+{{ $brew_enable := default false (promptBoolOnce . "brew_enable" "Install Homebrew? [false]") -}}
 {{ $brew_install_mode := "" -}}
 {{ if $brew_enable -}}
   {{ if $has_sudo -}}
@@ -9,7 +13,7 @@
     {{ $brew_install_mode = "custom_prefix" -}}
   {{ end -}}
   {{ if eq $brew_install_mode "custom_prefix" -}}
-    {{ $brew_prefix := default (.chezmoi.homeDir + "/.local/brew") (promptStringOnce . "brew_prefix" "Enter custom installation prefix [" + .chezmoi.homeDir + "/.local/brew]: ") -}}
+    {{ $brew_prefix := default ($base_path + "/brew") (promptStringOnce . "brew_prefix" "Enter custom installation prefix [" + $base_path + "/brew]: ") -}}
   {{ end -}}
 {{ end -}}
 
@@ -24,12 +28,9 @@
     "rust"
 ) -}}
 
-{{ $username := default "ishi-o" (promptStringOnce . "username" "Your git username: ") -}}
-{{ $email := default "458457289@qq.com" (promptStringOnce . "email" "Your git email: ") -}}
-
 {{ $necessary_tools := list -}}
 {{ if has $selected_suites "necessary_tools" -}}
-{{ $necessary_tools = default (list "git") (promptMultiChoiceOnce . "necessary_tools" "Select necessary tools [zsh, fzf, fd]:" 
+{{ $necessary_tools = default (list "git") (promptMultiChoiceOnce . "necessary_tools" "Select necessary tools [1]:" 
     "git"
 ) -}}
 {{ end -}}
@@ -44,22 +45,24 @@
     "lazygit"
     "yazi"
     "gh"
+    "tmux"
+    "ripgrep"
 ) -}}
 {{ end -}}
 
 {{ $nvim_extensions := list -}}
 {{ if has $selected_suites "neovim" -}}
 {{ $nvim_extensions = default (list) (promptMultiChoiceOnce . "nvim_extensions" "Select neovim extensions []:" 
+    "ripgrep"
 ) -}}
 {{ end -}}
 
-
 {{ $go_version := default "1.26.0" "" -}}
-{{ $go_path := default (.chezmoi.homeDir + "/.local/go") "" -}}
+{{ $go_root := default ($base_path + "/go") "" -}}
 {{ $go_extensions := list -}}
 {{ if has $selected_suites "go" -}}
   {{ $go_version = promptStringOnce . "go_version" "Enter Go version [1.26.0]: " -}}
-  {{ $go_path = promptStringOnce . "go_path" "Enter Go install path [" + .chezmoi.homeDir + "/.local/go]: " -}}
+  {{ $go_root = promptStringOnce . "go_path" "Enter Go install path [" + $base_path + "/go]: " -}}
   {{ $go_extensions = promptMultiChoiceOnce . "go_extensions" "Select go extensions [air, impl]:" 
     "air"
     "impl"
@@ -74,7 +77,6 @@
     "maven"
   ) -}}
 {{ end -}}
-
 
 {{ $node_extensions := list -}}
 {{ if has $selected_suites "node" -}}
@@ -112,12 +114,16 @@ edit:
 
 data:
   has_sudo: {{ $has_sudo }}
-  brew_enable: {{ $brew_enable }}
-  brew_mode: {{ $brew_install_mode | quote }}
-  brew_custom_prefix: {{ if eq $brew_install_mode "custom_prefix" }}{{ $brew_prefix | quote }}{{ else }}""{{ end }}
   
   username: {{ $username | quote }}
   email: {{ $email | quote }}
+
+  base_path: {{ $base_path | quote }}
+
+  brew:
+    enable: {{ $brew_enable }}
+    mode: {{ $brew_install_mode | quote }}
+    prefix: {{ if eq $brew_install_mode "custom_prefix" }}{{ $brew_prefix | quote }}{{ else }}""{{ end }}
 
   selected_suites: {{ $selected_suites | toJson }}
 
@@ -137,15 +143,18 @@ data:
       version: "nightly"
     convenience:
       zsh: {{ has $convenience_tools "zsh" }}
-      yazi: {{ has $convenience_tools "yazi" }}
       fzf: {{ has $convenience_tools "fzf" }}
       fd: {{ has $convenience_tools "fd" }}
       find: {{ has $convenience_tools "find" }}
       lazygit: {{ has $convenience_tools "lazygit" }}
+      yazi: {{ has $convenience_tools "yazi" }}
+      gh: {{ has $convenience_tools "gh" }}
+      tmux: {{ has $convenience_tools "tmux" }}
+      ripgrep: {{ has $convenience_tools "ripgrep" }}
     go:
       enable: {{ has $selected_suites "go" }}
       version: {{ $go_version | quote }}
-      root: {{ $go_install_path | quote }}
+      root: {{ $go_root | quote }}
     java:
       enable: {{ has $selected_suites "java" }}
       sdkman_java: "21.0.5-tem"
