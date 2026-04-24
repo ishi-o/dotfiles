@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# ============================================================
+# run_once_after_02: Extra tools via language package managers
+# Depends on: go, cargo, npm (installed in after_01)
+# ============================================================
+
+set -euo pipefail
+
+HOME_DIR="{{ .chezmoi.homeDir }}"
+BIN_DIR="$HOME_DIR/.local/bin"
+
+mkdir -p "$BIN_DIR"
+
+has_cmd() { command -v "$1" &>/dev/null; }
+
+# Source cargo if available
+if [ -f "$HOME_DIR/.cargo/env" ]; then
+    source "$HOME_DIR/.cargo/env"
+fi
+
+# ============================================================
+# 1. tree-sitter-cli (via cargo)
+# ============================================================
+if has_cmd cargo && ! has_cmd tree-sitter; then
+    echo ">>> Installing tree-sitter-cli..."
+    cargo install tree-sitter-cli
+fi
+
+# ============================================================
+# 2. Cargo extensions
+# ============================================================
+if has_cmd cargo; then
+    if ! has_cmd cargo-watch; then
+        echo ">>> Installing cargo-watch..."
+        cargo install cargo-watch
+    fi
+    if ! has_cmd cargo-tarpaulin; then
+        echo ">>> Installing cargo-tarpaulin..."
+        cargo install cargo-tarpaulin
+    fi
+    if ! has_cmd cargo-add; then
+        echo ">>> Installing cargo-edit..."
+        cargo install cargo-edit
+    fi
+fi
+
+# ============================================================
+# 3. Go tools
+# ============================================================
+if has_cmd go; then
+    if ! has_cmd impl; then
+        echo ">>> Installing impl..."
+        go install github.com/josharian/impl@latest
+    fi
+    if ! has_cmd air; then
+        echo ">>> Installing air..."
+        go install github.com/air-verse/air@latest
+    fi
+fi
+
+# ============================================================
+# 4. npm global tools
+# ============================================================
+if has_cmd npm; then
+    if ! has_cmd pnpm; then
+        echo ">>> Installing pnpm..."
+        npm install -g pnpm
+    fi
+    if ! has_cmd yarn; then
+        echo ">>> Installing yarn..."
+        npm install -g yarn
+    fi
+    if ! has_cmd tsc; then
+        echo ">>> Installing typescript..."
+        npm install -g typescript
+    fi
+fi
+
+echo ">>> Extra tools installed successfully!"
+

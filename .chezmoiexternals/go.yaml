@@ -1,10 +1,6 @@
-{{ if not .data.brew.enable }}
-{{ if .data.suites.go.enable }}
-"{{ .data.suites.go.root }}":
+"{{ .data.go_root }}":
   type: "archive"
-  url: "https://golang.org/dl/go{{ .data.suites.go.version }}.{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
+  url: "https://golang.org/dl/go{{ .data.go_version }}.{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
   exact: true
   stripComponents: 1
   refreshPeriod: "168h"
-{{ end }}
-{{ end }}

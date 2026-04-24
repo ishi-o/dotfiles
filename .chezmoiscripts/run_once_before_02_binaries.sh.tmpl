@@ -1,0 +1,142 @@
+#!/bin/bash
+
+# ============================================================
+# run_once_before_02: Prebuilt binary tools
+# Downloads prebuilt binaries to ~/.local/ and symlinks to
+# ~/.local/bin. Runs BEFORE chezmoiexternals.
+# ============================================================
+
+set -euo pipefail
+
+OS="{{ .chezmoi.os }}"
+ARCH="{{ .chezmoi.arch }}"
+HOME_DIR="{{ .chezmoi.homeDir }}"
+LOCAL_DIR="$HOME_DIR/.local"
+BIN_DIR="$LOCAL_DIR/bin"
+
+mkdir -p "$BIN_DIR"
+
+has_cmd() { command -v "$1" &>/dev/null; }
+
+# Helper: download archive, find binary, symlink to BIN_DIR
+install_binary() {
+    local url="$1"
+    local bin_name="$2"
+    local tmpdir
+    tmpdir="$(mktemp -d)"
+
+    echo ">>> Downloading $bin_name..."
+    cd "$tmpdir"
+    if [[ "$url" == *.zip ]]; then
+        curl -fsSL "$url" -o archive.zip
+        unzip -q archive.zip
+        rm -f archive.zip
+    else
+        curl -fsSL "$url" -o archive.tar.gz
+        tar xzf archive.tar.gz
+        rm -f archive.tar.gz
+    fi
+
+    local found
+    found="$(find "$tmpdir" -type f -name "$bin_name" 2>/dev/null | head -1)"
+    if [[ -n "$found" ]]; then
+        chmod +x "$found"
+        ln -sf "$found" "$BIN_DIR/$bin_name"
+        echo ">>> $bin_name installed"
+    else
+        echo ">>> WARNING: $bin_name not found in archive"
+    fi
+
+    cd /
+    rm -rf "$tmpdir"
+}
+
+# git
+if ! has_cmd git; then
+    if [[ "$OS" == "darwin" ]]; then
+        echo ">>> git is available via Xcode CLT on macOS"
+    else
+        install_binary \
+            "https://github.com/git/git/archive/refs/tags/v2.48.1.tar.gz" \
+            "git" 2>/dev/null || \
+        sudo apt install -y -qq git 2>/dev/null || \
+        sudo dnf install -y git 2>/dev/null || true
+    fi
+fi
+
+# zsh
+if ! has_cmd zsh; then
+    if [[ "$OS" == "darwin" ]]; then
+        echo ">>> zsh is built-in on macOS"
+    else
+        install_binary \
+            "https://sourceforge.net/projects/zsh/files/zsh/5.9/zsh-5.9.tar.xz/download" \
+            "zsh" 2>/dev/null || \
+        sudo apt install -y -qq zsh 2>/dev/null || \
+        sudo dnf install -y zsh 2>/dev/null || true
+    fi
+fi
+
+# cmake
+if ! has_cmd cmake; then
+    if [[ "$OS" == "darwin" ]]; then
+        install_binary \
+            "https://github.com/Kitware/CMake/releases/latest/download/cmake-3.31.0-macos-universal.tar.gz" \
+            "cmake"
+    else
+        install_binary \
+            "https://github.com/Kitware/CMake/releases/latest/download/cmake-3.31.0-linux-${ARCH}.tar.gz" \
+            "cmake"
+    fi
+fi
+
+# make (macOS has it via Xcode)
+if ! has_cmd make && [[ "$OS" == "linux" ]]; then
+    sudo apt install -y -qq make 2>/dev/null || \
+    sudo dnf install -y make 2>/dev/null || true
+fi
+
+# unzip (macOS has it built-in)
+if ! has_cmd unzip && [[ "$OS" == "linux" ]]; then
+    sudo apt install -y -qq unzip 2>/dev/null || \
+    sudo dnf install -y unzip 2>/dev/null || true
+fi
+
+# curl (should be pre-installed)
+if ! has_cmd curl && [[ "$OS" == "linux" ]]; then
+    sudo apt install -y -qq curl 2>/dev/null || \
+    sudo dnf install -y curl 2>/dev/null || true
+fi
+
+# wget
+if ! has_cmd wget; then
+    if [[ "$OS" == "darwin" ]]; then
+        install_binary \
+            "https://github.com/Homebrew/homebrew-portable-ruby/raw/master/PortableWget-1.21.4.arm64_big_sur.bottle.tar.gz" \
+            "wget" 2>/dev/null || true
+    else
+        sudo apt install -y -qq wget 2>/dev/null || \
+        sudo dnf install -y wget 2>/dev/null || true
+    fi
+fi
+
+# tree
+if ! has_cmd tree; then
+    if [[ "$OS" == "darwin" ]]; then
+        install_binary \
+            "https://github.com/houseabsolute/tree-macos/releases/latest/download/tree-macos-${ARCH}.tar.gz" \
+            "tree" 2>/dev/null || true
+    else
+        sudo apt install -y -qq tree 2>/dev/null || \
+        sudo dnf install -y tree 2>/dev/null || true
+    fi
+fi
+
+# xclip (Linux only)
+if [[ "$OS" == "linux" ]] && ! has_cmd xclip; then
+    sudo apt install -y -qq xclip 2>/dev/null || \
+    sudo dnf install -y xclip 2>/dev/null || true
+fi
+
+echo ">>> Binary tools installed successfully!"
+

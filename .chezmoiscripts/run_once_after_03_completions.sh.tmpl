@@ -1,0 +1,214 @@
+#!/bin/bash
+
+# ============================================================
+# run_once_after_03: Zsh completions
+# Generates completion files to ~/.zfunc/ for all installed
+# tools that support it.
+# ============================================================
+
+set -euo pipefail
+
+HOME_DIR="{{ .chezmoi.homeDir }}"
+ZFUNC_DIR="$HOME_DIR/.zfunc"
+
+mkdir -p "$ZFUNC_DIR"
+
+has_cmd() { command -v "$1" &>/dev/null; }
+
+# rustup completions
+if has_cmd rustup; then
+    echo ">>> Generating rustup completions..."
+    rustup completions zsh > "$ZFUNC_DIR/_rustup" 2>/dev/null || true
+fi
+
+# cargo completions
+if has_cmd cargo; then
+    echo ">>> Generating cargo completions..."
+    rustup completions zsh cargo > "$ZFUNC_DIR/_cargo" 2>/dev/null || true
+fi
+
+# gh completions
+if has_cmd gh; then
+    echo ">>> Generating gh completions..."
+    gh completion -s zsh > "$ZFUNC_DIR/_gh" 2>/dev/null || true
+fi
+
+# fd completions
+if has_cmd fd; then
+    echo ">>> Generating fd completions..."
+    fd --gen-completions zsh > "$ZFUNC_DIR/_fd" 2>/dev/null || true
+fi
+
+# rg completions
+if has_cmd rg; then
+    echo ">>> Generating rg completions..."
+    rg --generate complete-zsh > "$ZFUNC_DIR/_rg" 2>/dev/null || true
+fi
+
+# yazi completions
+if has_cmd yazi; then
+    echo ">>> Generating yazi completions..."
+    yazi --completions zsh > "$ZFUNC_DIR/_yazi" 2>/dev/null || true
+fi
+
+# kitty completions
+if has_cmd kitty; then
+    echo ">>> Generating kitty completions..."
+    kitty + runpy 'import kitty.cli; kitty.cli.completion("zsh")' > "$ZFUNC_DIR/_kitty" 2>/dev/null || true
+fi
+
+# docker completions
+if has_cmd docker; then
+    echo ">>> Generating docker completions..."
+    docker completion zsh > "$ZFUNC_DIR/_docker" 2>/dev/null || true
+fi
+
+# pandoc completions
+if has_cmd pandoc; then
+    echo ">>> Generating pandoc completions..."
+    pandoc --bash-completion > "$ZFUNC_DIR/_pandoc" 2>/dev/null || true
+fi
+
+# go completions (static, go doesn't have native completion)
+if has_cmd go && [ ! -f "$ZFUNC_DIR/_go" ]; then
+    echo ">>> Generating go completions..."
+    cat > "$ZFUNC_DIR/_go" << 'GOEOF'
+#compdef go
+local -a _1st_arguments
+_1st_arguments=(
+  'build:compile packages and dependencies'
+  'clean:remove object files and cached files'
+  'doc:show documentation for package or symbol'
+  'env:print Go environment information'
+  'fix:update packages to use new APIs'
+  'fmt:gofmt (reformat) package sources'
+  'generate:generate Go files by processing source'
+  'get:add dependencies to current module and install them'
+  'install:compile and install packages and dependencies'
+  'list:list packages or modules'
+  'mod:module maintenance'
+  'run:compile and run Go program'
+  'test:test packages'
+  'tool:run specified go tool'
+  'version:print Go version'
+  'vet:report likely mistakes in packages'
+)
+_describe 'go' _1st_arguments
+GOEOF
+fi
+
+# tmux completions (static)
+if has_cmd tmux && [ ! -f "$ZFUNC_DIR/_tmux" ]; then
+    echo ">>> Generating tmux completions..."
+    cat > "$ZFUNC_DIR/_tmux" << 'TMUXEOF'
+#compdef tmux
+local -a _1st_arguments
+_1st_arguments=(
+  'attach:attach to existing session'
+  'bind:bind a key to a command'
+  'breakp:break a pane from an existing window'
+  'capturep:capture the content of a pane'
+  'choose-client:show a client for selection'
+  'choose-session:show a session for selection'
+  'choose-tree:show a tree for selection'
+  'choose-window:show a window for selection'
+  'clear-history:clear the history of a pane'
+  'clock-mode:enter clock mode'
+  'command-prompt:open the command prompt'
+  'confirm-before:ask for confirmation'
+  'copy-mode:enter copy mode'
+  'delete-buffer:delete a paste buffer'
+  'detach:detach from the session'
+  'display:display a message'
+  'display-panes:display pane indicators'
+  'find-window:search for a window'
+  'has-session:check if a session exists'
+  'if-shell:execute a command conditionally'
+  'join-pane:join a pane'
+  'kill-pane:kill a pane'
+  'kill-server:kill the tmux server'
+  'kill-session:kill a session'
+  'kill-window:kill a window'
+  'last-pane:select the last pane'
+  'last-window:select the last window'
+  'link-window:link a window'
+  'list-buffers:list paste buffers'
+  'list-clients:list clients'
+  'list-commands:list commands'
+  'list-keys:list key bindings'
+  'list-panes:list panes'
+  'list-sessions:list sessions'
+  'list-windows:list windows'
+  'load-buffer:load a file into a buffer'
+  'lock-server:lock the server'
+  'lock-session:lock a session'
+  'move-pane:move a pane'
+  'move-window:move a window'
+  'new-session:create a new session'
+  'new-window:create a new window'
+  'next-layout:move to the next layout'
+  'next-window:move to the next window'
+  'paste-buffer:paste a buffer'
+  'pipe-pane:pipe output from a pane'
+  'previous-layout:move to the previous layout'
+  'previous-window:move to the previous window'
+  'refresh-client:refresh a client'
+  'rename-session:rename a session'
+  'rename-window:rename a window'
+  'resize-pane:resize a pane'
+  'respawn-pane:reuse a pane'
+  'respawn-window:reuse a window'
+  'rotate-window:rotate a window'
+  'run-shell:run a shell command'
+  'save-buffer:save a buffer to a file'
+  'select-layout:select a layout'
+  'select-pane:select a pane'
+  'select-prompt:select by prompt'
+  'select-window:select a window'
+  'send-keys:send keys to a pane'
+  'send-prefix:send the prefix key'
+  'set:set an option'
+  'set-buffer:set the content of a buffer'
+  'set-environment:set an environment variable'
+  'set-hook:set a hook'
+  'set-option:set an option'
+  'set-window-option:set a window option'
+  'show-buffer:show the content of a buffer'
+  'show-environment:show the environment'
+  'show-hooks:show hooks'
+  'show-messages:show messages'
+  'show-options:show options'
+  'show-window-options:show window options'
+  'source-file:source a configuration file'
+  'split-window:split a window'
+  'start:start the tmux server'
+  'suspend-client:suspend a client'
+  'swap-pane:swap two panes'
+  'swap-window:swap two windows'
+  'switch-client:switch to a different client'
+  'unbind:unbind a key'
+  'unlink-window:unlink a window'
+  'wait-for:wait for a condition'
+)
+_describe 'tmux' _1st_arguments
+TMUXEOF
+fi
+
+# ============================================================
+# Set zsh as default shell
+# ============================================================
+if has_cmd zsh; then
+    CURRENT_SHELL="$(basename "$SHELL" 2>/dev/null || echo "")"
+    if [[ "$CURRENT_SHELL" != "zsh" ]]; then
+        echo ">>> Setting zsh as default shell..."
+        ZSH_PATH="$(which zsh)"
+        if ! grep -q "$ZSH_PATH" /etc/shells 2>/dev/null; then
+            echo "$ZSH_PATH" | sudo tee -a /etc/shells
+        fi
+        sudo chsh -s "$ZSH_PATH" "$(whoami)" 2>/dev/null || \
+        chsh -s "$ZSH_PATH" 2>/dev/null || true
+    fi
+fi
+
+echo ">>> Completions generated successfully!"
+

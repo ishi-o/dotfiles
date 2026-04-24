@@ -1,13 +1,19 @@
-{{ if not .data.brew.enable }}
-{{ if has .data.convenience_tools "fzf" }}
+# fzf
 "{{ .data.base_path }}/bin/fzf":
   type: "archive"
   url: "https://github.com/junegunn/fzf/releases/latest/download/fzf-{{ .chezmoi.os }}_{{ .chezmoi.arch }}.tar.gz"
   exact: true
   executable: true
-{{ end }}
 
-{{ if has .data.convenience_tools "fd" }}
+# fd
+{{ if eq .chezmoi.os "darwin" }}
+"{{ .data.base_path }}/bin/fd":
+  type: "archive"
+  url: "https://github.com/sharkdp/fd/releases/latest/download/fd-{{ .chezmoi.arch }}-apple-darwin.tar.gz"
+  exact: true
+  stripComponents: 1
+  executable: true
+{{ else }}
 "{{ .data.base_path }}/bin/fd":
   type: "archive"
   url: "https://github.com/sharkdp/fd/releases/latest/download/fd-{{ .chezmoi.arch }}-unknown-linux-musl.tar.gz"
@@ -16,15 +22,22 @@
   executable: true
 {{ end }}
 
-{{ if has .data.convenience_tools "lazygit" }}
+# lazygit
 "{{ .data.base_path }}/bin/lazygit":
   type: "archive"
   url: "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_{{ .chezmoi.os }}_{{ .chezmoi.arch }}.tar.gz"
   exact: true
   executable: true
-{{ end }}
 
-{{ if has .data.convenience_tools "yazi" }}
+# yazi
+{{ if eq .chezmoi.os "darwin" }}
+"{{ .data.base_path }}/bin/yazi":
+  type: "archive"
+  url: "https://github.com/sxyazi/yazi/releases/latest/download/yazi-{{ .chezmoi.arch }}-apple-darwin.zip"
+  exact: true
+  stripComponents: 1
+  executable: true
+{{ else }}
 "{{ .data.base_path }}/bin/yazi":
   type: "archive"
   url: "https://github.com/sxyazi/yazi/releases/latest/download/yazi-{{ .chezmoi.arch }}-unknown-linux-gnu.zip"
@@ -33,16 +46,23 @@
   executable: true
 {{ end }}
 
-{{ if has .data.convenience_tools "gh" }}
+# gh (GitHub CLI)
 "{{ .data.base_path }}/bin/gh":
   type: "archive"
   url: "https://github.com/cli/cli/releases/latest/download/gh_{{ .chezmoi.arch }}.tar.gz"
   exact: true
   stripComponents: 1
   executable: true
-{{ end }}
 
-{{ if has .data.convenience_tools "tmux" }}
+# tmux
+{{ if eq .chezmoi.os "darwin" }}
+"{{ .data.base_path }}/bin/tmux":
+  type: "archive"
+  url: "https://github.com/nickcao/tmux-macos/releases/latest/download/tmux-{{ .chezmoi.arch }}-apple-darwin.tar.gz"
+  exact: true
+  stripComponents: 1
+  executable: true
+{{ else }}
 "{{ .data.base_path }}/bin/tmux":
   type: "archive"
   url: "https://github.com/tmux/tmux/releases/latest/download/tmux-{{ .chezmoi.arch }}-unknown-linux-musl.tar.gz"
@@ -51,12 +71,19 @@
   executable: true
 {{ end }}
 
-{{ if has .data.convenience_tools "ripgrep" }}
+# ripgrep (rg)
+{{ if eq .chezmoi.os "darwin" }}
+"{{ .data.base_path }}/bin/rg":
+  type: "archive"
+  url: "https://github.com/BurntSushi/ripgrep/releases/latest/download/ripgrep-{{ .chezmoi.arch }}-apple-darwin.tar.gz"
+  exact: true
+  stripComponents: 1
+  executable: true
+{{ else }}
 "{{ .data.base_path }}/bin/rg":
   type: "archive"
   url: "https://github.com/BurntSushi/ripgrep/releases/latest/download/ripgrep-{{ .chezmoi.arch }}-unknown-linux-musl.tar.gz"
   exact: true
   stripComponents: 1
   executable: true
-{{ end }}
 {{ end }}

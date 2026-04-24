@@ -1,0 +1,162 @@
+#!/bin/bash
+
+# ============================================================
+# run_once_after_01: Core tools installation
+# Installs tools that need network/download after chezmoiexternals.
+# Order: kitty → nvm/node → pyenv/python → uvx → docker → rust
+# ============================================================
+
+set -euo pipefail
+
+OS="{{ .chezmoi.os }}"
+ARCH="{{ .chezmoi.arch }}"
+HOME_DIR="{{ .chezmoi.homeDir }}"
+LOCAL_DIR="$HOME_DIR/.local"
+BIN_DIR="$LOCAL_DIR/bin"
+
+mkdir -p "$BIN_DIR"
+
+has_cmd() { command -v "$1" &>/dev/null; }
+
+# ============================================================
+# 0. Link binaries from chezmoiexternals
+# ============================================================
+
+# Neovim (downloaded by chezmoiexternals to ~/.local/nvim/)
+if [ -f "$LOCAL_DIR/nvim/bin/nvim" ] && ! has_cmd nvim; then
+    echo ">>> Linking neovim..."
+    ln -sf "$LOCAL_DIR/nvim/bin/nvim" "$BIN_DIR/nvim"
+fi
+
+# Go (downloaded by chezmoiexternals to ~/.local/go/)
+GO_ROOT="{{ .data.go_root }}"
+if [ -f "$GO_ROOT/bin/go" ] && ! has_cmd go; then
+    echo ">>> Linking Go..."
+    ln -sf "$GO_ROOT/bin/go" "$BIN_DIR/go"
+    ln -sf "$GO_ROOT/bin/gofmt" "$BIN_DIR/gofmt"
+fi
+
+# ============================================================
+# 1. Kitty terminal
+# ============================================================
+if ! has_cmd kitty; then
+    echo ">>> Installing Kitty terminal..."
+    if [[ "$OS" == "darwin" ]]; then
+        KITTY_DMG="kitty-0.40.0.dmg"
+        curl -fsSL "https://github.com/kovidgoyal/kitty/releases/latest/download/$KITTY_DMG" -o "/tmp/$KITTY_DMG"
+        hdiutil attach "/tmp/$KITTY_DMG" -mountpoint /tmp/kitty_mount -quiet
+        cp -R "/tmp/kitty_mount/kitty.app" "$HOME_DIR/Applications/" 2>/dev/null || \
+        cp -R "/tmp/kitty_mount/kitty.app" "$HOME_DIR/Desktop/" 2>/dev/null || true
+        hdiutil detach /tmp/kitty_mount -quiet
+        rm -f "/tmp/$KITTY_DMG"
+        if [ -d "$HOME_DIR/Applications/kitty.app" ]; then
+            ln -sf "$HOME_DIR/Applications/kitty.app/Contents/MacOS/kitty" "$BIN_DIR/kitty"
+        fi
+    else
+        KITTY_URL="https://github.com/kovidgoyal/kitty/releases/latest/download/kitty-${ARCH}.tar.xz"
+        curl -fsSL "$KITTY_URL" -o /tmp/kitty.tar.xz
+        mkdir -p "$LOCAL_DIR/kitty"
+        tar xf /tmp/kitty.tar.xz -C "$LOCAL_DIR/kitty"
+        ln -sf "$LOCAL_DIR/kitty/bin/kitty" "$BIN_DIR/kitty"
+        rm -f /tmp/kitty.tar.xz
+    fi
+fi
+
+# ============================================================
+# 2. Node.js / npm (via nvm)
+# ============================================================
+if ! has_cmd node; then
+    echo ">>> Installing Node.js via nvm..."
+    export NVM_DIR="$HOME_DIR/.nvm"
+    if [ ! -d "$NVM_DIR" ]; then
+        curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+    fi
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm install {{ .data.nvm_node }}
+    nvm alias default {{ .data.nvm_node }}
+    NVM_BIN="$NVM_DIR/versions/node/v$(nvm current)/bin"
+    if [ -f "$NVM_BIN/node" ]; then
+        ln -sf "$NVM_BIN/node" "$BIN_DIR/node"
+        ln -sf "$NVM_BIN/npm" "$BIN_DIR/npm"
+        ln -sf "$NVM_BIN/npx" "$BIN_DIR/npx"
+    fi
+fi
+
+# ============================================================
+# 3. Python / pip (via pyenv)
+# ============================================================
+if ! has_cmd python3; then
+    echo ">>> Installing Python via pyenv..."
+    if ! has_cmd pyenv; then
+        curl -fsSL https://pyenv.run | bash
+    fi
+    export PYENV_ROOT="$HOME_DIR/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init -)"
+    pyenv install {{ .data.pyenv_python }} --skip-existing
+    pyenv global {{ .data.pyenv_python }}
+    PYENV_VERSION_PATH="$PYENV_ROOT/versions/{{ .data.pyenv_python }}/bin"
+    if [ -f "$PYENV_VERSION_PATH/python3" ]; then
+        ln -sf "$PYENV_VERSION_PATH/python3" "$BIN_DIR/python3"
+        ln -sf "$PYENV_VERSION_PATH/pip3" "$BIN_DIR/pip3"
+        ln -sf "$PYENV_VERSION_PATH/python3" "$BIN_DIR/python"
+        ln -sf "$PYENV_VERSION_PATH/pip3" "$BIN_DIR/pip"
+    fi
+fi
+
+# Ensure pip
+if has_cmd python3 && ! has_cmd pip3; then
+    echo ">>> Installing pip..."
+    python3 -m ensurepip --upgrade
+fi
+
+# ============================================================
+# 4. uvx (via pip)
+# ============================================================
+if ! has_cmd uvx; then
+    echo ">>> Installing uv (includes uvx)..."
+    curl -fsSL https://astral.sh/uv/install.sh | sh
+    if [ -f "$HOME_DIR/.cargo/bin/uv" ]; then
+        ln -sf "$HOME_DIR/.cargo/bin/uv" "$BIN_DIR/uv"
+        ln -sf "$HOME_DIR/.cargo/bin/uvx" "$BIN_DIR/uvx"
+    fi
+fi
+
+# ============================================================
+# 5. Docker
+# ============================================================
+if ! has_cmd docker; then
+    echo ">>> Installing Docker..."
+    if [[ "$OS" == "darwin" ]]; then
+        DOCKER_DMG="Docker.dmg"
+        curl -fsSL "https://desktop.docker.com/mac/main/${ARCH}/$DOCKER_DMG" -o "/tmp/$DOCKER_DMG"
+        hdiutil attach "/tmp/$DOCKER_DMG" -mountpoint /tmp/docker_mount -quiet
+        cp -R "/tmp/docker_mount/Docker.app" "$HOME_DIR/Applications/" 2>/dev/null || true
+        hdiutil detach /tmp/docker_mount -quiet
+        rm -f "/tmp/$DOCKER_DMG"
+        if [ -d "$HOME_DIR/Applications/Docker.app" ]; then
+            ln -sf "$HOME_DIR/Applications/Docker.app/Contents/Resources/bin/docker" "$BIN_DIR/docker" 2>/dev/null || true
+            ln -sf "$HOME_DIR/Applications/Docker.app/Contents/Resources/bin/docker-compose" "$BIN_DIR/docker-compose" 2>/dev/null || true
+        fi
+    else
+        curl -fsSL https://get.docker.com | sh
+        sudo usermod -aG docker "$(whoami)" 2>/dev/null || true
+    fi
+fi
+
+# ============================================================
+# 6. Rust / Cargo
+# ============================================================
+if ! has_cmd rustc; then
+    echo ">>> Installing Rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+    source "$HOME_DIR/.cargo/env"
+    if [ -f "$HOME_DIR/.cargo/bin/rustc" ]; then
+        ln -sf "$HOME_DIR/.cargo/bin/rustc" "$BIN_DIR/rustc"
+        ln -sf "$HOME_DIR/.cargo/bin/cargo" "$BIN_DIR/cargo"
+        ln -sf "$HOME_DIR/.cargo/bin/rustup" "$BIN_DIR/rustup"
+    fi
+fi
+
+echo ">>> Core tools installed successfully!"
+

@@ -1,8 +1,6 @@
-{{ if has .data.selected_suites "neovim" }}
 "{{ .data.base_path }}/nvim":
   type: "archive"
-  url: "https://github.com/neovim/neovim/releases/download/nightly/nvim-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
+  url: "https://github.com/neovim/neovim/releases/download/nightly/nvim-{{ if eq .chezmoi.os \"darwin\" }}macos-{{ else }}linux-{{ end }}{{ .chezmoi.arch }}.tar.gz"
   exact: true
   stripComponents: 1
   refreshPeriod: "168h"
-{{ end }}

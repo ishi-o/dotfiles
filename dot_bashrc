@@ -60,10 +60,6 @@ source ~/.config/private/env
 . "$HOME/.cargo/env"
 # end cargo
 
-# brew
-eval "$("$HOME/.local/brew/bin/brew" shellenv)"
-# end brew
-
 # sdkman
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/admin/.sdkman"

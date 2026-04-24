@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# ============================================================
+# run_once_before_01: System build dependencies
+# Only the most fundamental build libraries use brew/apt.
+# These are needed BEFORE any tool compilation.
+# ============================================================
+
+set -euo pipefail
+
+OS="{{ .chezmoi.os }}"
+
+has_cmd() { command -v "$1" &>/dev/null; }
+
+# ============================================================
+# macOS: Build dependencies via Homebrew
+# ============================================================
+if [[ "$OS" == "darwin" ]]; then
+    if ! has_cmd brew; then
+        echo ">>> Installing Homebrew (for build deps only)..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+
+    echo ">>> Installing build dependencies via Homebrew..."
+    brew install \
+        luajit libtool pkg-config \
+        openssl readline zlib \
+        sqlite libffi bzip2 xz \
+        2>/dev/null || true
+
+    # Accept Xcode license
+    sudo xcodebuild -license accept 2>/dev/null || true
+fi
+
+# ============================================================
+# Linux: Build dependencies via package manager
+# ============================================================
+if [[ "$OS" == "linux" ]]; then
+    echo ">>> Installing build dependencies..."
+
+    if has_cmd apt; then
+        sudo apt update -qq
+        sudo apt install -y -qq \
+            luajit libluajit-5.1-dev \
+            libtool pkg-config cmake make gcc g++ \
+            libssl-dev libreadline-dev zlib1g-dev \
+            libsqlite3-dev libffi-dev libbz2-dev \
+            xz-utils
+    elif has_cmd dnf; then
+        sudo dnf install -y \
+            luajit luajit-devel \
+            libtool pkg-config cmake make gcc gcc-c++ \
+            openssl-devel readline-devel zlib-devel \
+            sqlite-devel libffi-devel bzip2-devel \
+            xz
+    elif has_cmd pacman; then
+        sudo pacman -S --noconfirm \
+            luajit libtool pkg-config cmake make gcc \
+            openssl readline zlib \
+            sqlite libffi bzip2 xz
+    fi
+fi
+
+echo ">>> Build dependencies installed successfully!"
+
