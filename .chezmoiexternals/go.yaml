@@ -1,6 +1,6 @@
-"{{ .data.go_root }}":
+".local/go":
   type: "archive"
-  url: "https://golang.org/dl/go{{ .data.go_version }}.{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
+  url: "https://golang.org/dl/go1.26.0.{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
   exact: true
   stripComponents: 1
   refreshPeriod: "168h"

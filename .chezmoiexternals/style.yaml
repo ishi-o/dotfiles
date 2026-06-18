@@ -1,4 +1,4 @@
-"{{ .chezmoi.homeDir }}/.local/share/fonts/consolas-ligaturized":
+".local/share/fonts/consolas-ligaturized":
   type: "archive"
   url: "https://github.com/somq/consolas-ligaturized/archive/refs/tags/3.1.tar.gz"
   exact: true
