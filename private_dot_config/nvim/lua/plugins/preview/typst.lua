@@ -1,7 +1,8 @@
 return {
 	{
 		"chomosuke/typst-preview.nvim",
-		lazy = true, -- or ft = 'typst'
+		enabled = false,
+		lazy = true,
 		ft = "typst",
 		version = "1.*",
 		config = function()

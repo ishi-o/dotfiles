@@ -1,3 +1,5 @@
+local renderer = require("neo-tree.ui.renderer")
+
 local opts = {
 	sources = { "filesystem", "buffers", "git_status" },
 	open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
@@ -20,6 +22,7 @@ local opts = {
 		},
 	},
 	window = {
+		width = math.floor(vim.o.columns * 0.3),
 		mappings = {
 			["l"] = "open",
 			["h"] = "close_node",
@@ -27,8 +30,7 @@ local opts = {
 			["Y"] = {
 				function(state)
 					local node = state.tree:get_node()
-					local path = node:get_id()
-					vim.fn.setreg("+", path, "c")
+					vim.fn.setreg("+", node:get_id(), "c")
 				end,
 				desc = "Copy Path to Clipboard",
 			},
@@ -39,11 +41,61 @@ local opts = {
 				desc = "Open with System Application",
 			},
 			["P"] = { "toggle_preview", config = { use_float = false } },
+			["J"] = {
+				function(state)
+					vim.cmd("normal! m'")
+					local node = state.tree:get_node()
+					local parent_id = node:get_parent_id()
+					if not parent_id then
+						vim.cmd("normal! j")
+						return
+					end
+					local parent = state.tree:get_node(parent_id)
+					local grandparent_id = parent:get_parent_id()
+					if not grandparent_id then
+						vim.cmd("normal! j")
+						return
+					end
+					local grandparent = state.tree:get_node(grandparent_id)
+					local uncles = grandparent:get_child_ids()
+					local parent_idx = 0
+					for i, uncle_id in ipairs(uncles) do
+						if uncle_id == parent_id then
+							parent_idx = i
+							break
+						end
+					end
+					if parent_idx < #uncles then
+						renderer.focus_node(state, uncles[parent_idx + 1])
+					else
+						vim.cmd("normal! j")
+					end
+				end,
+				desc = "Parent's next brother",
+			},
+			["K"] = {
+				function(state)
+					vim.cmd("normal! m'")
+					local node = state.tree:get_node()
+					local parent_id = node:get_parent_id()
+					if not parent_id then
+						vim.cmd("normal! k")
+						return
+					end
+					local parent = state.tree:get_node(parent_id)
+					if not parent:get_parent_id() then
+						vim.cmd("normal! k")
+						return
+					end
+					renderer.focus_node(state, parent_id)
+				end,
+				desc = "Parent",
+			},
 		},
 	},
 	default_component_configs = {
 		indent = {
-			with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+			with_expanders = true,
 			expander_collapsed = "",
 			expander_expanded = "",
 			expander_highlight = "NeoTreeExpander",

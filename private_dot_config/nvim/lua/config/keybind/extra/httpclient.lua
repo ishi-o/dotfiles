@@ -1,4 +1,3 @@
--- httpclient --
 return {
 	{ "<leader>Rb", desc = "Open scratchpad" },
 	{ "<leader>Rc", desc = "Copy as cURL" },

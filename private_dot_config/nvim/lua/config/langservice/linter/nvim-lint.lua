@@ -17,14 +17,15 @@ end
 
 local lint = require("lint")
 lint.linters_by_ft = {
-	bash = { "shellcheck" },
+	-- bash = { "shellcheck" },
+	bash = {},
 	c = { "cpplint" },
 	cpp = { "cpplint" },
 	css = { "stylelint" },
 	docker = { "hadolint" },
 	go = { "golangcilint" },
 	html = { "htmlhint" },
-	java = { "checkstyle" },
+	-- java = { "checkstyle" },
 	javascript = { "eslint_d" },
 	javascriptreact = { "eslint_d" },
 	json = { "jsonlint" },
@@ -33,7 +34,7 @@ lint.linters_by_ft = {
 	mysql = { "sqlfluff" },
 	pgsql = { "sqlfluff" },
 	plsql = { "sqlfluff" },
-	proto = { "buf_lint" },
+	-- proto = { "buf_lint" },	-- lsp support
 	python = { "ruff" },
 	scss = { "stylelint" },
 	sh = { "shellcheck" },

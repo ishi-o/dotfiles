@@ -24,6 +24,7 @@ local handler = function(virtText, lnum, endLnum, width, truncate)
 	table.insert(newVirtText, { suffix, "MoreMsg" })
 	return newVirtText
 end
+
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.foldingRange = {
 	dynamicRegistration = false,
@@ -36,20 +37,16 @@ for _, ls in ipairs(language_servers) do
 		capabilities = capabilities,
 	})
 end
+
 require("ufo").setup({
+	close_fold_kinds_for_ft = {
+		default = { "imports", "comment" },
+	},
 	fold_virt_text_handler = handler,
-	provider_selector = function(bufnr, filetype, buftype)
-		if
-			filetype == "codecompanion"
-			or filetype == "snacks_picker_list"
-			or filetype == "snacks_picker_input"
-			or filetype == "aerial"
-		then
-			return { "indent" }
+	provider_selector = function(_, ft, buftype)
+		if buftype ~= "" or not vim.tbl_contains(require("config.langservice.treesitter_conf").fts, ft) then
+			return { "lsp", "indent" }
 		end
-		-- only support main/fallback table
-		-- lsp / treesitter / indent
-		-- return { "lsp", "treesitter" }
-		return { "lsp", "indent" }
+		return { "lsp", "treesitter" }
 	end,
 })

@@ -1,54 +1,56 @@
--- outline --
 return {
-	-- aerial.nvim --
 	{
-		{ "<leader>o", "<cmd>AerialToggle<CR>", desc = "Toggle: outline (Symbols)" },
+		cond = function()
+			return _G.plugin_installed("trouble.nvim")
+		end,
+		{ "<leader>o", "<cmd>Trouble symbols toggle focus=false<CR>", desc = "Toggle: outline (Symbols)" },
 		{
 			"[s",
 			function()
-				vim.cmd(vim.v.count1 .. "AerialPrev")
+				require("trouble").prev({ mode = "symbols", skip_groups = true, jump = true })
 			end,
 			desc = "Goto: prev symbol",
 		},
 		{
 			"]s",
 			function()
-				vim.cmd(vim.v.count1 .. "AerialNext")
+				require("trouble").next({ mode = "symbols", skip_groups = true, jump = true })
 			end,
 			desc = "Goto: next symbol",
 		},
 		{
 			"]S",
 			function()
-				vim.cmd(vim.v.count1 .. "AerialPrev")
+				require("trouble").prev({ mode = "symbols", skip_groups = true, jump = true })
 			end,
 			desc = "Goto: prev symbol",
 		},
 		{
 			"[S",
 			function()
-				vim.cmd(vim.v.count1 .. "AerialNext")
+				require("trouble").next({ mode = "symbols", skip_groups = true, jump = true })
 			end,
 			desc = "Goto: next symbol",
 		},
 		{
 			"(",
 			function()
-				vim.cmd(vim.v.count1 .. "AerialPrev")
+				require("trouble").prev({ mode = "symbols", skip_groups = true, jump = true })
 			end,
 			desc = "Goto: prev symbol",
 		},
 		{
 			")",
 			function()
-				vim.cmd(vim.v.count1 .. "AerialNext")
+				require("trouble").next({ mode = "symbols", skip_groups = true, jump = true })
 			end,
 			desc = "Goto: next symbol",
 		},
 	},
-
-	-- trouble.nvim --
 	{
+		cond = function()
+			return _G.plugin_installed("trouble.nvim")
+		end,
 		"<leader>xs",
 		"<cmd>Trouble symbols toggle focus=false<CR>",
 		desc = "Toggle: symbols (Trouble)",

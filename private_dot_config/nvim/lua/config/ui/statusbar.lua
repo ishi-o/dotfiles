@@ -1,87 +1,95 @@
-require("nvim-navic").setup({
-	icons = {
-		File = " ",
-		Module = " ",
-		Namespace = " ",
-		Package = " ",
-		Class = " ",
-		Method = " ",
-		Property = " ",
-		Field = " ",
-		Constructor = " ",
-		Enum = " ",
-		Interface = " ",
-		Function = " ",
-		Variable = " ",
-		Constant = " ",
-		String = " ",
-		Number = " ",
-		Boolean = " ",
-		Array = " ",
-		Object = " ",
-		Key = " ",
-		Null = " ",
-		EnumMember = " ",
-		Struct = " ",
-		Event = " ",
-		Operator = " ",
-		TypeParameter = " ",
-	},
-	-- icons = {
-	-- 	File = " ",
-	-- 	Module = " ",
-	-- 	Namespace = " ",
-	-- 	Package = " ",
-	-- 	Class = " ",
-	-- 	Method = " ",
-	-- 	Property = " ",
-	-- 	Field = " ",
-	-- 	Constructor = " ",
-	-- 	Enum = " ",
-	-- 	Interface = " ",
-	-- 	Function = "󰊕 ",
-	-- 	Variable = "󰫧 ",
-	-- 	Constant = "󰫧 ",
-	-- 	String = " ",
-	-- 	Number = " ",
-	-- 	Boolean = " ",
-	-- 	Array = " ",
-	-- 	Object = " ",
-	-- 	Key = " ",
-	-- 	Null = "󰟢 ",
-	-- 	EnumMember = " ",
-	-- 	Struct = " ",
-	-- 	Event = " ",
-	-- 	Operator = " ",
-	-- 	TypeParameter = " ",
-	-- },
-	highlight = true,
-	separator = "  ",
-	depth_limit = 0,
-	depth_limit_indicator = "..",
-	-- format_text = function(symbols)
-	-- 	local wanted_types = {
-	-- 		Function = true,
-	-- 		Method = true,
-	-- 		Constructor = true,
-	-- 		Interface = true,
-	-- 		Class = true,
-	-- 		Struct = true,
-	-- 	}
-	-- 	local filtered = {}
-	-- 	for _, symbol in ipairs(symbols) do
-	-- 		if wanted_types[symbol.type] then
-	-- 			table.insert(filtered, symbol.name)
-	-- 		end
-	-- 	end
-	-- 	if #filtered == 0 then
-	-- 		return ""
-	-- 	end
-	-- 	return table.concat(filtered, "  ")
-	-- end,
-})
+local ok, navic = pcall(require, "nvim-navic")
+if ok then
+	navic.setup({
+		icons = {
+			File = " ",
+			Module = " ",
+			Namespace = " ",
+			Package = " ",
+			Class = " ",
+			Method = " ",
+			Property = " ",
+			Field = " ",
+			Constructor = " ",
+			Enum = " ",
+			Interface = " ",
+			Function = " ",
+			Variable = " ",
+			Constant = " ",
+			String = " ",
+			Number = " ",
+			Boolean = " ",
+			Array = " ",
+			Object = " ",
+			Key = " ",
+			Null = " ",
+			EnumMember = " ",
+			Struct = " ",
+			Event = " ",
+			Operator = " ",
+			TypeParameter = " ",
+		},
+		-- icons = {
+		-- 	File = " ",
+		-- 	Module = " ",
+		-- 	Namespace = " ",
+		-- 	Package = " ",
+		-- 	Class = " ",
+		-- 	Method = " ",
+		-- 	Property = " ",
+		-- 	Field = " ",
+		-- 	Constructor = " ",
+		-- 	Enum = " ",
+		-- 	Interface = " ",
+		-- 	Function = "󰊕 ",
+		-- 	Variable = "󰫧 ",
+		-- 	Constant = "󰫧 ",
+		-- 	String = " ",
+		-- 	Number = " ",
+		-- 	Boolean = " ",
+		-- 	Array = " ",
+		-- 	Object = " ",
+		-- 	Key = " ",
+		-- 	Null = "󰟢 ",
+		-- 	EnumMember = " ",
+		-- 	Struct = " ",
+		-- 	Event = " ",
+		-- 	Operator = " ",
+		-- 	TypeParameter = " ",
+		-- },
+		highlight = true,
+		separator = "  ",
+		depth_limit = 0,
+		depth_limit_indicator = "..",
+		-- format_text = function(symbols)
+		-- 	local wanted_types = {
+		-- 		Function = true,
+		-- 		Method = true,
+		-- 		Constructor = true,
+		-- 		Interface = true,
+		-- 		Class = true,
+		-- 		Struct = true,
+		-- 	}
+		-- 	local filtered = {}
+		-- 	for _, symbol in ipairs(symbols) do
+		-- 		if wanted_types[symbol.type] then
+		-- 			table.insert(filtered, symbol.name)
+		-- 		end
+		-- 	end
+		-- 	if #filtered == 0 then
+		-- 		return ""
+		-- 	end
+		-- 	return table.concat(filtered, "  ")
+		-- end,
+	})
+end
 
-require("lualine").setup({
+local ok, lualine = pcall(require, "lualine")
+if not ok then
+	return
+end
+
+lualine.setup({
 	options = {
 		icons_enabled = true,
 		theme = "auto",
@@ -175,8 +183,8 @@ require("lualine").setup({
 		lualine_b = {
 			{
 				function()
-					local navic = require("nvim-navic")
-					if navic.is_available() then
+					local ok, navic = pcall(require, "nvim-navic")
+					if ok and navic.is_available() then
 						local location = navic.get_location()
 						return location and #location > 0 and location or " "
 					else

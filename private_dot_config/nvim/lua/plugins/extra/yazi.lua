@@ -1,5 +1,6 @@
 return {
 	"mikavilpas/yazi.nvim",
+	enabled = false,
 	version = "*",
 	event = "VeryLazy",
 	dependencies = {

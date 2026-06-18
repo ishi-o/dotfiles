@@ -1,9 +1,7 @@
 return {
-	-- aerial.nvim --
-	-- outline
-	-- 大纲
 	{
 		"stevearc/aerial.nvim",
+		enabled = false,
 		lazy = true,
 		cmd = { "AerialToggle", "AerialPrev", "AerialNext" },
 		config = function()

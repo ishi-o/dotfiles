@@ -1,9 +1,7 @@
 return {
-	-- nvim-scrollbar --
-	-- scroller
-	-- 滑动条
 	{
 		"petertriho/nvim-scrollbar",
+		enabled = false,
 		dependencies = {
 			"lewis6991/gitsigns.nvim",
 			{
@@ -14,7 +12,6 @@ return {
 							require("scrollbar.handlers.search").handler.show(plist.start_pos)
 						end,
 					})
-
 					vim.cmd([[
 						augroup scrollbar_search_hide
 							autocmd!

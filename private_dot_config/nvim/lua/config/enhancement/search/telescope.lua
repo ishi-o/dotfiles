@@ -1,4 +1,7 @@
-local telescope = require("telescope")
+local ok, telescope = pcall(require, "telescope")
+if not ok then
+	return
+end
 
 telescope.setup({
 	defaults = {
@@ -60,6 +63,3 @@ if vim.fn.filereadable(vim.fn.stdpath("data") .. "/lazy/telescope-fzf-native.nvi
 			.. "/lazy/telescope-fzf-native.nvim && cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release >/dev/null 2>&1"
 	)
 end
-
--- telescope.load_extension("fzf")
--- telescope.load_extension("file_browser")

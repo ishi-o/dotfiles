@@ -1,10 +1,7 @@
 return {
-	-- codewindow.nvim --
-	-- mini code map
-	-- 代码迷你地图
 	{
 		"gorbit99/codewindow.nvim",
-		optional = true,
+		enabled = false,
 		lazy = true,
 		module = "codewindow",
 		config = function()

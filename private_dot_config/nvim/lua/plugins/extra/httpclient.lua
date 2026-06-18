@@ -1,9 +1,7 @@
 return {
-	-- kulala.nvim --
-	-- http client support
-	-- api 测试客户端支持
 	{
 		"mistweaverco/kulala.nvim",
+		enabled = false,
 		ft = { "http", "rest" },
 		opts = {
 			global_keymaps = false,

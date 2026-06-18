@@ -1,6 +1,33 @@
--- buffer --
+local function smart_bd()
+	local buf = vim.api.nvim_get_current_buf()
+	local win = vim.api.nvim_get_current_win()
+
+	local bufs = vim.api.nvim_list_bufs()
+	local valid_bufs = {}
+	for _, b in ipairs(bufs) do
+		if vim.api.nvim_buf_is_loaded(b) and vim.bo[b].buflisted then
+			table.insert(valid_bufs, b)
+		end
+	end
+
+	local next_buf = nil
+	for i, b in ipairs(valid_bufs) do
+		if b == buf then
+			next_buf = valid_bufs[i % #valid_bufs + 1]
+			break
+		end
+	end
+
+	if not next_buf then
+		vim.cmd("enew")
+		vim.cmd("bd " .. buf)
+	else
+		vim.api.nvim_win_set_buf(win, next_buf)
+		vim.cmd("bd " .. buf)
+	end
+end
+
 return {
-	-- buffer locally --
 	{
 		{
 			"<leader>ee",
@@ -16,21 +43,32 @@ return {
 		{ "[b", "<cmd>bprev<CR>", desc = "Goto: prev buffer" },
 		{ "]b", "<cmd>bnext<CR>", desc = "Goto: next buffer" },
 		{ "<leader>bl", "<cmd>b#<CR>", desc = "Goto: last buffer" },
-		-- buffer delete --
-		{ "<leader>bd", "<cmd>bd<CR>", desc = "Delete curr buffer" },
-	},
-
-	-- buffer enhancement --
-	{
-		{ "[B", "<cmd>BufferLineMovePrev<CR>", desc = "Move buffer left" },
-		{ "]B", "<cmd>BufferLineMoveNext<CR>", desc = "Move buffer right" },
-		{ "H", "<cmd>BufferLineCyclePrev<CR>", desc = "Goto: prev buffer" },
-		{ "L", "<cmd>BufferLineCycleNext<CR>", desc = "Goto: next buffer" },
-		{ "<leader>bH", "<cmd>BufferLineCloseLeft<CR>", desc = "Delete left buffers" },
-		{ "<leader>bL", "<cmd>BufferLineCloseRight<CR>", desc = "Delete right buffers" },
-		{ "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", desc = "Delete other buffers" },
-		{ "<leader>bp", "<cmd>BufferLineTogglePin<CR>", desc = "Toggle: buffer pin" },
-		{ "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete unpinned buffers" },
-		{ "<leader>bs", "<cmd>BufferLinePick<CR>", desc = "Select buffer" },
+		{ "<leader>bd", smart_bd, desc = "Delete curr buffer" },
+		{
+			"<leader>bc",
+			function()
+				vim.fn.setreg("+", vim.fn.expand("%:p"))
+			end,
+			desc = "Copy curr buffer absolute path",
+		},
+		{
+			"<leader>bC",
+			function()
+				vim.fn.setreg("+", vim.fn.expand("%"))
+			end,
+			desc = "Copy curr buffer relative path",
+		},
+		{
+			{ "[B", "<cmd>BufferLineMovePrev<CR>", desc = "Move buffer left" },
+			{ "]B", "<cmd>BufferLineMoveNext<CR>", desc = "Move buffer right" },
+			{ "H", "<cmd>BufferLineCyclePrev<CR>", desc = "Goto: prev buffer" },
+			{ "L", "<cmd>BufferLineCycleNext<CR>", desc = "Goto: next buffer" },
+			{ "<leader>bH", "<cmd>BufferLineCloseLeft<CR>", desc = "Delete left buffers" },
+			{ "<leader>bL", "<cmd>BufferLineCloseRight<CR>", desc = "Delete right buffers" },
+			{ "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", desc = "Delete other buffers" },
+			{ "<leader>bp", "<cmd>BufferLineTogglePin<CR>", desc = "Toggle: buffer pin" },
+			{ "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete unpinned buffers" },
+			{ "<leader>bs", "<cmd>BufferLinePick<CR>", desc = "Select buffer" },
+		},
 	},
 }

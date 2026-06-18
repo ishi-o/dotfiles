@@ -1,4 +1,3 @@
--- refactor --
 return {
 	{ "<F2>", desc = "Rename" },
 	{ "<leader>rn", desc = "Rename" },

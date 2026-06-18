@@ -1,9 +1,7 @@
 return {
-	-- remote-sshfs.nvim --
-	-- ssh filesystem integration
-	-- sshfs 集成
 	{
 		"nosduco/remote-sshfs.nvim",
+		enabled = false,
 		lazy = true,
 		cmd = {
 			"RemoteSSHFSConnect",
@@ -11,18 +9,15 @@ return {
 			"RemoteSSHFSLiveGrep",
 		},
 		dependencies = {
-			"nvim-telescope/telescope.nvim",
 			"nvim-lua/plenary.nvim",
 		},
 		config = function()
 			require("config.remote.sshfs")
 		end,
 	},
-	-- oil.nvim --
-	-- remote file editor
-	-- 非挂载式远程连接
 	{
 		"stevearc/oil.nvim",
+		enabled = false,
 		lazy = true,
 		cmd = "Oil",
 		dependencies = { "nvim-tree/nvim-web-devicons" },

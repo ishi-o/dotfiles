@@ -3,9 +3,11 @@ local conf = require("config.langservice.lsp.conf")
 vim.lsp.config("gopls", {
 	on_attach = conf.on_attach,
 	capabilities = conf.capabilities,
+	root_dir = vim.fs.root(0, { "go.mod", ".git" }),
 	settings = {
 		gopls = {
 			gofumpt = true,
+			templateExtensions = { "tmpl", "gotmpl" },
 			codelenses = {
 				gc_details = false,
 				generate = true,

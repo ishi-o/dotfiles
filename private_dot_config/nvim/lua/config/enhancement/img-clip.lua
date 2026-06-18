@@ -1,10 +1,13 @@
-require("img-clip").setup({
-	default = {
-		embed_image_as_base64 = false,
-		prompt_for_file_name = false,
-		drag_and_drop = {
-			insert_mode = true,
+local ok, img_clip = pcall(require, "img-clip")
+if ok then
+	img_clip.setup({
+		default = {
+			embed_image_as_base64 = false,
+			prompt_for_file_name = false,
+			drag_and_drop = {
+				insert_mode = true,
+			},
+			use_absolute_path = true,
 		},
-		use_absolute_path = true,
-	},
-})
+	})
+end

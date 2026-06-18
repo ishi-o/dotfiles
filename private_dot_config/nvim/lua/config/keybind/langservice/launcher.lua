@@ -1,14 +1,9 @@
--- launcher --
 return {
-	-- debug --
 	{
 		{ "<F5>", '<cmd>lua require("dap").continue()<CR>', desc = "Run / Continue" },
-		-- <S-F5>
 		{ "<F17>", '<cmd>lua require("dap").terminate()<CR>', desc = "Terminate" },
-		-- <C-S-F5>
 		{ "<F41>", '<cmd>lua require("dap").run_last()<CR>', desc = "Run last" },
 		{ "<F6>", '<cmd>lua require("dap").pause()<CR>', desc = "Pause" },
-		-- { "<F9>", '<cmd>lua require("dap").toggle_breakpoint()<CR>', desc = "Toggle Breakpoint" },
 		{
 			"<F9>",
 			'<cmd>lua require("persistent-breakpoints.api").toggle_breakpoint()<CR>',
@@ -16,9 +11,7 @@ return {
 		},
 		{ "<F10>", '<cmd>lua require("dap").step_over()<CR>', desc = "Step Over" },
 		{ "<F11>", '<cmd>lua require("dap").step_into()<CR>', desc = "Step Into" },
-		-- <S-F11>
 		{ "<F23>", '<cmd>lua require("dap").step_out()<CR>', desc = "Step Out" },
-
 		{
 			"<leader>db",
 			'<cmd>lua require("persistent-breakpoints.api").toggle_breakpoint()<CR>',
@@ -42,18 +35,15 @@ return {
 		{ "<leader>dr", '<cmd>lua require("dap").restart()<CR>', desc = "Restart" },
 		{ "<leader>dj", '<cmd>lua require("dap").down()<CR>', desc = "Down Frame" },
 		{ "<leader>dk", '<cmd>lua require("dap").up()<CR>', desc = "Up Frame" },
-	},
-
-	-- tasks --
-	{
-		{ "<F4>", "<cmd>OverseerRun Build<CR>", desc = "Build" },
-		{ "<F5>", "<cmd>OverseerRun BuildRun<CR>", desc = "Build & run" },
-
-		{ "<leader>yb", "<cmd>OverseerRun Build<CR>", desc = "Build" },
-		{ "<leader>yr", "<cmd>OverseerRun BuildRun<CR>", desc = "Build & run" },
-		{ "<leader>yR", "<cmd>OverseerRun Run<CR>", desc = "Run" },
-		{ "<leader>yy", "<cmd>OverseerToggle<CR>", desc = "Toggle: overseer panel" },
-		{ "<leader>fy", "<cmd>OverseerRun<CR>", desc = "Run lists" },
-		{ "<leader>fY", "<cmd>OverseerTaskAction<CR>", desc = "Task actions" },
+		{
+			{ "<F4>", "<cmd>OverseerRun Build<CR>", desc = "Build" },
+			{ "<F5>", "<cmd>OverseerRun BuildRun<CR>", desc = "Build & run" },
+			{ "<leader>yb", "<cmd>OverseerRun Build<CR>", desc = "Build" },
+			{ "<leader>yr", "<cmd>OverseerRun BuildRun<CR>", desc = "Build & run" },
+			{ "<leader>yR", "<cmd>OverseerRun Run<CR>", desc = "Run" },
+			{ "<leader>yy", "<cmd>OverseerToggle<CR>", desc = "Toggle: overseer panel" },
+			{ "<leader>fy", "<cmd>OverseerRun<CR>", desc = "Run lists" },
+			{ "<leader>fY", "<cmd>OverseerTaskAction<CR>", desc = "Task actions" },
+		},
 	},
 }

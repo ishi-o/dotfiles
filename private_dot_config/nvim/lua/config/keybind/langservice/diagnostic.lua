@@ -1,6 +1,4 @@
--- diagnostic --
 return {
-	-- diagnostic locally --
 	{
 		{
 			"gk",
@@ -52,9 +50,10 @@ return {
 		{ "gQ", vim.diagnostic.setqflist, desc = "Show: qflist" },
 		{ "gL", vim.diagnostic.setloclist, desc = "Show: loclist" },
 	},
-	-- diagnostic enhancement --
-	-- trouble.nvim --
 	{
+		cond = function()
+			return _G.plugin_installed("trouble.nvim")
+		end,
 		{ "<leader>xx", "<cmd>Trouble diagnostics toggle<CR>", desc = "Show: global diagnostics (trouble)" },
 		{
 			"<leader>xX",

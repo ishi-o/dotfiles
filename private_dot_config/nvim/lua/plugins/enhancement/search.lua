@@ -1,9 +1,7 @@
 return {
-	-- telescope.nvim --
-	-- file search
-	-- 跨文件模糊搜索
 	{
 		"nvim-telescope/telescope.nvim",
+		enabled = false,
 		branch = "0.1.8",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -14,9 +12,6 @@ return {
 			require("config.enhancement.search.telescope")
 		end,
 	},
-	-- flash.nvim --
-	-- inner search
-	-- 窗口内快速跳转
 	{
 		"folke/flash.nvim",
 		lazy = false,

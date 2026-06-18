@@ -1,7 +1,8 @@
--- todo-comments --
 return {
-	-- todo-comments.nvim --
 	{
+		cond = function()
+			return _G.plugin_installed("todo-comments.nvim")
+		end,
 		{
 			"]t",
 			'<cmd>lua require("todo-comments").jump_next()<CR>',
@@ -18,7 +19,23 @@ return {
 			"<cmd>TodoTrouble toggle filter = {tag = {TODO,FIX,FIXME}}<CR>",
 			desc = "Todo/Fix/Fixme (Trouble)",
 		},
-		{ "<leader>ft", "<cmd>TodoTelescope<CR>", desc = "Todo" },
-		{ "<leader>fT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<CR>", desc = "Todo/Fix/Fixme" },
+		{
+			"<leader>ft",
+			function()
+				require("lazy").load({ plugins = { "todo-comments.nvim" } })
+				Snacks.picker.todo_comments()
+			end,
+			desc = "Todo",
+		},
+		{
+			"<leader>fT",
+			function()
+				require("lazy").load({ plugins = { "todo-comments.nvim" } })
+				Snacks.picker.todo_comments({
+					keywords = { "TODO", "FIX", "FIXME" },
+				})
+			end,
+			desc = "Todo/Fix/Fixme",
+		},
 	},
 }

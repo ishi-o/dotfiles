@@ -1,7 +1,4 @@
 return {
-	-- noice.nvim --
-	-- notice
-	-- 消息系统 ui 优化
 	{
 		"folke/noice.nvim",
 		lazy = true,
@@ -19,11 +16,9 @@ return {
 			require("config.ui.notice.noice")
 		end,
 	},
-
-	-- fidget.nvim --
-	-- lsp load notice in the bottom right corner
 	{
 		"j-hui/fidget.nvim",
+		enabled = false,
 		config = function()
 			require("config.ui.notice.fidget")
 		end,

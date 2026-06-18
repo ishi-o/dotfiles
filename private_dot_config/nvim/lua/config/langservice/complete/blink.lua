@@ -55,17 +55,22 @@ blink.setup({
 		},
 	},
 	sources = {
-		default = {
-			"lazydev",
-			"dadbod",
-			"lsp",
-			"path",
-			"snippets",
-			"buffer",
-			"mybatis",
-
-			-- "avante",
-		},
+		default = function()
+			local sources = {
+				"lazydev",
+				"lsp",
+				"path",
+				"snippets",
+				"buffer",
+			}
+			if pcall(require, "vim_dadbod_completion.blink") then
+				table.insert(sources, "dadbod")
+			end
+			if pcall(require, "nvim-mybatis.completion.blink") then
+				table.insert(sources, "mybatis")
+			end
+			return sources
+		end,
 		providers = {
 			lazydev = {
 				name = "LazyDev",
@@ -92,10 +97,6 @@ blink.setup({
 					},
 				},
 			},
-			-- avante = {
-			-- 	name = "Avante",
-			-- 	module = "blink-cmp-avante",
-			-- },
 		},
 	},
 	snippets = { preset = "default" },

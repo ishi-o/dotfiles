@@ -1,14 +1,8 @@
--- workspace --
 return {
-	-- project manager --
-	-- project.nvim --
 	{
-		{ "<leader>fP", '<cmd>lua require"telescope".extensions.projects.projects{}<CR>', desc = "Projects" },
-	},
-
-	-- session manager --
-	-- auto-session --
-	{
+		cond = function()
+			return _G.plugin_installed("auto-session")
+		end,
 		{ "<leader>fs", "<cmd>AutoSession search<CR>", desc = "Session" },
 		{ "<leader>Sd", "<cmd>AutoSession delete<CR>", desc = "Delete" },
 		{ "<leader>SD", "<cmd>AutoSession deletePicker<CR>", desc = "DeletePicker" },

@@ -1,3 +1,5 @@
+vim.opt.title = true
+vim.opt.titlestring = "NVIM: %f"
 vim.opt.rtp:prepend(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")
 vim.opt.encoding = "utf-8"
 vim.opt.syntax = "on"
@@ -53,3 +55,7 @@ vim.opt.splitkeep = "screen"
 vim.opt.termguicolors = true
 vim.opt.background = "light"
 -- vim.opt.background = "dark"
+
+vim.opt.diffopt = "filler,context:3,internal,algorithm:patience"
+
+vim.opt.updatetime = 600

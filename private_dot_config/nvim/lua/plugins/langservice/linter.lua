@@ -1,7 +1,4 @@
 return {
-	-- nvim-lint --
-	-- linter support
-	-- 静态检查支持
 	{
 		"mfussenegger/nvim-lint",
 		lazy = true,
@@ -10,9 +7,6 @@ return {
 			require("config.langservice.linter.nvim-lint")
 		end,
 	},
-	-- null-ls.nvim --
-	-- linter support
-	-- 静态检查支持
 	{
 		"nvimtools/none-ls.nvim",
 		enabled = false,

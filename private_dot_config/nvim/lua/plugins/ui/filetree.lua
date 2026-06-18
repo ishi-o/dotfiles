@@ -1,11 +1,7 @@
 return {
-	-- neo-tree.nvim --
-	-- file-tree
-	-- 文件树
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
-		optional = false,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",
@@ -15,12 +11,9 @@ return {
 			require("config.ui.filetree.neo-tree")
 		end,
 	},
-	-- nvim-tree.lua --
-	-- file-tree
-	-- 文件树
 	{
 		"nvim-tree/nvim-tree.lua",
-		optional = true,
+		enabled = false,
 		config = function()
 			require("config.ui.filetree.nvim-tree")
 		end,

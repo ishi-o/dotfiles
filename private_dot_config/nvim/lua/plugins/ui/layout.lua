@@ -1,10 +1,7 @@
 return {
-	-- edgy.nvim --
-	-- layout
-	-- 布局支持
 	{
 		"folke/edgy.nvim",
-		optional = true,
+		enabled = false,
 		event = "VeryLazy",
 		config = function()
 			require("config.ui.layout")

@@ -1,9 +1,7 @@
 return {
-	-- vim-dadbod --
-	-- database connection ui support
-	-- 数据库连接 支持
 	{
 		"kristijanhusak/vim-dadbod-ui",
+		enabled = false,
 		lazy = true,
 		cmd = {
 			"DBUI",
@@ -26,9 +24,9 @@ return {
 				},
 				lazy = true,
 			},
+			config = function()
+				require("config.extra.database")
+			end,
 		},
-		config = function()
-			require("config.extra.database")
-		end,
 	},
 }

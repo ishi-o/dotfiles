@@ -1,6 +1,4 @@
 return {
-	-- colortheme --
-	-- 颜色主题
 	{
 		"sainnhe/everforest",
 		lazy = false,
@@ -11,7 +9,7 @@ return {
 	},
 	{
 		"folke/tokyonight.nvim",
-		optional = true,
+		enabled = false,
 		lazy = true,
 	},
 }

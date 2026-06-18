@@ -1,4 +1,5 @@
 local autocmd = vim.api.nvim_create_autocmd
+
 autocmd({ "BufRead", "BufNewFile" }, {
 	pattern = {
 		"*.png",
@@ -98,16 +99,6 @@ autocmd("FileType", {
 	end,
 })
 
--- autocmd("BufWrite", {
--- 	pattern = "*.java",
--- 	callback = function()
--- 		vim.lsp.buf.code_action({
--- 			context = { only = { "source.organizeImports" } },
--- 			apply = true,
--- 		})
--- 	end,
--- })
-
 autocmd("FileType", {
 	pattern = "java",
 	callback = function()
@@ -151,31 +142,27 @@ autocmd("FileType", {
 	end,
 })
 
-vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
-	pattern = "*",
-	callback = function()
-		vim.defer_fn(function()
-			if vim.bo.buftype == "" then
-				vim.schedule(function()
-					local mode = vim.api.nvim_get_mode().mode
-					if mode == "n" then
-						vim.api.nvim_win_call(0, function()
-							vim.cmd("normal! zz")
-						end)
-					end
-				end)
-			end
-		end, 200)
-	end,
-})
+do
+	local ns = vim.api.nvim_create_namespace("bracket_hl")
 
--- vim.api.nvim_create_autocmd("BufWritePost", {
--- 	pattern = "*.java",
--- 	callback = function()
--- 		vim.fn.jobstart("mvn compile", {
--- 			stdout_buffered = true,
--- 			stderr_buffered = true,
--- 		})
--- 	end,
--- 	desc = "Auto compile all Java files on save",
--- })
+	autocmd("CursorHold", {
+		callback = function()
+			local buf = vim.api.nvim_get_current_buf()
+			vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
+
+			local open = vim.fn.searchpairpos("[[({]", "", "[])}]", "nbW")
+			local close = vim.fn.searchpairpos("[[({]", "", "[])}]", "nW")
+
+			if open[1] ~= 0 and close[1] ~= 0 then
+				vim.api.nvim_buf_set_extmark(buf, ns, open[1] - 1, open[2] - 1, {
+					end_col = open[2],
+					hl_group = "MatchParen",
+				})
+				vim.api.nvim_buf_set_extmark(buf, ns, close[1] - 1, close[2] - 1, {
+					end_col = close[2],
+					hl_group = "MatchParen",
+				})
+			end
+		end,
+	})
+end

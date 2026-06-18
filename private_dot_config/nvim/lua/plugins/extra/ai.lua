@@ -1,9 +1,20 @@
 return {
-	-- codecompanion.nvim --
-	-- AI support
+	{
+		"coder/claudecode.nvim",
+		enabled = false,
+		cmd = {
+			"ClaudeCode",
+		},
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		config = function()
+			require("config.extra.ai.claudecode")
+		end,
+	},
 	{
 		"olimorris/codecompanion.nvim",
-		optional = true,
+		enabled = false,
 		lazy = false,
 		cmd = {
 			"CodeCompanion",
@@ -19,11 +30,9 @@ return {
 			require("config.extra.ai.codecompanion")
 		end,
 	},
-	-- avante.nvim --
-	-- AI support
 	{
 		"yetone/avante.nvim",
-		optional = false,
+		enabled = false,
 		event = "VeryLazy",
 		version = false,
 		build = vim.fn.has("win32") ~= 0
@@ -31,7 +40,6 @@ return {
 			or "make",
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
-			"nvim-telescope/telescope.nvim",
 			"stevearc/dressing.nvim",
 			"folke/snacks.nvim",
 			"nvim-tree/nvim-web-devicons",
@@ -41,11 +49,9 @@ return {
 			require("config.extra.ai.avante")
 		end,
 	},
-	-- copilot.lua --
-	-- AI support
 	{
 		"zbirenbaum/copilot.lua",
-		optional = true,
+		enabled = false,
 		cmd = "Copilot",
 		build = ":Copilot auth",
 		event = "BufReadPost",

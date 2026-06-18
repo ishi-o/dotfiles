@@ -1,0 +1,5 @@
+WRN 2026-07-02T10:45:08.336 c/nvim.30441.0 server_start:197: Failed to start server: operation not permitted: /var/folders/5f/5z4f98bn2vv6bms0lmvmmss40000gn/T/nvim.kingboat/NTwH7p/nvim.34651.0
+WRN 2026-07-02T12:51:48.381 c/nvim.30441.0 server_start:197: Failed to start server: operation not permitted: /var/folders/5f/5z4f98bn2vv6bms0lmvmmss40000gn/T/nvim.kingboat/ekwScE/nvim.42414.0
+WRN 2026-07-02T13:10:33.856 c/nvim.30441.0 server_start:197: Failed to start server: operation not permitted: /var/folders/5f/5z4f98bn2vv6bms0lmvmmss40000gn/T/nvim.kingboat/OGJU2t/nvim.46483.0
+WRN 2026-07-02T14:04:07.848 c/nvim.47788.0 server_start:197: Failed to start server: operation not permitted: /var/folders/5f/5z4f98bn2vv6bms0lmvmmss40000gn/T/nvim.kingboat/gfO9YK/nvim.48479.0
+WRN 2026-07-02T14:53:28.142 c/nvim.49507.0 server_start:197: Failed to start server: operation not permitted: /var/folders/5f/5z4f98bn2vv6bms0lmvmmss40000gn/T/nvim.kingboat/0pXGme/nvim.52472.0

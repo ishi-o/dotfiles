@@ -28,7 +28,49 @@ M.on_attach = function(client, bufnr)
 	map("n", "<leader>cc", vim.lsp.buf.code_action, { buffer = bufnr })
 
 	if client.server_capabilities.documentSymbolProvider then
-		require("nvim-navic").attach(client, bufnr)
+		local ok, navic = pcall(require, "nvim-navic")
+		if ok then
+			navic.attach(client, bufnr)
+		end
+	end
+
+	-- NOTE: `editor.action.triggerParameterHints` is a VSCode client method
+	-- due to settings.java.signatureHelp.enabled=true
+	-- when using completion in a java file, the following error occurs:
+	-- > method "workspace/executeClientCommand":
+	-- > either a result or an error must be sent to the server in response
+	-- However, it caused an issue where the spring-boot LS could not start normally
+	-- see https://github.com/nvim-java/nvim-java/issues/399#issuecomment-3678627120
+	--     https://github.com/nvim-java/nvim-java/issues/399#issuecomment-3678667874
+	local orig_handler_executeClientCommand = vim.lsp.handlers["workspace/executeClientCommand"]
+	vim.lsp.handlers["workspace/executeClientCommand"] = function(...)
+		local _, params, ctx, _ = ...
+		local client = vim.lsp.get_client_by_id(ctx.client_id)
+		if client and params.command == "editor.action.triggerParameterHints" and client.name == "jdtls" then
+			vim.lsp.buf.signature_help()
+			return true
+		end
+		return orig_handler_executeClientCommand(...)
+	end
+
+	local orig_handler_publishDiagnostics = vim.lsp.handlers["textDocument/publishDiagnostics"]
+	vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+		if result and result.diagnostics then
+			local seen = {}
+			local unique = {}
+			for _, diag in ipairs(result.diagnostics) do
+				if not string.find(diag.message, "Duplicate annotation") then
+					local key =
+						string.format("%d:%d:%s", diag.range.start.line, diag.range.start.character, diag.message)
+					if not seen[key] then
+						seen[key] = true
+						table.insert(unique, diag)
+					end
+				end
+			end
+			result.diagnostics = unique
+		end
+		orig_handler_publishDiagnostics(err, result, ctx, config)
 	end
 
 	-- FIX: jdtls inlay hints
@@ -44,7 +86,12 @@ end
 
 -- local capabilities = vim.lsp.protocol.make_client_capabilities()
 -- capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-M.capabilities = require("blink.cmp").get_lsp_capabilities()
+local ok, blink = pcall(require, "blink.cmp")
+if ok then
+	M.capabilities = blink.get_lsp_capabilities()
+else
+	M.capabilities = {}
+end
 -- M.capabilities = {}
 
 return M

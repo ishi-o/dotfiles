@@ -1,7 +1,4 @@
 return {
-	-- mason.nvim / nvim-lspconfig --
-	-- lsp manager and core
-	-- lsp 管理器及其核心
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -18,9 +15,6 @@ return {
 			require("config.langservice.lsp")
 		end,
 	},
-	-- vim-go --
-	-- go integration
-	-- go lsp 集成
 	{
 		"fatih/vim-go",
 		optional = true,
@@ -32,24 +26,16 @@ return {
 			vim.g.go_imports_mode = "goimports"
 		end,
 	},
-	-- schemastore.nvim --
-	-- json / yaml schema
-	-- json / yaml 的模式提示
 	{
 		"b0o/schemastore.nvim",
 		lazy = true,
 		ft = { "json", "yaml" },
 	},
-	-- lazydev.nvim --
-	-- lua dev lib
-	-- lua 开发库支持
 	{
 		"folke/lazydev.nvim",
 		lazy = true,
 		ft = "lua",
 	},
-	---- nvim-java --
-	---- 较重的 java lsp 集成
 	{
 		"nvim-java/nvim-java",
 		optional = false,
@@ -59,11 +45,8 @@ return {
 			require("config.langservice.lsp.extra.java")
 		end,
 	},
-	-- nvim-jdtls --
-	-- 较轻的 java lsp 集成
 	{
 		"mfussenegger/nvim-jdtls",
-		optional = true,
 		enabled = false,
 		ft = { "java", "jproperties", "yaml", "yml" },
 		dependencies = {
@@ -73,8 +56,6 @@ return {
 			require("config.langservice.lsp.extra.jdtls")
 		end,
 	},
-	-- nvim-metals --
-	-- scala
 	{
 		"scalameta/nvim-metals",
 		lazy = true,
@@ -86,6 +67,12 @@ return {
 			require("config.langservice.lsp.extra.scala")
 		end,
 	},
-
-	{ "qvalentin/helm-ls.nvim", ft = "helm" },
+	{
+		"qvalentin/helm-ls.nvim",
+		lazy = true,
+		ft = "helm",
+		config = function()
+			require("config.langservice.lsp.extra.helm")
+		end,
+	},
 }

@@ -1,7 +1,4 @@
 return {
-	-- nvim-treesitter --
-	-- syntax highlight
-	-- 语法高亮支持
 	{
 		"nvim-treesitter/nvim-treesitter",
 		branch = "main",
@@ -11,5 +8,11 @@ return {
 			require("config.langservice.treesitter")
 		end,
 	},
-	-- TODO: add windwp/nvim-ts-autotag
+	{
+		"alker0/chezmoi.vim",
+		init = function()
+			vim.g["chezmoi#use_tmp_buffer"] = 1
+			vim.g["chezmoi#source_dir_path"] = vim.env.HOME .. "/.local/share/chezmoi"
+		end,
+	},
 }

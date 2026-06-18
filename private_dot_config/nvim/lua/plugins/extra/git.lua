@@ -1,9 +1,7 @@
 return {
-	-- lazygit.nvim --
-	-- lazygit integration
-	-- lazygit 集成, 要求命令行工具 lazygit
 	{
 		"kdheepak/lazygit.nvim",
+		enabled = false,
 		lazy = true,
 		cmd = "LazyGit",
 		dependencies = {
@@ -13,17 +11,12 @@ return {
 			require("config.extra.git.lazygit")
 		end,
 	},
-	-- gitsigns.nvim --
-	-- git signals
-	-- 左侧 git 变更提醒
 	{
 		"lewis6991/gitsigns.nvim",
 		config = function()
 			require("config.extra.git.gitsigns")
 		end,
 	},
-	-- neogit --
-	-- neovim 的 git 集成
 	{
 		"NeogitOrg/neogit",
 		lazy = true,
@@ -31,17 +24,14 @@ return {
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"sindrets/diffview.nvim",
-			"nvim-telescope/telescope.nvim",
 		},
 		config = function()
 			require("config.extra.git.neogit")
 		end,
 	},
-	-- gh.nvim --
-	-- github cli integration
-	-- github 命令行工具 gh 集成
 	{
 		"ldelossa/gh.nvim",
+		enabled = false,
 		lazy = true,
 		cmd = {
 			"GHCloseCommit",
@@ -76,10 +66,9 @@ return {
 			require("config.extra.git.gh")
 		end,
 	},
-	-- octo.nvim --
-	-- better issue/pr previewer or editor
 	{
 		"pwntester/octo.nvim",
+		enabled = false,
 		cmd = "Octo",
 		event = { { event = "BufReadCmd", pattern = "octo://*" } },
 		opts = {
@@ -95,7 +84,6 @@ return {
 			{ "<leader>gP", "<cmd>Octo pr search<CR>", desc = "Search PRs (Octo)" },
 			{ "<leader>gr", "<cmd>Octo repo list<CR>", desc = "List Repos (Octo)" },
 			{ "<leader>gS", "<cmd>Octo search<CR>", desc = "Search (Octo)" },
-
 			{ "<localleader>a", "", desc = "+assignee (Octo)", ft = "octo" },
 			{ "<localleader>c", "", desc = "+comment/code (Octo)", ft = "octo" },
 			{ "<localleader>l", "", desc = "+label (Octo)", ft = "octo" },

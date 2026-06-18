@@ -1,5 +1,4 @@
 return {
-	-- documentation --
 	{
 		"<leader>cd",
 		'<cmd>lua require("neogen").generate()<CR>',
@@ -14,8 +13,8 @@ return {
 			vim.lsp.buf.code_action({
 				context = {
 					only = { "source.organizeImports" },
+					apply = true,
 				},
-				apply = true,
 			})
 		end,
 		desc = "Organize imports",
@@ -26,8 +25,8 @@ return {
 			vim.lsp.buf.code_action({
 				context = {
 					only = { "refactor.rewrite" },
+					apply = true,
 				},
-				apply = true,
 			})
 		end,
 		desc = "Rewrite structure",
@@ -38,12 +37,11 @@ return {
 			vim.lsp.buf.code_action({
 				context = {
 					only = { "source.fixAll" },
+					apply = true,
 				},
-				apply = true,
 			})
 		end,
 		desc = "Rewrite structure",
 	},
-
 	{ "<leader>fv", desc = "Find python envs" },
 }
