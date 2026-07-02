@@ -54,7 +54,7 @@ return {
 		{
 			"<leader>bC",
 			function()
-				vim.fn.setreg("+", vim.fn.expand("%"))
+				vim.fn.setreg("+", vim.fn.expand("%:~:."))
 			end,
 			desc = "Copy curr buffer relative path",
 		},
