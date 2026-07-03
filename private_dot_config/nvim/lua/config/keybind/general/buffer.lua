@@ -2,6 +2,11 @@ local function smart_bd()
 	local buf = vim.api.nvim_get_current_buf()
 	local win = vim.api.nvim_get_current_win()
 
+	if vim.bo[buf].buftype == "terminal" then
+		vim.api.nvim_buf_delete(buf, { force = true })
+		return
+	end
+
 	local bufs = vim.api.nvim_list_bufs()
 	local valid_bufs = {}
 	for _, b in ipairs(bufs) do
@@ -20,10 +25,10 @@ local function smart_bd()
 
 	if not next_buf then
 		vim.cmd("enew")
-		vim.cmd("bd " .. buf)
+		vim.api.nvim_buf_delete(buf, {})
 	else
 		vim.api.nvim_win_set_buf(win, next_buf)
-		vim.cmd("bd " .. buf)
+		vim.api.nvim_buf_delete(buf, {})
 	end
 end
 

@@ -3,16 +3,19 @@ local function move_or_kitty(dir)
 	local current = vim.fn.winnr()
 	vim.cmd("wincmd " .. dir)
 	if vim.fn.winnr() == current then
-		vim.fn.system("kitty @ focus-window " .. dir_map[dir])
+		vim.fn.system("kitty @ focus-window --match neighbor:" .. dir_map[dir])
 	end
 end
 
 local function smart_close()
 	local wins = vim.api.nvim_tabpage_list_wins(0)
+	local buf = vim.api.nvim_get_current_buf()
+	local win = vim.api.nvim_get_current_win()
+
 	if #wins > 1 then
-		vim.cmd('close')
+		vim.api.nvim_win_close(win, false)
 	else
-		vim.cmd('bd')
+		vim.api.nvim_buf_delete(buf, {})
 	end
 end
 
