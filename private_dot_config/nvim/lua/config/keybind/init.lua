@@ -27,7 +27,7 @@ wk.add({
 			desc = "Buffer Local Keymaps",
 		},
 		require("config.keybind.general"),
-		require("config.keybind.langservice"),
+		require("config.keybind.langs"),
 		require("config.keybind.mapgroup"),
 		require("config.keybind.enhancement"),
 		require("config.keybind.extra"),

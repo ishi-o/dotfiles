@@ -21,7 +21,7 @@ function M.load_plugins()
 	require("lazy").setup({
 		spec = {
 			{ import = "plugins" },
-			{ import = "plugins/langservice" },
+			{ import = "plugins/langs" },
 			{ import = "plugins/preview" },
 			{ import = "plugins/enhancement" },
 			{ import = "plugins/ui" },

@@ -16,11 +16,4 @@ return {
 			require("config.ui.notice.noice")
 		end,
 	},
-	{
-		"j-hui/fidget.nvim",
-		enabled = false,
-		config = function()
-			require("config.ui.notice.fidget")
-		end,
-	},
 }

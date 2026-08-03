@@ -1,6 +1,10 @@
-model = "astron-code-latest"
+# model = "astron-code-latest"
 
-model_provider = "glm5"
+model_provider = "openai"
+model = "gpt-5.6-luna"
+model_reasoning_effort = "max"
+approvals_reviewer = "user"
+# model_provider = "glm5"
 
 [model_providers.glm5]
 name = "xf-glm5"
@@ -14,8 +18,32 @@ trust_level = "trusted"
 [projects."/Users/kingboat/Code/monorepo"]
 trust_level = "trusted"
 
-[tui.model_availability_nux]
-"gpt-5.5" = 4
+[projects."/Users/kingboat/Code/LEMS"]
+trust_level = "trusted"
+
+[projects."/Users/kingboat/Code/kingtopus"]
+trust_level = "trusted"
+
+[projects."/Users/kingboat"]
+trust_level = "trusted"
 
 [tui]
 vim_mode_default = true
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 4
+
+[mcp_servers.mcphub]
+command = "npx"
+args = [
+  "-y",
+  "mcp-remote",
+  "http://127.0.0.1:37373/mcp",
+  "--transport",
+  "sse-only",
+  "--allow-http",
+]
+
+[notice.model_migrations]
+"gpt-5.4-mini" = "gpt-5.6-luna"

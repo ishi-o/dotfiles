@@ -3,6 +3,7 @@ if ok then
 	auto_session.setup({
 		pre_save_cmds = {
 			function()
+				-- Close overseer tasks
 				local ok2, overseer_task_list = pcall(require, "overseer.task_list")
 				if ok2 then
 					local tasks = overseer_task_list.list_tasks()
@@ -20,11 +21,22 @@ if ok then
 				end
 			end,
 			function()
+				-- Close avante sidebar
 				local ok3, avante = pcall(require, "avante")
 				if ok3 and avante then
 					avante.close_sidebar()
 				end
 				return true
+			end,
+			function()
+				-- Close terminal and kitty-scrollback buffers
+				for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+					local buftype = vim.bo[bufnr].buftype
+					local filetype = vim.bo[bufnr].filetype
+					if buftype == "terminal" or filetype == "kitty-scrollback" then
+						vim.api.nvim_buf_delete(bufnr, { force = true })
+					end
+				end
 			end,
 		},
 		pre_restore_cmds = {

@@ -7,9 +7,4 @@ return {
 			require("config.ui.colortheme")
 		end,
 	},
-	{
-		"folke/tokyonight.nvim",
-		enabled = false,
-		lazy = true,
-	},
 }

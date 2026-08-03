@@ -99,11 +99,42 @@ autocmd("FileType", {
 	end,
 })
 
-autocmd("FileType", {
-	pattern = "java",
-	callback = function()
-		local map = vim.keymap.set
-		map("n", "<leader>yr", "<cmd>JavaRunnerRunMain<CR>", { buffer = true })
+autocmd("LspProgress", {
+	callback = function(ev)
+		local client = vim.lsp.get_client_by_id(ev.data.client_id)
+		local name = client and client.name or "LSP"
+		local value = ev.data.params and ev.data.params.value
+		if not value then
+			return
+		end
+
+		local parts = {}
+		if value.kind == "end" then
+			table.insert(parts, "Done")
+		else
+			if value.title and value.title ~= "" then
+				table.insert(parts, value.title)
+			end
+			if value.message and value.message ~= "" then
+				table.insert(parts, value.message)
+			end
+			if value.percentage then
+				table.insert(parts, string.format("(%d%%%%)", value.percentage))
+			end
+		end
+
+		if #parts == 0 then
+			return
+		end
+
+		local msg = table.concat(parts, " ")
+		vim.api.nvim_echo({ { ("[%s] %s"):format(name, msg) } }, false, {
+			id = ("progress-lsp-%s-%s"):format(ev.data.client_id, value.title or value.kind or "progress"),
+			kind = "progress",
+			title = ("[%s] %s"):format(name, value.title or "Progress"),
+			status = value.kind == "end" and "success" or "running",
+			percent = value.percentage,
+		})
 	end,
 })
 

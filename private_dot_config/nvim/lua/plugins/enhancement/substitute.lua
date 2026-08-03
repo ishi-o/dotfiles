@@ -8,15 +8,6 @@ return {
 		end,
 	},
 	{
-		"nvim-pack/nvim-spectre",
-		enabled = false,
-		lazy = true,
-		module = "spectre",
-		config = function()
-			require("config.enhancement.substitute.spectre")
-		end,
-	},
-	{
 		"MagicDuck/grug-far.nvim",
 		lazy = true,
 		cmd = { "GrugFar", "GrugFarWithin" },

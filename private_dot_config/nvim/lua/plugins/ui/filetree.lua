@@ -11,11 +11,4 @@ return {
 			require("config.ui.filetree.neo-tree")
 		end,
 	},
-	{
-		"nvim-tree/nvim-tree.lua",
-		enabled = false,
-		config = function()
-			require("config.ui.filetree.nvim-tree")
-		end,
-	},
 }
