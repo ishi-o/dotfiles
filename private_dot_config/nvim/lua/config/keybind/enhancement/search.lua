@@ -1,18 +1,8 @@
--- search --
 return {
-	-- telescope --
-	-- now we use snacks.picker
-	-- {
-	-- { "<leader>fd", require("telescope.builtin").find_files, desc = "Find Files" },
-	-- { "<leader>fg", require("telescope.builtin").live_grep, desc = "Grep" },
-	-- { "<leader>fb", require("telescope.builtin").buffers, desc = "Buffers" },
-	-- { "<leader>fr", require("telescope.builtin").oldfiles, desc = "Recent" },
-	-- { "<leader>fe", "<cmd>Telescope file_browser<CR>", desc = "File explorer" },
-	-- { "?", require("telescope.builtin").help_tags, desc = "Telescope help tags" },
-	-- },
-
-	-- flash --
 	{
+		cond = function()
+			return _G.plugin_installed("flash.nvim")
+		end,
 		{
 			"s",
 			function()

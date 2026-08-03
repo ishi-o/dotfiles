@@ -1,7 +1,4 @@
 return {
-	-- bufferline.nvim --
-	-- bufferline
-	-- buffer 插件
 	{
 		"akinsho/bufferline.nvim",
 		dependencies = "nvim-tree/nvim-web-devicons",

@@ -1,5 +1,8 @@
 return {
 	{
+		cond = function()
+			return _G.plugin_installed("mini.surround")
+		end,
 		{ "gsa", desc = "Add Surrounding", mode = { "n", "x" } },
 		{ "gsd", desc = "Delete Surrounding" },
 		{ "gsf", desc = "Find Right Surrounding" },
@@ -8,8 +11,10 @@ return {
 		{ "gsr", desc = "Replace Surrounding" },
 		{ "gsn", desc = "Update `MiniSurround.config.n_lines`" },
 	},
-
 	{
+		cond = function()
+			return _G.plugin_installed("nvim-treesitter-textobjects")
+		end,
 		{
 			"am",
 			'<cmd>lua require("nvim-treesitter-textobjects.select").select_textobject("@function.outer", "textobjects")<CR>',
@@ -52,7 +57,6 @@ return {
 			mode = { "n", "x", "o" },
 			desc = "Next fold",
 		},
-
 		{
 			"]M",
 			'<cmd>lua require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer", "textobjects")<CR>',

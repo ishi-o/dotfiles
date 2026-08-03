@@ -1,0 +1,49 @@
+# model = "astron-code-latest"
+
+model_provider = "openai"
+model = "gpt-5.6-luna"
+model_reasoning_effort = "max"
+approvals_reviewer = "user"
+# model_provider = "glm5"
+
+[model_providers.glm5]
+name = "xf-glm5"
+base_url = "https://maas-coding-api.cn-huabei-1.xf-yun.com/v1"
+env_key = "XFYUN_API_KEY"
+wire_api = "responses"
+
+[projects."/Users/kingboat/.config/nvim"]
+trust_level = "trusted"
+
+[projects."/Users/kingboat/Code/monorepo"]
+trust_level = "trusted"
+
+[projects."/Users/kingboat/Code/LEMS"]
+trust_level = "trusted"
+
+[projects."/Users/kingboat/Code/kingtopus"]
+trust_level = "trusted"
+
+[projects."/Users/kingboat"]
+trust_level = "trusted"
+
+[tui]
+vim_mode_default = true
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 4
+
+[mcp_servers.mcphub]
+command = "npx"
+args = [
+  "-y",
+  "mcp-remote",
+  "http://127.0.0.1:37373/mcp",
+  "--transport",
+  "sse-only",
+  "--allow-http",
+]
+
+[notice.model_migrations]
+"gpt-5.4-mini" = "gpt-5.6-luna"

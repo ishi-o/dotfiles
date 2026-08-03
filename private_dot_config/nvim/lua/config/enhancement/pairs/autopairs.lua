@@ -1,5 +1,12 @@
-local Rule = require("nvim-autopairs.rule")
-local npairs = require("nvim-autopairs")
+local ok, Rule = pcall(require, "nvim-autopairs.rule")
+if not ok then
+	return
+end
+
+local ok2, npairs = pcall(require, "nvim-autopairs")
+if not ok2 then
+	return
+end
 npairs.setup({
 	disable_filetype = { "TelescopePrompt" },
 	disable_in_macro = true,

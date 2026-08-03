@@ -1,4 +1,8 @@
-require("noice").setup({
+local ok, noice = pcall(require, "noice")
+if not ok then
+	return
+end
+noice.setup({
 	presets = {
 		bottom_search = true,
 		command_palette = true,
@@ -8,7 +12,11 @@ require("noice").setup({
 	},
 	messages = {
 		enabled = true,
-		view = "notify",
+		view = "mini",
+	},
+	notify = {
+		enabled = true,
+		view = "mini",
 	},
 	cmdline = {
 		enabled = true,
@@ -24,17 +32,13 @@ require("noice").setup({
 		},
 	},
 	lsp = {
-		progress = { enabled = false },
+		progress = { enabled = true },
 		hover = {
 			enabled = false,
 		},
 		signature = {
 			enabled = false,
 		},
-	},
-	notify = {
-		enabled = true,
-		view = "notify",
 	},
 	views = {
 		hover = {
@@ -44,6 +48,18 @@ require("noice").setup({
 				col = 0,
 			},
 		},
+		notify = {
+			backend = {},
+		},
+		mini = {
+			size = {
+				max_width = math.floor(vim.o.columns * 0.3),
+			},
+			win_options = {
+				wrap = true,
+				linebreak = false,
+			},
+			timeout = 3000,
+		},
 	},
 })
-require("telescope").load_extension("noice")

@@ -5,7 +5,7 @@ return {
 			cmd = "air",
 			args = {},
 			components = {
-				"on_complete_notify",
+				"open_output",
 				"default",
 			},
 		}

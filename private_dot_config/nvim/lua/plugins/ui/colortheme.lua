@@ -1,6 +1,4 @@
 return {
-	-- colortheme --
-	-- 颜色主题
 	{
 		"sainnhe/everforest",
 		lazy = false,
@@ -8,10 +6,5 @@ return {
 		config = function()
 			require("config.ui.colortheme")
 		end,
-	},
-	{
-		"folke/tokyonight.nvim",
-		optional = true,
-		lazy = true,
 	},
 }

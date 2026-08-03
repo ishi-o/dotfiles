@@ -1,7 +1,4 @@
 return {
-	-- refactoring.nvim --
-	-- refactor enhancement
-	-- 提供重构增强
 	{
 		"ThePrimeagen/refactoring.nvim",
 		lazy = true,

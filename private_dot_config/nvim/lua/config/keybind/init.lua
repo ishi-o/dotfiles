@@ -1,4 +1,3 @@
--- which-key window shape --
 local wk = require("which-key")
 wk.setup({
 	win = {
@@ -14,35 +13,29 @@ wk.setup({
 		delay = 600,
 	},
 })
--- which-key --
 wk.add({
 	{
 		cond = function()
 			return not vim.g.vscode
 		end,
-
 		{
-			"<C-_>", -- equivalent to Ctrl+/ --
-			-- "<leader>?",
+			"<C-_>",
 			function()
 				wk.show({ global = false })
 			end,
 			mode = { "n", "x", "i", "c", "o", "t" },
 			desc = "Buffer Local Keymaps",
 		},
-
 		require("config.keybind.general"),
-		require("config.keybind.langservice"),
+		require("config.keybind.langs"),
 		require("config.keybind.mapgroup"),
 		require("config.keybind.enhancement"),
 		require("config.keybind.extra"),
 	},
-
 	{
 		cond = function()
 			return vim.g.vscode
 		end,
-
 		require("config.keybind.vscode"),
 	},
 })
