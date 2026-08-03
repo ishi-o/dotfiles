@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Keep the upstream package installer as a single chezmoi run-once script.
+# The package files remain data for the orchestrator, so their numeric order
+# and shared installation helpers are preserved.
+set -euo pipefail
+
+exec "{{ .chezmoi.sourceDir }}/.chezmoi-install/main.sh" "$@"
