@@ -41,5 +41,3 @@ eval "$("$HOME/.local/brew/bin/brew" shellenv)"
 export RUSTUP_DIST_SERVER="https://mirrors.ustc.edu.cn/rust-static"
 export RUSTUP_UPDATE_ROOT="https://mirrors.ustc.edu.cn/rust-static/rustup"
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
