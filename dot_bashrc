@@ -5,8 +5,8 @@ fi
 shopt -s cdspell
 
 export USR_HOME="${USR_HOME:-$HOME/usr/local}"
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/opt/go
+export GOROOT="$USR_HOME/go"
+export GOPATH="$HOME/go"
 export GOPROXY=https://goproxy.cn,direct
 export PATH="$USR_HOME/bin:$PATH"
 export PATH="$USR_HOME/nvim/bin:$PATH"

@@ -10,8 +10,8 @@ export XDG_SESSION_TYPE=x11
 export GDK_BACKEND=x11
 export QT_QPA_PLATFORM=xcb
 unset WAYLAND_DISPLAY
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/opt/go
+export GOROOT="$USR_HOME/go"
+export GOPATH="$HOME/go"
 export GOPROXY=https://goproxy.cn,direct
 export PATH="$USR_HOME/bin:$PATH"
 export PATH="$USR_HOME/nvim/bin:$PATH"
