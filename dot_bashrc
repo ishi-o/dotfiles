@@ -1,102 +1,43 @@
-# .bashrc
-
-# Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-# User specific environment
 shopt -s cdspell
 
-if ! [[ "$PATH" =~ $HOME/.local/bin:$HOME/bin: ]]; then
-	PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-fi
-export PATH
-
-### START_NVM
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-### END_NVM
-
-### START_GO
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/opt/go
+export USR_HOME="${USR_HOME:-$HOME/usr/local}"
+export GOROOT="$USR_HOME/go"
+export GOPATH="$HOME/go"
 export GOPROXY=https://goproxy.cn,direct
-export PATH=$GOROOT/bin:$PATH
-### END_GO
+export PATH="$USR_HOME/bin:$PATH"
+export PATH="$USR_HOME/nvim/bin:$PATH"
+export PATH="$HOME/.bin:$PATH"
+export PATH="$HOME/.fzf/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
+export PATH="$GOROOT/bin:$PATH"
+export PATH="$GOPATH/bin:$PATH"
+export PATH="$HOME/.local/share/coursier/bin:$PATH"
 
-### START_ALIAS
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
 alias vi=nvim
 alias vim=nvim
-### END_ALIAS
-
-
-### START_CONDA
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('$HOME/opt/conda3/bin/conda' 'shell.bash' 'hook' 2>/dev/null)"
-if [ $? -eq 0 ]; then
-	eval "$__conda_setup"
-else
-	if [ -f "$HOME/opt/conda3/etc/profile.d/conda.sh" ]; then
-		. "$HOME/opt/conda3/etc/profile.d/conda.sh"
-	else
-		export PATH="$HOME/opt/conda3/bin:$PATH"
-	fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-### END_CONDA
-
-### START_AI_KEY
 source "$HOME/.config/private/env"
-### END_AI_KEY
-
-### START_CARGO
 . "$HOME/.cargo/env"
-### END_CARGO
 
-### START_KITTY
 export DISPLAY=:0
 export GTK_IM_MODULE=fcitx5
 export QT_IM_MODULE=fcitx5
 export XMODIFIERS=@im=fcitx5
-# export GLFW_IM_MODULE=fcitx5
 export GLFW_IM_MODULE=ibus
 export XDG_SESSION_TYPE=x11
 export GDK_BACKEND=x11
 export QT_QPA_PLATFORM=xcb
 unset WAYLAND_DISPLAY
 nohup fcitx5 -d >/dev/null 2>&1 &
-# export IBUS_USE_SYSTEMD=0
-# ibus-daemon -drx &
-export XCURSOR_THEME="BocchiCursor"
-### END_KITTY
-
-### START_BREW
 eval "$("$HOME/.local/brew/bin/brew" shellenv)"
-### END_BREW
-
-# rustup
 export RUSTUP_DIST_SERVER="https://mirrors.ustc.edu.cn/rust-static"
 export RUSTUP_UPDATE_ROOT="https://mirrors.ustc.edu.cn/rust-static/rustup"
-# end rustup
-
-### START_COURSIER
-export PATH="$HOME/.local/share/coursier/bin:$PATH"
-### END_COURSIER
-
-### START_MISE
-eval "$(~/.local/bin/mise activate bash)"
-### END_MISE
-
-### START_FZF
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-### END_FZF
-
-### START_SDKMAN
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-### END_SDKMAN
