@@ -20,9 +20,9 @@ if command -v apt-get >/dev/null 2>&1; then
 fi
 export pkg_manager
 
-# Check if we have sudo privileges (needed for package manager)
+# Check if sudo is available (needed for package manager)
 has_sudo=false
-if [ "$pkg_manager" != "" ] && sudo -n true 2>/dev/null; then
+if [ "$pkg_manager" != "" ] && command -v sudo >/dev/null 2>&1; then
   has_sudo=true
 fi
 export has_sudo
