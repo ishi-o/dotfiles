@@ -13,6 +13,14 @@ arch="$(uname -m)"
 [ "$arch" = "x86_64" ] && arch=amd64
 export arch
 
+# Detect Windows Subsystem for Linux.
+is_wsl=false
+case "$(uname -r 2>/dev/null)" in
+  *microsoft*|*Microsoft*|*WSL*) is_wsl=true ;;
+esac
+[ -n "${WSL_DISTRO_NAME:-}" ] && is_wsl=true
+export is_wsl
+
 # Optional network proxy. Set PROXY_URL before running chezmoi to enable it.
 if [ -n "${PROXY_URL:-}" ]; then
   export HTTP_PROXY="$PROXY_URL"

@@ -1,2 +1,6 @@
 README.md
 .chezmoi-install/
+
+{{- if ne .chezmoi.os "linux" }}
+.config/fcitx5
+{{- end }}

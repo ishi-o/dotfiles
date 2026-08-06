@@ -1,10 +1,12 @@
+{{- if and (eq .chezmoi.os "linux") (env "WSL_DISTRO_NAME") (stat "/mnt/wslg") }}
+# WSLg does not configure a Wayland input-method service by default. Keep Kitty
+# on XWayland so it can use Fcitx's X11/IBus compatibility frontend.
+linux_display_server x11
+{{- end }}
+
 ### LAYOUT
 enabled_layouts splits,stack
 ### LAYOUT
-
-### INPUT_METHOD
-env GLFW_IM_MODULE=ibus
-### INPUT_METHOD
 
 ### CURSOR
 cursor_shape block
