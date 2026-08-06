@@ -7,7 +7,6 @@ shopt -s cdspell
 export USR_HOME="${USR_HOME:-$HOME/usr/local}"
 export GOROOT="$USR_HOME/go"
 export GOPATH="$HOME/go"
-export GOPROXY=https://goproxy.cn,direct
 export PATH="$USR_HOME/bin:$PATH"
 export PATH="$USR_HOME/nvim/bin:$PATH"
 export PATH="$HOME/.bin:$PATH"
@@ -27,6 +26,20 @@ alias vim=nvim
 source "$HOME/.config/private/env"
 . "$HOME/.cargo/env"
 
+# Optional network proxy.
+# Examples: http://127.0.0.1:7890 or socks5h://127.0.0.1:1080
+# export PROXY_URL="http://127.0.0.1:7890"
+if [ -n "${PROXY_URL:-}" ]; then
+	export HTTP_PROXY="$PROXY_URL"
+	export HTTPS_PROXY="$PROXY_URL"
+	export ALL_PROXY="$PROXY_URL"
+	export http_proxy="$PROXY_URL"
+	export https_proxy="$PROXY_URL"
+	export all_proxy="$PROXY_URL"
+	export NO_PROXY="${NO_PROXY:-${no_proxy:-localhost,127.0.0.1,::1}}"
+	export no_proxy="${no_proxy:-$NO_PROXY}"
+fi
+
 export DISPLAY=:0
 export GTK_IM_MODULE=fcitx5
 export QT_IM_MODULE=fcitx5
@@ -38,6 +51,4 @@ export QT_QPA_PLATFORM=xcb
 unset WAYLAND_DISPLAY
 nohup fcitx5 -d >/dev/null 2>&1 &
 eval "$("$HOME/.local/brew/bin/brew" shellenv)"
-export RUSTUP_DIST_SERVER="https://mirrors.ustc.edu.cn/rust-static"
-export RUSTUP_UPDATE_ROOT="https://mirrors.ustc.edu.cn/rust-static/rustup"
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

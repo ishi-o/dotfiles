@@ -12,7 +12,6 @@ export QT_QPA_PLATFORM=xcb
 unset WAYLAND_DISPLAY
 export GOROOT="$USR_HOME/go"
 export GOPATH="$HOME/go"
-export GOPROXY=https://goproxy.cn,direct
 export PATH="$USR_HOME/bin:$PATH"
 export PATH="$USR_HOME/nvim/bin:$PATH"
 export PATH="$HOME/.bin:$PATH"
@@ -23,9 +22,22 @@ export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 export PATH="$HOME/.local/share/coursier/bin:$PATH"
 
-export RUSTUP_DIST_SERVER="https://mirrors.ustc.edu.cn/rust-static"
-export RUSTUP_UPDATE_ROOT="https://mirrors.ustc.edu.cn/rust-static/rustup"
 . "$HOME/.config/env"
+
+# Optional network proxy.
+# Examples: http://127.0.0.1:7890 or socks5h://127.0.0.1:1080
+# export PROXY_URL="http://127.0.0.1:7890"
+if [ -n "${PROXY_URL:-}" ]; then
+    export HTTP_PROXY="$PROXY_URL"
+    export HTTPS_PROXY="$PROXY_URL"
+    export ALL_PROXY="$PROXY_URL"
+    export http_proxy="$PROXY_URL"
+    export https_proxy="$PROXY_URL"
+    export all_proxy="$PROXY_URL"
+    export NO_PROXY="${NO_PROXY:-${no_proxy:-localhost,127.0.0.1,::1}}"
+    export no_proxy="${no_proxy:-$NO_PROXY}"
+fi
+
 if ! pgrep -x fcitx5 > /dev/null 2>&1; then
     nohup /usr/bin/fcitx5 -d > /dev/null 2>&1 &
 fi
