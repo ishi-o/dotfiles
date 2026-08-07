@@ -1,0 +1,78 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_ATTRIBUTION_HEADER": "0"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls *)",
+      "Bash(cp *)",
+      "Bash(cd *)",
+      "Bash(jq *)",
+      "Bash(yq *)",
+      "Bash(find *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(yarn *)",
+      "Bash(npm *)",
+      "Bash(git diff *)",
+      "Bash(git rebase *)",
+      "Bash(git fetch *)",
+      "Bash(git show *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh label list *)",
+      "Bash(make *)",
+      "Bash(node *)",
+      "Bash(tree *)",
+      "Bash(echo *)",
+      "Bash(curl *)",
+      "Bash(* --version)",
+      "Bash(* --help *)",
+      "Read(//tmp/**)",
+      "Read(~/workspace/**)",
+      "Skill(superpowers:executing-plans)",
+      "Skill(superpowers:finishing-a-development-branch)",
+      "Skill(superpowers:systematic-debugging)",
+      "mcp__plugin_context7_context7"
+    ],
+    "deny": [
+      "Read(//**/.env)",
+      "Read(//**/*.env)",
+      "Read(//**/*.env.*)",
+      "Read(//**/*credential*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "superpowers@superpowers-marketplace": true,
+    "context7@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
+  },
+  "spinnerTipsEnabled": false,
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Thinking"
+    ]
+  },
+  "syntaxHighlightingDisabled": false,
+  "effortLevel": "medium",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "auto",
+  "teammateMode": "in-process",
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true
+}
