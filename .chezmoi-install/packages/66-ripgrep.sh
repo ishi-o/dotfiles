@@ -48,7 +48,7 @@ install_ripgrep() {
   local url="https://github.com/BurntSushi/ripgrep/releases/download/${version}/${archive_name}.tar.gz"
 
   download_binary \
-    "$pkg_name" "$version" "$url" "rg" "$HOME/.bin/rg"
+    "$pkg_name" "$version" "$url" "rg" "$HOME/.local/bin/rg"
 }
 
 install_ripgrep

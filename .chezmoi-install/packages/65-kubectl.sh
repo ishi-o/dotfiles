@@ -4,7 +4,7 @@ pkg_name="kubectl"
 pkg_version="stable"
 
 install_kubectl() {
-  if check_installed kubectl && [ -x "$HOME/.bin/kubectl" ]; then
+  if check_installed kubectl && [ -x "$HOME/.local/bin/kubectl" ]; then
     return 0
   fi
 
@@ -13,7 +13,7 @@ install_kubectl() {
   local stable_version
   stable_version=$(curl -L -s https://dl.k8s.io/release/stable.txt) || return 1
 
-  local target="$HOME/.bin/kubectl"
+  local target="$HOME/.local/bin/kubectl"
   local temp="${target}.tmp.$$"
 
   curl -L "https://dl.k8s.io/release/${stable_version}/bin/${os}/${arch}/kubectl" -o "$temp" || return 1

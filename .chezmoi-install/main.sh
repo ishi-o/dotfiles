@@ -10,7 +10,7 @@ cleanup_temp_files() {
   # Clean up any temp files created by this process
   rm -f /tmp/*.tmp.$$
   rm -rf /tmp/*-*.$$
-  rm -f "$HOME/.bin/"*.tmp.$$
+  rm -f "$HOME/.local/bin/"*.tmp.$$
 }
 
 # Set up trap to cleanup on exit, interrupt, or termination

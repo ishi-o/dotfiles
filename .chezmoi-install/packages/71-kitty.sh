@@ -13,7 +13,7 @@ install_kitty() {
     ;;
   esac
 
-  local kitty_app="$HOME/.local/kitty.app"
+  local kitty_app="$USR_HOME/kitty.app"
   local kitty_bin
   local kitten_bin
 
@@ -27,9 +27,8 @@ install_kitty() {
 
   if ! check_installed kitty && [ ! -x "$kitty_bin" ]; then
     echo "Installing kitty ${pkg_version}..."
-    mkdir -p "$HOME/.local/bin" || return 1
     curl -fL https://sw.kovidgoyal.net/kitty/installer.sh |
-      sh /dev/stdin launch=n "dest=$kitty_app" || return 1
+      sh /dev/stdin launch=n "dest=$USR_HOME" || return 1
   fi
 
   if [ ! -x "$kitty_bin" ]; then
@@ -37,10 +36,10 @@ install_kitty() {
     return 1
   fi
 
-  mkdir -p "$HOME/.local/bin" || return 1
-  ln -sf "$kitty_bin" "$HOME/.local/bin/kitty" || return 1
+  mkdir -p "$USR_HOME/bin" || return 1
+  cp -f "$kitty_bin" "$USR_HOME/bin/kitty" || return 1
   if [ -x "$kitten_bin" ]; then
-    ln -sf "$kitten_bin" "$HOME/.local/bin/kitten" || return 1
+    cp -f "$kitten_bin" "$USR_HOME/bin/kitten" || return 1
   fi
 }
 

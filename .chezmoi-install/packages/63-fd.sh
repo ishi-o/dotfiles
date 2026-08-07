@@ -12,7 +12,7 @@ install_fd() {
   if try_package_manager fd-find; then
     # Create symlink from fd-find to fd if needed
     if check_installed fdfind && ! check_installed fd; then
-      ln -sf "$(command -v fdfind)" "$HOME/.bin/fd"
+      ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
     fi
     return 0
   fi
@@ -33,8 +33,8 @@ install_fd() {
   local archive_name="fd-v${pkg_version}-${arch}-${target}"
   local url="https://github.com/sharkdp/fd/releases/download/v${pkg_version}/${archive_name}.tar.gz"
 
-  curl -sL "$url" | tar -zxf - --strip-components=1 -C "$HOME/.bin" "${archive_name}/fd" || return 1
-  chmod +x "$HOME/.bin/fd" || return 1
+  curl -sL "$url" | tar -zxf - --strip-components=1 -C "$HOME/.local/bin" "${archive_name}/fd" || return 1
+  chmod +x "$HOME/.local/bin/fd" || return 1
 }
 
 install_fd

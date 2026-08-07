@@ -48,8 +48,8 @@ fi
 export has_sudo
 
 # Add user bin to PATH
-export PATH="$USR_HOME/bin:$HOME/.bin:$PATH"
+export PATH="$USR_HOME/bin:$HOME/.local/bin:$PATH"
 
 # Ensure required directories exist
 mkdir -p "$USR_HOME/src" || exit 1
-mkdir -p "$HOME/.bin" || exit 1
+mkdir -p "$HOME/.local/bin" || exit 1
