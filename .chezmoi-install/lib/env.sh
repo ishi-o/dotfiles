@@ -48,7 +48,7 @@ fi
 export has_sudo
 
 # Add user bin to PATH
-export PATH="$USR_HOME/bin:$HOME/.local/bin:$PATH"
+export PATH="$USR_HOME/bin:$USR_HOME/nvim/bin:$USR_HOME/go/bin:$USR_HOME/kitty.app/bin:$HOME/.local/bin:$PATH"
 
 # Ensure required directories exist
 mkdir -p "$USR_HOME/src" || exit 1
