@@ -19,6 +19,11 @@ install_consolas_ligaturized() {
     ;;
   esac
 
+  # Skip if fonts are already installed
+  if ls "$font_dir"/Consolasligaturizedv3*.ttf >/dev/null 2>&1; then
+    return 0
+  fi
+
   local src_dir="$USR_HOME/src/$pkg_name"
   if [ ! -d "$src_dir/.git" ]; then
     if [ -e "$src_dir" ]; then

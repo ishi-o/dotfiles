@@ -1,5 +1,9 @@
 ### START_ZPLUG
-source $HOME/.zplug/init.zsh
+if [ ! -f "$USR_HOME/zplug/init.zsh" ]; then
+  export ZPLUG_HOME="$USR_HOME/zplug"
+  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+fi
+source $USR_HOME/zplug/init.zsh
 
 ## START_OHMYZSH
 ZSH_THEME="gozilla"
