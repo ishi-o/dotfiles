@@ -1,7 +1,7 @@
 return {
 	{
 		cond = function()
-			return _G.plugin_installed("auto-session")
+			return _G.UserUtils.plugin_installed("auto-session")
 		end,
 		{ "<leader>fs", "<cmd>AutoSession search<CR>", desc = "Session" },
 		{ "<leader>Sd", "<cmd>AutoSession delete<CR>", desc = "Delete" },

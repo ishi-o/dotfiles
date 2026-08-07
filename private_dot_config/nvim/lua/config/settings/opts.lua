@@ -40,7 +40,7 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
 vim.opt.fillchars = "eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:"
 vim.opt.foldtext =
-	"v:lua.vim.fn.printf(' %s  [%d lines]', substitute(getline(v:foldstart), '\\t', repeat(' ', &tabstop), 'g'), v:foldend - v:foldstart + 1)"
+"v:lua.vim.fn.printf(' %s  [%d lines]', substitute(getline(v:foldstart), '\\t', repeat(' ', &tabstop), 'g'), v:foldend - v:foldstart + 1)"
 
 vim.opt.wrap = true
 vim.opt.breakindent = true
@@ -55,6 +55,7 @@ vim.opt.splitkeep = "screen"
 vim.opt.termguicolors = true
 vim.opt.background = "light"
 -- vim.opt.background = "dark"
+vim.opt.scrolloff = math.floor(vim.o.lines * 0.2)
 
 vim.opt.diffopt = "filler,context:3,internal,algorithm:patience"
 

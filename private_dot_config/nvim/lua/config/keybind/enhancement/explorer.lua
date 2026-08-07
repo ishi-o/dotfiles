@@ -1,7 +1,7 @@
 return {
 	{
 		cond = function()
-			return _G.plugin_installed("neo-tree.nvim")
+			return _G.UserUtils.plugin_installed("neo-tree.nvim")
 		end,
 		{
 			"<C-e>",

@@ -1,7 +1,7 @@
 return {
 	{
 		cond = function()
-			return _G.plugin_installed("snacks.nvim")
+			return _G.UserUtils.plugin_installed("snacks.nvim")
 		end,
 		{
 			"gd",

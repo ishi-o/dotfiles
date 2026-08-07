@@ -1,9 +1,10 @@
 return {
 	{
 		"MeanderingProgrammer/render-markdown.nvim",
+		lazy = true,
+		event = { "BufReadPost *.md", "BufNewFile *.md" },
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
-			"ellisonleao/glow.nvim",
 		},
 		config = function()
 			require("config.preview.markdown.inner-preview")

@@ -1,6 +1,7 @@
 require("autolist").setup()
+local autocmd = _G.UserUtils.autocmd
 
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
 	pattern = "markdown",
 	callback = function(args)
 		local bufnr = args.buf

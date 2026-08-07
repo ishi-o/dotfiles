@@ -24,20 +24,30 @@ return {
 		{
 			"<leader>V",
 			function()
-				vim.api.nvim_feedkeys(":", "n", false)
-				vim.defer_fn(function()
-					vim.api.nvim_feedkeys("split ", "n", false)
-				end, 50)
+				vim.ui.input({ prompt = "Horizontal split file: " }, function(filename)
+					if filename == nil then
+						return
+					end
+					vim.api.nvim_cmd({
+						cmd = "split",
+						args = filename == "" and {} or { filename },
+					}, {})
+				end)
 			end,
 			desc = "Horizontal Split (input filename)",
 		},
 		{
 			"<leader>v",
 			function()
-				vim.api.nvim_feedkeys(":", "n", false)
-				vim.defer_fn(function()
-					vim.api.nvim_feedkeys("vsplit ", "n", false)
-				end, 50)
+				vim.ui.input({ prompt = "Vertical split file: " }, function(filename)
+					if filename == nil then
+						return
+					end
+					vim.api.nvim_cmd({
+						cmd = "vsplit",
+						args = filename == "" and {} or { filename },
+					}, {})
+				end)
 			end,
 			desc = "Vertical Split (input filename)",
 		},

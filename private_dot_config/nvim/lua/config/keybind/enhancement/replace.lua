@@ -1,7 +1,7 @@
 return {
 	{
 		cond = function()
-			return _G.plugin_installed("grug-far.nvim")
+			return _G.UserUtils.plugin_installed("grug-far.nvim")
 		end,
 		{
 			"<leader>ss",
@@ -21,11 +21,11 @@ return {
 	},
 	{
 		cond = function()
-			return _G.plugin_installed("substitute.nvim")
+			return _G.UserUtils.plugin_installed("substitute.nvim")
 		end,
-		{ "mp", '<cmd>lua require("substitute").operator()<CR>', desc = "Substitute in operator mode" },
-		{ "mpp", '<cmd>lua require("substitute").line()<CR>', desc = "Substitute curr line" },
-		{ "mP", '<cmd>lua require("substitute").eol()<CR>', desc = "Substitute to eol" },
-		{ "mp", '<cmd>lua require("substitute").visual()<CR>', mode = "x", desc = "Substitute in visual mode" },
+		{ "s", '<cmd>lua require("substitute").operator()<CR>', desc = "Substitute in operator mode" },
+		{ "ss", '<cmd>lua require("substitute").line()<CR>', desc = "Substitute curr line" },
+		{ "S", '<cmd>lua require("substitute").eol()<CR>', desc = "Substitute to eol" },
+		{ "s", '<cmd>lua require("substitute").visual()<CR>', mode = "x", desc = "Substitute in visual mode" },
 	},
 }

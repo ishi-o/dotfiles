@@ -37,10 +37,19 @@ return {
 		{
 			"<leader>ee",
 			function()
-				vim.api.nvim_feedkeys(":", "n", false)
-				vim.defer_fn(function()
-					vim.api.nvim_feedkeys("edit ", "n", false)
-				end, 50)
+				vim.ui.input({ prompt = "Edit file: " }, function(filename)
+					if filename == nil then
+						return
+					end
+					if filename == "" then
+						vim.cmd.enew()
+						return
+					end
+					vim.api.nvim_cmd({
+						cmd = "edit",
+						args = { filename },
+					}, {})
+				end)
 			end,
 			desc = "New buffer (input filename)",
 		},
@@ -50,14 +59,14 @@ return {
 		{ "<leader>bl", "<cmd>b#<CR>", desc = "Goto: last buffer" },
 		{ "<leader>bd", smart_bd, desc = "Delete curr buffer" },
 		{
-			"<leader>bc",
+			"<leader>bC",
 			function()
 				vim.fn.setreg("+", vim.fn.expand("%:p"))
 			end,
 			desc = "Copy curr buffer absolute path",
 		},
 		{
-			"<leader>bC",
+			"<leader>bc",
 			function()
 				vim.fn.setreg("+", vim.fn.expand("%:~:."))
 			end,

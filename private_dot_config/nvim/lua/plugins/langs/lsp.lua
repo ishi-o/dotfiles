@@ -3,7 +3,6 @@ return {
 		"neovim/nvim-lspconfig",
 		dependencies = {
 			"mason-org/mason.nvim",
-			"mason-org/mason-lspconfig.nvim",
 		},
 		lazy = false,
 		opts = {
@@ -35,14 +34,14 @@ return {
 		"folke/lazydev.nvim",
 		lazy = true,
 		ft = "lua",
+		config = function()
+			require("config.langs.lsp.extra.lazydev")
+		end,
 	},
 	{
 		"mfussenegger/nvim-jdtls",
 		lazy = true,
 		ft = { "java" },
-		dependencies = {
-			"mfussenegger/nvim-dap",
-		},
 	},
 	{
 		"qvalentin/helm-ls.nvim",

@@ -14,7 +14,6 @@ if ok then
 		panel = { enabled = false },
 		filetypes = {
 			AvanteInput = false,
-			["dap-repl"] = false,
 			help = true,
 			markdown = true,
 			snacks_picker_input = false,

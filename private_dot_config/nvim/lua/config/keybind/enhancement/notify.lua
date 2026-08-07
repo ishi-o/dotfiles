@@ -1,7 +1,7 @@
 return {
 	{
 		cond = function()
-			return _G.plugin_installed("noice.nvim")
+			return _G.UserUtils.plugin_installed("noice.nvim")
 		end,
 		{
 			"<leader>n",

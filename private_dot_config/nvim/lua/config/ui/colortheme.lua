@@ -1,4 +1,5 @@
 local hlset = vim.api.nvim_set_hl
+local autocmd = _G.UserUtils.autocmd
 vim.g.everforest_background = "soft"
 
 vim.cmd("colorscheme everforest")
@@ -12,7 +13,7 @@ hlset(0, "VirtualTextHint", { link = "DiagnosticHint" })
 hlset(0, "VirtualTextInfo", { link = "DiagnosticInfo" })
 hlset(0, "VirtualTextWarning", { link = "DiagnosticWarning" })
 hlset(0, "VirtualTextError", { link = "DiagnosticError" })
-vim.api.nvim_create_autocmd("OptionSet", {
+autocmd("OptionSet", {
 	pattern = "background",
 	callback = function()
 		hlset(0, "DiffText", { bg = "#A8D5B1", fg = "#24292F" })

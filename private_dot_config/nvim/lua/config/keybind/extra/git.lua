@@ -1,6 +1,37 @@
 return {
 	{
 		{ "<leader>gg", "<cmd>Neogit<CR>", desc = "Show: neogit ui" },
+		{
+			"<leader>gD",
+			function()
+				local absolute_file = vim.api.nvim_buf_get_name(0)
+				if absolute_file == "" or vim.bo.buftype ~= "" then
+					vim.notify("Current buffer is not a file", vim.log.levels.WARN)
+					return
+				end
+
+				local file = vim.fn.fnamemodify(absolute_file, ":.")
+				local branches = vim.fn.systemlist({
+					"git",
+					"-C",
+					vim.fn.fnamemodify(absolute_file, ":h"),
+					"branch",
+					"--all",
+					"--format=%(refname:short)",
+				})
+				vim.ui.select(branches, {
+					prompt = "Diff current file against branch: ",
+				}, function(branch)
+					branch = branch and vim.trim(branch)
+					if not branch or branch == "" then
+						return
+					end
+
+					require("diffview").open({ branch, "--", file })
+				end)
+			end,
+			desc = "Diff file against branch",
+		},
 		{ "<leader>ghcc", "<cmd>GHCloseCommit<CR>", desc = "Close" },
 		{ "<leader>ghce", "<cmd>GHExpandCommit<CR>", desc = "Expand" },
 		{ "<leader>ghco", "<cmd>GHOpenToCommit<CR>", desc = "Open to" },

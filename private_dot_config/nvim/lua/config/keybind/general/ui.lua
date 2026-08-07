@@ -98,4 +98,20 @@ return {
 		end,
 		desc = "Colorschemes",
 	},
+	{
+		cond = function()
+			return _G.UserUtils.plugin_installed("bufferline.nvim")
+		end,
+		{
+			"<leader>u<tab>",
+			function()
+				local bufferline_config = require("bufferline.config")
+				local mode = bufferline_config.options.mode == "tabs" and "buffers" or "tabs"
+				bufferline_config.options.mode = mode
+				bufferline_config.apply(true)
+				vim.cmd.redrawtabline()
+			end,
+			desc = "Toggle tabline mode (buffers / tabs)",
+		},
+	}
 }

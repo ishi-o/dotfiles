@@ -1,105 +1,78 @@
 require("mason").setup({})
-require("mason-lspconfig").setup({
-	ensure_installed = {
-		-- LSP Servers
-		"bashls",
-		"buf_ls",
-		"clangd",
-		"cssls",
-		"dockerls",
-		"docker_compose_language_service",
-		"helm_ls",
-		"html",
-		"lemminx",
-		"lua_ls",
-		-- "eslint",
-		"gopls",
-		-- "gradle_ls",
-		"groovyls",
-		"jdtls",
-		"jsonls",
-		"marksman",
-		-- "nginx_language_server",
-		-- "pyright",
-		"taplo",
-		-- "thirftls",
-		"tinymist",
-		"ts_ls",
-		"ty",
-		"typos_lsp",
-		"ruff",
-		"rust_analyzer",
-		-- "sqlls",
-		-- "sqls",
-		"stylua",
-		"texlab",
-		"vtsls",
-		"vue_ls",
-		"yamlls",
-	},
-	automatic_installation = true,
-})
-
 local conf = require("config.langs.lsp.conf")
 local registry = require("mason-registry")
-local other_tools = {
-	-- DAPs
-	"codelldb",
-	"debugpy",
-	"delve",
-	"java-debug-adapter",
+
+local tools = {
+	-- LSP Servers
+	"bash-language-server",
+	"buf",
+	"clangd",
+	"css-lsp",
+	"docker-compose-language-service",
+	"dockerfile-language-server",
+	"gopls",
+	"groovy-language-server",
+	"helm-ls",
+	"html-lsp",
+	"jdtls",
 	"java-test",
+	"json-lsp",
+	"lemminx",
+	"lua-language-server",
+	"marksman",
+	"nginx-language-server",
+	"ruff",
+	"rust-analyzer",
+	"taplo",
+	"texlab",
+	"tinymist",
+	"typescript-language-server",
+	"ty",
+	"typos-lsp",
+	"vtsls",
+	"vue-language-server",
+	"yaml-language-server",
 	-- Linters
-	"checkstyle",
 	"cpplint",
 	"eslint_d",
 	"hadolint",
 	"htmlhint",
 	"golangci-lint",
 	"jsonlint",
-	"luacheck",
-	"markdownlint-cli2",
-	"proselint",
 	"shellcheck",
-	-- "sqruff",
 	"stylelint",
-	"yamllint",
 	-- Formatters
-	-- "autopep8",
-	-- "black",
 	"clang-format",
 	"gofumpt",
 	"goimports",
 	"gomodifytags",
 	"impl", -- go: generates method stubs for implementing an interface
 	"jq",
-	"markdown-toc",
 	"nginx-config-formatter",
 	"prettier",
 	"prettierd",
-	"rustfmt",
 	"shfmt",
-	"sqlfluff",
-	-- "sql-formatter",
 	"typstyle",
-	-- "yamlfmt",
 }
-for _, tool_name in ipairs(other_tools) do
-	local tool = registry.get_package(tool_name)
-	if not tool:is_installed() then
-		tool:install():once("closed", function()
-			print("[Mason] Successfully installed: " .. tool_name)
-		end)
+
+for _, package_name in ipairs(tools) do
+	if not registry.has_package(package_name) then
+		vim.notify("[Mason] Package not found: " .. package_name, vim.log.levels.WARN)
+	else
+		local package = registry.get_package(package_name)
+		if not package:is_installed() then
+			package:install():once("closed", function()
+				print("[Mason] Successfully installed: " .. package_name)
+			end)
+		end
 	end
 end
 
 local simple_servers = {
-	"bashls",
 	"clangd",
 	"cssls",
 	"dockerls",
 	"docker_compose_language_service",
-	-- "gradle_ls",
 	"groovyls",
 	"helm_ls",
 	"html",
@@ -119,15 +92,16 @@ for _, server in ipairs(simple_servers) do
 end
 
 local custom_confs = {
-	{ module = "go", servers = { "gopls" } },
-	{ module = "java", servers = { "jdtls" } },
+	{ module = "bash",      servers = { "bashls" } },
+	{ module = "go",        servers = { "gopls" } },
+	{ module = "java",      servers = { "jdtls" } },
 	{ module = "js-family", servers = { "ts_ls", "jsonls" } },
-	{ module = "lua", servers = { "lua_ls" } },
-	{ module = "protobuf", servers = { "buf_ls" } },
-	{ module = "python", servers = { "ty" } },
-	{ module = "vue", servers = { "vtsls", "vue_ls" } },
-	{ module = "xml", servers = { "lemminx" } },
-	{ module = "yaml", servers = { "yamlls" } },
+	{ module = "lua",       servers = { "lua_ls" } },
+	{ module = "protobuf",  servers = { "buf_ls" } },
+	{ module = "python",    servers = { "ty" } },
+	{ module = "vue",       servers = { "vtsls", "vue_ls" } },
+	{ module = "xml",       servers = { "lemminx" } },
+	{ module = "yaml",      servers = { "yamlls" } },
 }
 for _, item in ipairs(custom_confs) do
 	require("config.langs.lsp.config." .. item.module)

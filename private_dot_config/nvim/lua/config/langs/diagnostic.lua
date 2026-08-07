@@ -28,8 +28,4 @@ function M.setup()
 	})
 end
 
-function M.load_trouble()
-	require("trouble").setup()
-end
-
 return M

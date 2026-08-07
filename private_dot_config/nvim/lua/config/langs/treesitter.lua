@@ -1,7 +1,8 @@
 local conf = require("config.langs.treesitter_conf")
+local autocmd = _G.UserUtils.autocmd
 require("nvim-treesitter").install(conf.fts)
 
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
 	pattern = conf.fts,
 	callback = function()
 		vim.treesitter.start()

@@ -1,7 +1,7 @@
 return {
 	{
 		cond = function()
-			return _G.plugin_installed("todo-comments.nvim")
+			return _G.UserUtils.plugin_installed("todo-comments.nvim")
 		end,
 		{
 			"]t",
@@ -12,12 +12,6 @@ return {
 			"[t",
 			'<cmd>lua require("todo-comments").jump_prev()<CR>',
 			desc = "Previous Todo Comment",
-		},
-		{ "<leader>xt", "<cmd>TodoTrouble toggle<CR>", desc = "Todo (Trouble)" },
-		{
-			"<leader>xT",
-			"<cmd>TodoTrouble toggle filter = {tag = {TODO,FIX,FIXME}}<CR>",
-			desc = "Todo/Fix/Fixme (Trouble)",
 		},
 		{
 			"<leader>ft",

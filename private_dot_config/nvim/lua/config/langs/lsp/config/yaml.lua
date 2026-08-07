@@ -5,10 +5,6 @@ vim.lsp.config("yamlls", {
 	capabilities = conf.capabilities,
 	settings = {
 		yaml = {
-			-- schemaStore = {
-			-- 	enable = true,
-			-- 	url = "https://www.schemastore.org/api/json/catalog.json",
-			-- },
 			schemaStore = {
 				enable = false,
 				url = "",
@@ -16,6 +12,9 @@ vim.lsp.config("yamlls", {
 			schemas = require("schemastore").yaml.schemas(),
 			completion = true,
 			validate = true,
+			format = {
+				singleQuote = true,
+			},
 		},
 	},
 })

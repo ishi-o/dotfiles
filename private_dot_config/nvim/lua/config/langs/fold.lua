@@ -25,26 +25,13 @@ local handler = function(virtText, lnum, endLnum, width, truncate)
 	return newVirtText
 end
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.foldingRange = {
-	dynamicRegistration = false,
-	lineFoldingOnly = true,
-}
-
-local language_servers = vim.lsp.get_clients()
-for _, ls in ipairs(language_servers) do
-	require("lspconfig")[ls].setup({
-		capabilities = capabilities,
-	})
-end
-
 require("ufo").setup({
 	close_fold_kinds_for_ft = {
 		default = { "imports", "comment" },
 	},
 	fold_virt_text_handler = handler,
 	provider_selector = function(_, ft, buftype)
-		if buftype ~= "" or not vim.tbl_contains(require("config.langs.treesitter_conf").fts, ft) then
+		if buftype ~= "" or not vim.tbl_contains(require("config.langs.treesitter_conf").fts, ft) or ft == "gitignore" then
 			return { "lsp", "indent" }
 		end
 		return { "lsp", "treesitter" }

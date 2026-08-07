@@ -1,4 +1,6 @@
 local blink = require("blink.cmp")
+local has_friendly_snippets = #vim.api.nvim_get_runtime_file("snippets/global.json", false) > 0
+
 blink.setup({
 	keymap = {
 		preset = "none",
@@ -87,14 +89,14 @@ blink.setup({
 			},
 			snippets = {
 				opts = {
-					friendly_snippets = true,
-					extended_filetypes = {
+					friendly_snippets = has_friendly_snippets,
+					extended_filetypes = has_friendly_snippets and {
 						cpp = { "unreal" },
 						markdown = { "tex", "jekyll" },
 						mysql = { "sql" },
 						pgsql = { "sql" },
 						plsql = { "sql" },
-					},
+					} or {},
 				},
 			},
 		},
