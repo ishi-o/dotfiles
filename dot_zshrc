@@ -69,13 +69,8 @@ export NVM_DIR="$HOME/.nvm"
 . "$HOME/.cargo/env"
 ### END_CARGO
 
-### START_BREW
-eval "$("$HOME/.local/brew/bin/brew" shellenv)"
-### END_BREW
-
 fpath=(
     $HOME/.zfunc
-    $HOMEBREW_PREFIX/share/zsh/site-functions
     $fpath
 )
 autoload -Uz compinit && compinit
