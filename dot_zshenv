@@ -69,15 +69,10 @@ if [ "$fcitx5_enabled" = true ]; then
         export QT_IM_MODULE=fcitx
         export SDL_IM_MODULE=fcitx
         export XMODIFIERS=@im=fcitx
-        if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
-            export GLFW_IM_MODULE=ibus
-        fi
     elif [ -z "${WAYLAND_DISPLAY:-}" ] && [ -n "${DISPLAY:-}" ]; then
         # X11/XWayland applications use XIM or the toolkit modules.
         export XMODIFIERS=@im=fcitx
-        if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
-            export GLFW_IM_MODULE=ibus
-        fi
+
     fi
     fcitx5_pid="$(pgrep -xo fcitx5 2>/dev/null)"
     fcitx5_needs_start=true
