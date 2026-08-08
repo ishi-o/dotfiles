@@ -17,7 +17,7 @@ install_uv() {
   fi
 
   # Install Python versions via uv.
-  # uv python install creates python3.X symlinks in ~/.local/bin.
+  # uv python install creates python3.X executables in ~/.local/bin.
   # - 3.14: default python3 for general use
   # - 3.13: needed by Mason packages that require python<3.14
   #   (e.g. nginx-language-server: Requires-Python >=3.9,<3.14)
@@ -29,11 +29,16 @@ install_uv() {
     fi
   done
 
-  # Create unversioned python3 symlink pointing to the default version.
-  # uv only creates versioned symlinks (python3.14, python3.13), not python3.
-  local python3_link="$HOME/.local/bin/python3"
-  if [ ! -L "$python3_link" ] && [ ! -e "$python3_link" ] && check_installed python3.14; then
-    ln -s python3.14 "$python3_link"
+  # Create python3 shim that delegates to uv.
+  # This makes `python3` respect `uv python pin --global <version>`.
+  # Without the shim, `uv python pin` only affects `uv run`, not bare `python3`.
+  local python3_shim="$HOME/.local/bin/python3"
+  if [ ! -e "$python3_shim" ]; then
+    cat > "$python3_shim" << 'SHIM'
+#!/bin/sh
+exec uv run --no-project python3 "$@"
+SHIM
+    chmod +x "$python3_shim"
   fi
 }
 
