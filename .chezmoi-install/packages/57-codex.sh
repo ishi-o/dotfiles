@@ -8,6 +8,13 @@ install_codex() {
     return 0
   fi
 
+  # Source nvm so npm/node are available
+  if [ -f "$HOME/.nvm/nvm.sh" ]; then
+    set +euo pipefail
+    . "$HOME/.nvm/nvm.sh"
+    set -euo pipefail
+  fi
+
   if ! check_installed npm; then
     echo "Skipping codex: npm not found (install nvm/node first)"
     return 0
