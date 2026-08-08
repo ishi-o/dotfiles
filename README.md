@@ -1,16 +1,26 @@
 ## Installation
 
 ```sh
-sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b ~/.local/bin # install chezmoi
-~/.local/bin/chezmoi init https://github.com/ishi-o/dotfiles.git
-~/.local/bin/chezmoi apply
+# install chezmoi
+# On a fresh machine the shell PATH does not yet include `~/.local/bin`, so
+# prefix every chezmoi call with the full path until the new shell config takes
+# effect.
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b ~/.local/bin
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+```sh
+chezmoi init https://github.com/ishi-o/dotfiles.git
+chezmoi apply
 ```
 
 Or initialize with an SSH key:
 
 ```sh
-~/.local/bin/chezmoi init git@github.com:ishi-o/dotfiles.git
-~/.local/bin/chezmoi apply
+ssh-keygen
+# generate the ssh keys and push the pub key into settings
+chezmoi init git@github.com:ishi-o/dotfiles.git
+chezmoi apply
 ```
 
 ## Optional proxy
@@ -20,8 +30,9 @@ Set `PROXY_URL` before initialization or applying the configuration. For example
 ```sh
 export PROXY_URL="http://127.0.0.1:7890"
 # Or: export PROXY_URL="socks5h://127.0.0.1:10808"
-~/.local/bin/chezmoi init https://github.com/ishi-o/dotfiles.git
-~/.local/bin/chezmoi apply
+export PATH="$HOME/.local/bin:$PATH"
+chezmoi init https://github.com/ishi-o/dotfiles.git
+chezmoi apply
 ```
 
 After initialization and applying the configuration, you can open `~/.zshenv`,
@@ -36,8 +47,8 @@ Once a script has run, chezmoi skips it on future `apply` calls. To force all
 installers to run again (e.g. after a failed run or a major version upgrade):
 
 ```sh
-~/.local/bin/chezmoi state reset
-~/.local/bin/chezmoi apply
+chezmoi state reset
+chezmoi apply
 ```
 
 Each installer has its own debounce guard (`check_installed`, file checks, etc.)
