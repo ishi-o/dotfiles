@@ -29,6 +29,20 @@ uncomment the `PROXY_URL` line, and customize the proxy address for future zsh s
 
 If initialization or installation fails, check your network connection and then try again.
 
+## Re-running installers
+
+Package installers use `run_once_*` scripts tracked in chezmoi's state database.
+Once a script has run, chezmoi skips it on future `apply` calls. To force all
+installers to run again (e.g. after a failed run or a major version upgrade):
+
+```sh
+~/.local/bin/chezmoi state reset
+~/.local/bin/chezmoi apply
+```
+
+Each installer has its own debounce guard (`check_installed`, file checks, etc.)
+so re-running is safe -- already-installed packages are skipped automatically.
+
 ## Optional graphical input method
 
 The fcitx5 integration is enabled only when `fcitx5` is installed and a graphical
