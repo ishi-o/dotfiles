@@ -29,6 +29,22 @@ if [ -n "${PROXY_URL:-}" ]; then
     export no_proxy="${no_proxy:-$NO_PROXY}"
 fi
 
+# Ensure a working D-Bus session bus.
+# WSLg may leave a stale socket; detect and restart if needed.
+if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.freedesktop.DBus --print-reply /org/freedesktop/DBus org.freedesktop.DBus.ListNames >/dev/null 2>&1; then
+    unset DBUS_SESSION_BUS_ADDRESS
+    wslg_bus="/mnt/wslg/run/user/$(id -u)/bus"
+    if [ -S "$wslg_bus" ]; then
+        export DBUS_SESSION_BUS_ADDRESS="unix:path=$wslg_bus"
+    fi
+    if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.freedesktop.DBus --print-reply /org/freedesktop/DBus org.freedesktop.DBus.ListNames >/dev/null 2>&1; then
+        unset DBUS_SESSION_BUS_ADDRESS
+        if command -v dbus-launch >/dev/null 2>&1; then
+            eval "$(dbus-launch --sh-syntax)"
+        fi
+    fi
+fi
+
 # Optional graphical/input-method integration.
 # On WSL, require WSLg so headless WSL does not start fcitx5.
 fcitx5_enabled=false
@@ -53,11 +69,15 @@ if [ "$fcitx5_enabled" = true ]; then
         export QT_IM_MODULE=fcitx
         export SDL_IM_MODULE=fcitx
         export XMODIFIERS=@im=fcitx
-        export GLFW_IM_MODULE=ibus
+        if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+            export GLFW_IM_MODULE=ibus
+        fi
     elif [ -z "${WAYLAND_DISPLAY:-}" ] && [ -n "${DISPLAY:-}" ]; then
         # X11/XWayland applications use XIM or the toolkit modules.
         export XMODIFIERS=@im=fcitx
-        export GLFW_IM_MODULE=ibus
+        if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+            export GLFW_IM_MODULE=ibus
+        fi
     fi
     fcitx5_pid="$(pgrep -xo fcitx5 2>/dev/null)"
     fcitx5_needs_start=true
