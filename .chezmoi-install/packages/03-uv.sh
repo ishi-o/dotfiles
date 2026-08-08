@@ -17,7 +17,7 @@ install_uv() {
   fi
 
   # Install Python versions via uv.
-  # uv python install places python3.X and python3 symlinks in ~/.local/bin.
+  # uv python install creates python3.X symlinks in ~/.local/bin.
   # - 3.14: default python3 for general use
   # - 3.13: needed by Mason packages that require python<3.14
   #   (e.g. nginx-language-server: Requires-Python >=3.9,<3.14)
@@ -28,6 +28,13 @@ install_uv() {
       uv python install "${ver}"
     fi
   done
+
+  # Create unversioned python3 symlink pointing to the default version.
+  # uv only creates versioned symlinks (python3.14, python3.13), not python3.
+  local python3_link="$HOME/.local/bin/python3"
+  if [ ! -L "$python3_link" ] && [ ! -e "$python3_link" ] && check_installed python3.14; then
+    ln -s python3.14 "$python3_link"
+  fi
 }
 
 install_uv
