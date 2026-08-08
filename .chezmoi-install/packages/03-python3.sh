@@ -3,7 +3,7 @@
 pkg_name="python3"
 
 install_python3() {
-  if check_installed python3; then
+  if check_installed python3 && python3 -m venv --help >/dev/null 2>&1; then
     return 0
   fi
 
@@ -11,7 +11,7 @@ install_python3() {
     return 0
   fi
 
-  echo "Warning: python3 not installed. Install it via your package manager." >&2
+  echo "Warning: python3-venv not available. Some tools may fail to install." >&2
   return 0
 }
 

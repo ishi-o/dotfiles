@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 
-pkg_name="cc"
+pkg_name="build-essential"
 
-install_cc() {
+install_build_essential() {
   if check_installed cc; then
     return 0
   fi
 
-  if [ "$pkg_manager" = "apt" ] && [ "$has_sudo" = "true" ]; then
-    install_via_apt build-essential || return 1
+  if try_package_manager build-essential; then
+    return 0
   fi
+
+  echo "Warning: C compiler not found. Install build-essential or equivalent via your package manager." >&2
+  return 0
 }
 
-install_cc
+install_build_essential
