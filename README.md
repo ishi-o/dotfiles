@@ -40,6 +40,20 @@ uncomment the `PROXY_URL` line, and customize the proxy address for future zsh s
 
 If initialization or installation fails, check your network connection and then try again.
 
+## Private environment variables
+
+The shell configs source `~/.config/env` for secrets and machine-specific
+variables (API keys, tokens, proxy settings, etc.). This file is managed by
+chezmoi as a private file (restricted permissions) and starts empty. Add your
+own variables there:
+
+```sh
+echo 'export OPENAI_API_KEY="sk-..."' >> ~/.config/env
+echo 'export ANTHROPIC_API_KEY="sk-ant-..."' >> ~/.config/env
+```
+
+This file is not tracked in git -- it is local to each machine.
+
 ## Re-running installers
 
 Package installers use `run_once_*` scripts tracked in chezmoi's state database.
