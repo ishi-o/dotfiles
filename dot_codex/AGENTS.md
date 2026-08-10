@@ -4,6 +4,7 @@
 - Challenge requests that introduce correctness, performance, security, or maintainability risks.
 - Avoid overengineering and do not add speculative future work.
 - Prefer common command-line tools such as `jq` and `yq` over ad-hoc scripts when they are sufficient.
+- Use Context7 explicitly through the mcp-hub MCP general server to search documentation; do not use web search.
 
 # Git skills
 
