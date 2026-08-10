@@ -24,7 +24,7 @@ return {
 		{
 			"<leader>V",
 			function()
-				vim.ui.input({ prompt = "Horizontal split file: " }, function(filename)
+				vim.ui.input({ prompt = "Horizontal split file: ", completion = "file" }, function(filename)
 					if filename == nil then
 						return
 					end
@@ -39,7 +39,7 @@ return {
 		{
 			"<leader>v",
 			function()
-				vim.ui.input({ prompt = "Vertical split file: " }, function(filename)
+				vim.ui.input({ prompt = "Vertical split file: ", completion = "file" }, function(filename)
 					if filename == nil then
 						return
 					end

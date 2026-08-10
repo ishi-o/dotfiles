@@ -31,6 +31,9 @@ require("ufo").setup({
 	},
 	fold_virt_text_handler = handler,
 	provider_selector = function(_, ft, buftype)
+		if ft == "bigfile" then
+			return ""
+		end
 		if buftype ~= "" or not vim.tbl_contains(require("config.langs.treesitter_conf").fts, ft) or ft == "gitignore" then
 			return { "lsp", "indent" }
 		end

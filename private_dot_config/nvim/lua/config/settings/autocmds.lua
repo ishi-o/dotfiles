@@ -102,6 +102,9 @@ do
 	autocmd("CursorHold", {
 		callback = function()
 			local buf = vim.api.nvim_get_current_buf()
+			if vim.bo[buf].filetype == "bigfile" then
+				return
+			end
 			vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
 
 			local open = vim.fn.searchpairpos("[[({]", "", "[])}]", "nbW")

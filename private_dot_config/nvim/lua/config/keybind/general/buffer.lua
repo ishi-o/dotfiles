@@ -37,7 +37,7 @@ return {
 		{
 			"<leader>ee",
 			function()
-				vim.ui.input({ prompt = "Edit file: " }, function(filename)
+				vim.ui.input({ prompt = "Edit file: ", completion = "file" }, function(filename)
 					if filename == nil then
 						return
 					end

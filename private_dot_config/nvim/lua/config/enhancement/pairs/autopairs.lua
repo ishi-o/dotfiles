@@ -8,7 +8,7 @@ if not ok2 then
 	return
 end
 npairs.setup({
-	disable_filetype = { "TelescopePrompt" },
+	disable_filetype = { "bigfile" },
 	disable_in_macro = true,
 	disable_in_visualblock = true,
 	check_ts = true,

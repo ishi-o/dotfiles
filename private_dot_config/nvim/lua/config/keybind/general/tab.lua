@@ -3,7 +3,7 @@ return {
 		{
 			"<leader><tab><tab>",
 			function()
-				vim.ui.input({ prompt = "New tab file: " }, function(filename)
+				vim.ui.input({ prompt = "New tab file: ", completion = "file" }, function(filename)
 					if filename == nil then
 						return
 					end

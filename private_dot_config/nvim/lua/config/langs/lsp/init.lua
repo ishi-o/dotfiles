@@ -81,7 +81,6 @@ local simple_servers = {
 	"rust_analyzer",
 	"taplo",
 	"texlab",
-	"typos_lsp",
 }
 for _, server in ipairs(simple_servers) do
 	vim.lsp.config(server, {
@@ -99,6 +98,7 @@ local custom_confs = {
 	{ module = "lua",       servers = { "lua_ls" } },
 	{ module = "protobuf",  servers = { "buf_ls" } },
 	{ module = "python",    servers = { "ty" } },
+	{ module = "typos",     servers = { "typos_lsp" } },
 	{ module = "vue",       servers = { "vtsls", "vue_ls" } },
 	{ module = "xml",       servers = { "lemminx" } },
 	{ module = "yaml",      servers = { "yamlls" } },
