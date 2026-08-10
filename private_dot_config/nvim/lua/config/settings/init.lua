@@ -1,6 +1,0 @@
-require("config.settings.global")
-require("config.settings.opts")
-require("config.settings.autocmds")
-require("config.langs.diagnostic").setup()
-require("config.ui.statusbar").setup()
-require("config.settings.user_cmds")

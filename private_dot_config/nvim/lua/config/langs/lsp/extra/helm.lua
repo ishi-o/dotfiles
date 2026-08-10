@@ -1,1 +1,0 @@
-require("helm-ls").setup()
