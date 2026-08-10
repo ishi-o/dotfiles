@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "context7": {
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "command": "npx",
+      "disabled": false,
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
+    },
+    "filesystem": {
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${ALLOWED_DIRECTORY}"
+      ],
+      "command": "npx",
+      "disabled": false
+    },
+    "kingboat-ops": {
+      "headers": {
+        "Authorization": "Bearer slop_CrZzxImXdePm6zvYapTZCodlMCD83dpI",
+        "X-Product": "idol-inc-ios"
+      },
+      "type": "http",
+      "url": "https://ops.aliyun.kingboat.io/mcp"
+    }
+  }
+}
