@@ -90,5 +90,5 @@ This WSLg choice follows the current [WSLg Weston configuration](https://github.
 
 ## Fonts
 
-The installer manages the [Consolas ligaturized v3](https://github.com/somq/consolas-ligaturized)
-font and installs it into the current user's font directory on Linux and macOS.
+The external configuration downloads the [Consolas ligaturized v3](https://github.com/somq/consolas-ligaturized)
+font into the current user's font directory on Linux and macOS.

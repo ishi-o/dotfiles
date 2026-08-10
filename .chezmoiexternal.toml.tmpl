@@ -1,8 +1,22 @@
 {{- $origin := output "git" "-C" .chezmoi.sourceDir "remote" "-v" -}}
+{{- $useSSH := regexMatch "(?m)^origin[[:space:]]+(git@|ssh://|git\\+ssh://)" $origin -}}
+{{- $usrHome := or (env "USR_HOME") (joinPath .chezmoi.homeDir "usr/local") -}}
+{{- $usrHomeRel := trimPrefix (printf "%s/" .chezmoi.homeDir) $usrHome -}}
 [".config/nvim"]
 type = "git-repo"
-{{- if regexMatch "(?m)^origin[[:space:]]+(git@|ssh://|git\\+ssh://)" $origin }}
+{{ if $useSSH }}
 url = "git@github.com:ishi-o/ishio.nvim.git"
-{{- else }}
+{{ else }}
 url = "https://github.com/ishi-o/ishio.nvim.git"
-{{- end }}
+{{ end }}
+
+[consolas_ligaturized]
+type = "archive"
+url = "https://github.com/somq/consolas-ligaturized/archive/refs/heads/master.tar.gz"
+{{ if eq .chezmoi.os "darwin" }}
+targetPath = "Library/Fonts"
+{{ else if eq .chezmoi.os "linux" }}
+targetPath = ".local/share/fonts"
+{{ end }}
+stripComponents = 1
+include = ["*/Consolasligaturizedv3*.ttf"]
