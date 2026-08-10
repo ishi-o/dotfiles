@@ -45,8 +45,16 @@ startup_session ~/.config/kitty/sessions/last.kitty-session
 # AUTO_SESSION
 
 ### MAPPING
+kitty_mod ctrl+shift
 map f11 toggle_fullscreen
 map ctrl+shift+s save_as_session --use-foreground-process --save-only ~/.config/kitty/sessions/last.kitty-session
+
+# Pane management
+map ctrl+shift+d close_window
+map ctrl+shift+h move_window left
+map ctrl+shift+j move_window down
+map ctrl+shift+k move_window up
+map ctrl+shift+l move_window right
 
 map ctrl+j neighboring_window down
 map ctrl+k neighboring_window up
@@ -69,9 +77,18 @@ map --when-focus-on var:IS_NVIM alt+k
 map --when-focus-on var:IS_NVIM alt+h
 map --when-focus-on var:IS_NVIM alt+l
 
+# 1 = completion menu (send Meta-j/k to zsh/fzf-tab), 2 = fzf selector (pass through).
+map --when-focus-on var:ZSH_SELECTOR_MODE=1 alt+j send_text normal,application \x1bj
+map --when-focus-on var:ZSH_SELECTOR_MODE=1 alt+k send_text normal,application \x1bk
+map --when-focus-on var:ZSH_SELECTOR_MODE=2 alt+j
+map --when-focus-on var:ZSH_SELECTOR_MODE=2 alt+k
+
 # Window splitting
 map ctrl+\ launch --location=vsplit
 map ctrl+- launch --location=hsplit
+
+# Zoom the active pane and restore the previous layout on the next press.
+map ctrl+shift+z toggle_layout stack
 ### MAPPING
 
 ### MACOS_OPTION_AS_ALT

@@ -54,12 +54,7 @@ zplug load
 
 # User configuration
 
-### START_KEYBIND
-bindkey -M viins 'jj' vi-cmd-mode
-bindkey '' autosuggest-accept
-# zstyle ':fzf-tab:*' continuous-trigger ''
-# zstyle ':fzf-tab:*' fzf-bindings 'tab:accept'
-### END_KEYBIND
+source "$HOME/.config/zsh/keybinds.zsh"
 
 ### START_ALIAS 
 alias vi='nvim'
