@@ -71,7 +71,7 @@ export NVM_DIR="$HOME/.nvm"
 ### END_NVM
 
 fpath=(
-    $HOME/.zfunc
+    $HOME/.config/zfunc
     $fpath
 )
 autoload -Uz compinit && compinit
