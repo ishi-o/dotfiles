@@ -17,6 +17,8 @@ zplug "plugins/z",         from:oh-my-zsh, defer:1
 zplug "plugins/sudo",      from:oh-my-zsh, defer:1
 zplug "plugins/extract",   from:oh-my-zsh, defer:1
 zplug "plugins/fzf",       from:oh-my-zsh, defer:1
+# for gradle wrapper completions
+zplug "plugins/gradle",    from:oh-my-zsh, ignore:"gradle.plugin.zsh", defer:1
 
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
@@ -75,3 +77,5 @@ fpath=(
     $fpath
 )
 autoload -Uz compinit && compinit
+compdef _gradle gradlew ./gradlew
+compdef -d gradle gw

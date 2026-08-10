@@ -37,26 +37,54 @@ shopt -u nullglob
 
 if [ ${#packages[@]} -eq 0 ]; then
   echo "No packages found in $SCRIPT_DIR/packages/"
-  exit 0
+else
+  # Sort packages by filename (compatible with bash 3.2+)
+  sorted_packages=()
+  while IFS= read -r -d '' file; do
+    sorted_packages+=("$file")
+  done < <(printf '%s\0' "${packages[@]}" | sort -z)
+
+  echo "==> Found ${#sorted_packages[@]} packages"
+
+  # Install in filename order
+  for pkg_file in "${sorted_packages[@]}"; do
+    pkg_basename=$(basename "$pkg_file" .sh)
+    echo "==> Processing: $pkg_basename"
+
+    # Source the package file (which will execute the install function)
+    # shellcheck disable=SC1090
+    source "$pkg_file"
+  done
 fi
 
-# Sort packages by filename (compatible with bash 3.2+)
-sorted_packages=()
-while IFS= read -r -d '' file; do
-  sorted_packages+=("$file")
-done < <(printf '%s\0' "${packages[@]}" | sort -z)
+echo ""
+echo "==> Generating shell completions"
 
-echo "==> Found ${#sorted_packages[@]} packages"
+shopt -s nullglob
+completion_scripts=("$SCRIPT_DIR/completions/"*.sh)
+shopt -u nullglob
 
-# Install in filename order
-for pkg_file in "${sorted_packages[@]}"; do
-  pkg_basename=$(basename "$pkg_file" .sh)
-  echo "==> Processing: $pkg_basename"
+if [ ${#completion_scripts[@]} -eq 0 ]; then
+  echo "No completion generators found in $SCRIPT_DIR/completions/"
+else
+  sorted_completion_scripts=()
+  while IFS= read -r -d '' file; do
+    sorted_completion_scripts+=("$file")
+  done < <(printf '%s\0' "${completion_scripts[@]}" | sort -z)
 
-  # Source the package file (which will execute the install function)
-  # shellcheck disable=SC1090
-  source "$pkg_file"
-done
+  echo "==> Found ${#sorted_completion_scripts[@]} completion generators"
+
+  # Completion generation is optional. A failed generator must not fail the
+  # whole installation, so run each one in an isolated, non-errexit shell.
+  for completion_script in "${sorted_completion_scripts[@]}"; do
+    completion_basename=$(basename "$completion_script" .sh)
+    echo "==> Processing completion: $completion_basename"
+
+    if ! (set +e; source "$completion_script"); then
+      echo "Warning: Completion generator failed: $completion_basename" >&2
+    fi
+  done
+fi
 
 echo ""
 echo "==> Installation complete!"
