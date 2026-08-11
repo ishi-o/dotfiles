@@ -10,17 +10,23 @@ install_nvim() {
 
   echo "Installing nvim ${pkg_version}..."
 
-  # Determine the appropriate binary based on OS
+  # Determine the appropriate binary based on OS and architecture.
   local nvim_archive
-  case "$os" in
-  darwin)
-    nvim_archive="nvim-macos.tar.gz"
+  case "$os:$arch" in
+  darwin:amd64|darwin:x86_64)
+    nvim_archive="nvim-macos-x86_64.tar.gz"
     ;;
-  linux)
+  darwin:arm64|darwin:aarch64)
+    nvim_archive="nvim-macos-arm64.tar.gz"
+    ;;
+  linux:amd64|linux:x86_64)
     nvim_archive="nvim-linux-x86_64.tar.gz"
     ;;
+  linux:arm64|linux:aarch64)
+    nvim_archive="nvim-linux-arm64.tar.gz"
+    ;;
   *)
-    echo "Error: Unsupported operating system: $os"
+    echo "Error: Unsupported Neovim platform: $os/$arch"
     return 1
     ;;
   esac
