@@ -1,19 +1,8 @@
-export USR_HOME="${USR_HOME:-$HOME/usr/local}"
+. "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env"
+. "$HOME/.config/env"
+
 export EDITOR='nvim'
 export VISUAL='nvim'
-export GOROOT="$USR_HOME/go"
-export GOPATH="$HOME/go"
-export PATH="$USR_HOME/bin:$PATH"
-export PATH="$USR_HOME/kitty.app/bin:$PATH"
-export PATH="$USR_HOME/nvim/bin:$PATH"
-export PATH="$HOME/.fzf/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/bin:$PATH"
-export PATH="$GOROOT/bin:$PATH"
-export PATH="$GOPATH/bin:$PATH"
-export PATH="$HOME/.local/share/coursier/bin:$PATH"
-
-. "$HOME/.config/env"
 
 # Optional network proxy.
 # PROXY_URL_HTTP="http://127.0.0.1:10808"

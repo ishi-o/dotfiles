@@ -4,27 +4,15 @@ fi
 
 shopt -s cdspell
 
-export USR_HOME="${USR_HOME:-$HOME/usr/local}"
-export GOROOT="$USR_HOME/go"
-export GOPATH="$HOME/go"
-export PATH="$USR_HOME/bin:$PATH"
-export PATH="$USR_HOME/kitty.app/bin:$PATH"
-export PATH="$USR_HOME/nvim/bin:$PATH"
-export PATH="$HOME/.fzf/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/bin:$PATH"
-export PATH="$GOROOT/bin:$PATH"
-export PATH="$GOPATH/bin:$PATH"
-export PATH="$HOME/.local/share/coursier/bin:$PATH"
+. "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env"
+. "${XDG_CONFIG_HOME:-$HOME/.config}/env"
 
-export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 alias vi=nvim
 alias vim=nvim
-source "$HOME/.config/env"
-. "$HOME/.cargo/env"
+[ -f "$CARGO_HOME/env" ] && . "$CARGO_HOME/env"
 
 # Optional network proxy.
 # Examples: http://127.0.0.1:7890 or socks5h://127.0.0.1:1080
@@ -40,7 +28,7 @@ if [ -n "${PROXY_URL:-}" ]; then
 	export no_proxy="${no_proxy:-$NO_PROXY}"
 fi
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[ -f "$XDG_CONFIG_HOME/fzf/fzf.bash" ] && source "$XDG_CONFIG_HOME/fzf/fzf.bash"
 
 # Ensure a working D-Bus session bus.
 # WSLg may leave a stale socket; detect and restart if needed.

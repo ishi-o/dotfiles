@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 generate_rust_zsh_completions() {
-  local zfunc_dir="$HOME/.config/zfunc"
+  local zfunc_dir="${XDG_CONFIG_HOME:-$HOME/.config}/zfunc"
   local rustup_cmd=""
-  local rustup_path="$HOME/.cargo/bin/rustup"
+  local rustup_path="${CARGO_HOME:-$HOME/.local/share/cargo}/bin/rustup"
   local rustup_tmp cargo_tmp
 
   if [ -x "$rustup_path" ]; then

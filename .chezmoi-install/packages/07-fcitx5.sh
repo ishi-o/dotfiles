@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+pkg_name="fcitx5"
+
 install_fcitx5() {
   if [ "$is_wsl" != "true" ]; then
     echo "Skipping fcitx5: WSL was not detected"

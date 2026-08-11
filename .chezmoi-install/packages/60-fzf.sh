@@ -16,11 +16,11 @@ install_fzf() {
   # Fall back to git clone installation
   echo "Installing fzf..."
 
-  if [ ! -d "$HOME/.fzf" ]; then
-    git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf" || return 1
+  if [ ! -d "$FZF_HOME" ]; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git "$FZF_HOME" || return 1
   fi
 
-  "$HOME/.fzf/install" --all
+  "$FZF_HOME/install" --all --xdg
 }
 
 install_fzf

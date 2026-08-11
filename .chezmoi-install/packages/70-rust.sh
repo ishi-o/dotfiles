@@ -23,9 +23,9 @@ install_rust() {
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
   # Source cargo environment for the current shell
-  if [ -f "$HOME/.cargo/env" ]; then
+  if [ -f "$CARGO_HOME/env" ]; then
     # shellcheck source=/dev/null
-    source "$HOME/.cargo/env"
+    source "$CARGO_HOME/env"
   fi
 
   echo "Rust installed successfully"

@@ -9,9 +9,9 @@ install_codex() {
   fi
 
   # Source nvm so npm/node are available
-  if [ -f "$HOME/.nvm/nvm.sh" ]; then
+  if [ -f "$NVM_DIR/nvm.sh" ]; then
     set +euo pipefail
-    . "$HOME/.nvm/nvm.sh"
+    . "$NVM_DIR/nvm.sh"
     set -euo pipefail
   fi
 

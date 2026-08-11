@@ -54,8 +54,9 @@ zplug load
 
 # User configuration
 
-source "$HOME/.config/zsh/keybinds.zsh"
-source "$HOME/.config/zsh/kitty.zsh"
+[ -f "$XDG_CONFIG_HOME/fzf/fzf.zsh" ] && source "$XDG_CONFIG_HOME/fzf/fzf.zsh"
+source "$XDG_CONFIG_HOME/zsh/keybinds.zsh"
+source "$XDG_CONFIG_HOME/zsh/kitty.zsh"
 
 ### START_ALIAS 
 alias vi='nvim'
@@ -63,13 +64,12 @@ alias vim='nvim'
 ### END_ALIAS
 
 ### START_NVM
-export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 ### END_NVM
 
 fpath=(
-    $HOME/.config/zfunc
+    $XDG_CONFIG_HOME/zfunc
     $fpath
 )
 autoload -Uz compinit && compinit
