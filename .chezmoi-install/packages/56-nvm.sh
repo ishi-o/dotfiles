@@ -2,7 +2,7 @@
 
 pkg_name="nvm"
 pkg_version="${NVM_VERSION:-v0.40.3}"
-node_version="${NODE_VERSION:-node}"
+node_version="${NODE_VERSION:-22}"
 
 install_nvm() {
   if [ ! -f "$NVM_DIR/nvm.sh" ]; then
