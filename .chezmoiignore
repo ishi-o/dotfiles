@@ -4,3 +4,7 @@ README.md
 {{- if ne .chezmoi.os "linux" }}
 .config/fcitx5
 {{- end }}
+
+{{- if ne .chezmoi.os "darwin" }}
+.local/bin/notify
+{{- end }}

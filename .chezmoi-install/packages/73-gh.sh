@@ -43,7 +43,11 @@ install_gh() {
   esac
 
   local version="${pkg_version#v}"
-  local archive_name="gh_${version}_${os}_${target}"
+  local release_os="$os"
+  if [[ "$os" == "darwin" ]]; then
+    release_os="macOS"
+  fi
+  local archive_name="gh_${version}_${release_os}_${target}"
   local url="https://github.com/cli/cli/releases/download/v${version}/${archive_name}.tar.gz"
 
   download_binary \
