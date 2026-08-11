@@ -25,4 +25,4 @@ export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/npmr
 export NPM_CONFIG_CACHE="${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}"
 export GOROOT="${GOROOT:-$USR_HOME/go}"
 
-export PATH="$USR_HOME/mise/bin:$USR_HOME/bin:$USR_HOME/nvim/bin:$USR_HOME/go/bin:$USR_HOME/kitty.app/bin:$HOME/.local/bin:$HOME/bin:$GOROOT/bin:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$HOME/.local/share/coursier/bin:$PATH"
+export PATH="$USR_HOME/mise/bin:$USR_HOME/bin:$USR_HOME/nvim/bin:$USR_HOME/go/bin:$HOME/.local/bin:$HOME/bin:$GOROOT/bin:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$HOME/.local/share/coursier/bin:$PATH"
