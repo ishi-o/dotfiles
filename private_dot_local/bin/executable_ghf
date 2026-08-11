@@ -5,11 +5,18 @@ SCRIPT_FILE=$(realpath "$0")
 _run_fzf_picker() {
   local state_file=$(mktemp)
   echo "hidden" > "$state_file"
-  trap 'rm -f "$state_file"' EXIT
-  fzf --layout=reverse --info='inline: | ' --pointer=' ' --scrollbar='' "$@" \
-    --bind="ctrl-p:toggle-preview+transform([[ \$(cat $state_file) = hidden ]] && echo visible > $state_file || echo hidden > $state_file)" \
-    --bind="ctrl-u:transform([[ \$(cat $state_file) = visible ]] && echo preview-half-page-up || echo half-page-up)" \
-    --bind="ctrl-d:transform([[ \$(cat $state_file) = visible ]] && echo preview-half-page-down || echo half-page-down)"
+  local status
+  {
+    fzf --layout=reverse --info='inline: | ' --pointer=' ' --scrollbar='' "$@" \
+      --bind="ctrl-p:toggle-preview+transform([[ \$(cat $state_file) = hidden ]] && echo visible > $state_file || echo hidden > $state_file)" \
+      --bind="ctrl-u:transform([[ \$(cat $state_file) = visible ]] && echo preview-half-page-up || echo half-page-up)" \
+      --bind="ctrl-d:transform([[ \$(cat $state_file) = visible ]] && echo preview-half-page-down || echo half-page-down)" \
+      --bind='alt-j:down,alt-k:up'
+    status=$?
+  } always {
+    rm -f "$state_file"
+  }
+  return $status
 }
 
 _view_in_editor() {
@@ -243,12 +250,8 @@ ghf() {
   esac
 }
 
-main() {
-  ghf "$@"
-}
-
 # Only run main when executed directly (not when sourced)
 (
   [[ -n $ZSH_VERSION && $ZSH_EVAL_CONTEXT =~ :file$ ]] ||
   [[ -n $BASH_VERSION ]] && (return 0 2>/dev/null)
-) || main "$@"
+) || ghf "$@"

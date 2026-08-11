@@ -55,6 +55,7 @@ zplug load
 # User configuration
 
 source "$HOME/.config/zsh/keybinds.zsh"
+source "$HOME/.config/zsh/kitty.zsh"
 
 ### START_ALIAS 
 alias vi='nvim'
