@@ -9,6 +9,7 @@ shopt -s cdspell
 
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+command -v nvm >/dev/null 2>&1 && nvm use --silent default >/dev/null 2>&1
 
 alias vi=nvim
 alias vim=nvim
@@ -29,6 +30,10 @@ if [ -n "${PROXY_URL:-}" ]; then
 fi
 
 [ -f "$XDG_CONFIG_HOME/fzf/fzf.bash" ] && source "$XDG_CONFIG_HOME/fzf/fzf.bash"
+
+if [ -x "$MISE_INSTALL_PATH" ]; then
+	eval "$("$MISE_INSTALL_PATH" activate bash)"
+fi
 
 # Ensure a working D-Bus session bus.
 # WSLg may leave a stale socket; detect and restart if needed.
