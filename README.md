@@ -1,104 +1,104 @@
+# Dotfiles
+
+Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/) for macOS
+and Linux. The repository also manages shell and Kitty configuration, packages,
+fonts, and an external Neovim configuration.
+
 ## Installation
 
 ```sh
-# install chezmoi
-# On a fresh machine the shell PATH does not yet include `~/.local/bin`, so
-# prefix every chezmoi call with the full path until the new shell config takes
-# effect.
-sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b ~/.local/bin
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
-```
 
-```sh
 chezmoi init https://github.com/ishi-o/dotfiles.git
 chezmoi apply
 ```
 
-Or initialize with an SSH key:
+Use `git@github.com:ishi-o/dotfiles.git` instead if GitHub SSH is configured.
+
+`chezmoi apply` installs packages, downloads external files, and applies the
+configuration. Start a new shell afterwards.
+
+## Proxy
+
+Configure the proxies in `~/.zshenv` or `~/.bashrc`:
 
 ```sh
-ssh-keygen
-# generate the ssh keys and push the pub key into settings
-chezmoi init git@github.com:ishi-o/dotfiles.git
+PROXY_URL_HTTP="http://127.0.0.1:10808"
+PROXY_URL="socks5://127.0.0.1:10808"
+```
+
+`PROXY_URL_HTTP` is used for HTTP traffic; `PROXY_URL` is used as `ALL_PROXY`.
+Before running `chezmoi init` or `chezmoi apply`, declare the variables once
+in the current shell if they are not already active:
+
+```sh
+export PROXY_URL_HTTP="http://127.0.0.1:10808"
+export PROXY_URL="socks5://127.0.0.1:10808"
+export HTTP_PROXY="$PROXY_URL_HTTP"
+export ALL_PROXY="$PROXY_URL"
+export http_proxy="$PROXY_URL_HTTP"
+export all_proxy="$PROXY_URL"
+```
+
+## Managed runtimes
+
+[`private_dot_config/mise/config.toml`](private_dot_config/mise/config.toml)
+defines the mise-managed runtimes:
+
+| Runtime | Manager                         | Version    |
+| ------- | ------------------------------- | ---------- |
+| Go      | mise                            | latest     |
+| Java    | mise                            | OpenJDK 21 |
+| Lua     | mise                            | 5.4        |
+| Node.js | nvm                             | 22         |
+| Python  | uv                              | 3.13, 3.14 |
+| Rust    | rustup                          | stable     |
+| LuaJIT  | package manager or source build | 2.1        |
+
+After the config is applied, a post-apply script runs `mise install`; it does
+not modify the config with `mise use`. Bash and Zsh activate mise at startup.
+
+## Fonts and Kitty
+
+The default font is [Consolas ligaturized v3](https://github.com/somq/consolas-ligaturized).
+Its fixed-pitch metadata is repaired automatically so Kitty can discover it on
+macOS.
+
+Maple Mono is optional:
+
+```sh
+KITTY_FONT=maple INSTALL_MAPLE_MONO=1 chezmoi apply
+```
+
+If it is already installed, omit `INSTALL_MAPLE_MONO=1`.
+
+## Reapplying and rerunning installers
+
+```sh
+chezmoi diff
 chezmoi apply
 ```
 
-## Optional proxy
-
-Set `PROXY_URL` before initialization or applying the configuration. For example:
+The main package installer is `run_once_before_` and is skipped after a
+successful run. To rerun all `run_once_` scripts:
 
 ```sh
-export PROXY_URL="http://127.0.0.1:7890"
-# Or: export PROXY_URL="socks5h://127.0.0.1:10808"
-export PATH="$HOME/.local/bin:$PATH"
-chezmoi init https://github.com/ishi-o/dotfiles.git
+chezmoi state delete-bucket --bucket=scriptState
 chezmoi apply
 ```
 
-After initialization and applying the configuration, you can open `~/.zshenv`,
-uncomment the `PROXY_URL` line, and customize the proxy address for future zsh sessions.
-
-If initialization or installation fails, check your network connection and then try again.
-
-## Private environment variables
-
-The shell configs source `~/.config/env` for secrets and machine-specific
-variables (API keys, tokens, proxy settings, etc.). This file is managed by
-chezmoi as a private file (restricted permissions) and starts empty. Add your
-own variables there:
-
-```sh
-echo 'export OPENAI_API_KEY="sk-..."' >> ~/.config/env
-echo 'export ANTHROPIC_API_KEY="sk-ant-..."' >> ~/.config/env
-```
-
-This file is not tracked in git -- it is local to each machine.
-
-## Re-running installers
-
-Package installers use `run_once_*` scripts tracked in chezmoi's state database.
-Once a script has run, chezmoi skips it on future `apply` calls. To force all
-installers to run again (e.g. after a failed run or a major version upgrade):
-
-```sh
-chezmoi state reset
-chezmoi apply
-```
-
-Each installer has its own debounce guard (`check_installed`, file checks, etc.)
-so re-running is safe -- already-installed packages are skipped automatically.
-
-The tracked `~/.config/mise/config.toml` manages Go, Java, and Lua. After the
-configuration is applied, the post-apply script runs `mise install`; it does not
-rewrite the configuration with `mise use`.
+The font repair and mise installation scripts are `run_after_` scripts; they
+run on every apply and are safe to repeat.
 
 ## Optional graphical input method
 
-The fcitx5 integration is enabled only when `fcitx5` is installed and a graphical
-session exposes `DISPLAY` or `WAYLAND_DISPLAY`. On WSL, this repository also checks
-for `/mnt/wslg` as a conservative WSLg check; an external X11/Wayland server is
-not auto-detected. The installer attempts to install `fcitx5` and
-`fcitx5-chinese-addons` only in WSL.
+On WSL, the installer attempts to install `fcitx5` and its Chinese addons. It
+starts only in a graphical session. WSLg uses the X11-compatible path and
+Kitty uses XWayland; other Wayland environments keep their native path.
 
-WSLg is the Windows component that displays Linux GUI applications, such as a
-Linux Kitty window, on the Windows desktop. It is not needed for a pure terminal
-session or for native Windows Kitty. WSLg provides `DISPLAY`, `WAYLAND_DISPLAY`,
-and `PULSE_SERVER`; these should normally not be declared manually. The shell
-only reads `DISPLAY`/`WAYLAND_DISPLAY` to detect a graphical session, and starts
-fcitx5 in the background. In WSLg, it starts `fcitx5 --disable=wayland -d`, sets
-the `GTK_IM_MODULE`, `QT_IM_MODULE`, `SDL_IM_MODULE`, `XMODIFIERS`, and
-`GLFW_IM_MODULE` compatibility variables, and makes Kitty use XWayland. Other
-Wayland environments keep their native Fcitx5 path.
+## Private environment variables
 
-This WSLg choice follows the current [WSLg Weston configuration](https://github.com/microsoft/wslg/blob/main/config/weston.ini), whose input-method path is empty, and Fcitx's [Weston setup](https://fcitx-im.org/wiki/Setup_Fcitx_5), which requires an explicit input-method path for the native Weston frontend. It is a compatibility choice, not a claim that every WSLg version will crash in native Wayland mode.
-
-## Fonts
-
-The external configuration downloads the [Consolas ligaturized v3](https://github.com/somq/consolas-ligaturized)
-font into the current user's font directory on Linux and macOS.
-
-Kitty uses Consolas by default. To use Maple Mono Normal instead, set
-`KITTY_FONT=maple` before running `chezmoi apply`; this changes the Kitty
-font family and its baseline/line-height adjustments. The Maple Mono installer
-is disabled by default. Enable it explicitly with `INSTALL_MAPLE_MONO=1` when
-applying the configuration.
+`~/.config/env` is a tracked private-permission file with placeholders for
+machine-specific variables. Add local secrets there, but do not commit real
+credentials to the source repository.

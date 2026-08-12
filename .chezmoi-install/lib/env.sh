@@ -47,18 +47,6 @@ esac
 [ -n "${WSL_DISTRO_NAME:-}" ] && is_wsl=true
 export is_wsl
 
-# Optional network proxy. Set PROXY_URL before running chezmoi to enable it.
-if [ -n "${PROXY_URL:-}" ]; then
-  export HTTP_PROXY="$PROXY_URL"
-  export HTTPS_PROXY="$PROXY_URL"
-  export ALL_PROXY="$PROXY_URL"
-  export http_proxy="$PROXY_URL"
-  export https_proxy="$PROXY_URL"
-  export all_proxy="$PROXY_URL"
-  export NO_PROXY="${NO_PROXY:-${no_proxy:-localhost,127.0.0.1,::1}}"
-  export no_proxy="${no_proxy:-$NO_PROXY}"
-fi
-
 # Detect available package manager
 pkg_manager=""
 if command -v apt-get >/dev/null 2>&1; then
