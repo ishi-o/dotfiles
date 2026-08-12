@@ -1,0 +1,4 @@
+[tools]
+go = "latest"
+java = "openjdk-21"
+lua = "5.4"

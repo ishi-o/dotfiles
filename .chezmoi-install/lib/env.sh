@@ -74,7 +74,7 @@ fi
 export has_sudo
 
 # Add user bin to PATH
-export PATH="$USR_HOME/mise/bin:$USR_HOME/bin:$USR_HOME/nvim/bin:$USR_HOME/go/bin:$HOME/.local/bin:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
+export PATH="$USR_HOME/mise/bin:$USR_HOME/bin:$USR_HOME/nvim/bin:$HOME/.local/bin:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
 
 # Ensure required directories exist
 mkdir -p "$USR_HOME/src" || exit 1

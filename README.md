@@ -68,6 +68,10 @@ chezmoi apply
 Each installer has its own debounce guard (`check_installed`, file checks, etc.)
 so re-running is safe -- already-installed packages are skipped automatically.
 
+The tracked `~/.config/mise/config.toml` manages Go, Java, and Lua. After the
+configuration is applied, the post-apply script runs `mise install`; it does not
+rewrite the configuration with `mise use`.
+
 ## Optional graphical input method
 
 The fcitx5 integration is enabled only when `fcitx5` is installed and a graphical
