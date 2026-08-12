@@ -2,6 +2,8 @@
 {{- $useSSH := regexMatch "(?m)^origin[[:space:]]+(git@|ssh://|git\\+ssh://)" $origin -}}
 {{- $usrHome := or (env "USR_HOME") (joinPath .chezmoi.homeDir "usr/local") -}}
 {{- $usrHomeRel := trimPrefix (printf "%s/" .chezmoi.homeDir) $usrHome -}}
+{{- $installMapleMonoValue := lower (env "INSTALL_MAPLE_MONO") -}}
+{{- $installMapleMono := or (eq $installMapleMonoValue "1") (eq $installMapleMonoValue "true") -}}
 [".config/nvim"]
 type = "git-repo"
 {{ if $useSSH }}
@@ -20,3 +22,15 @@ targetPath = ".local/share/fonts"
 {{ end }}
 stripComponents = 1
 include = ["*/Consolasligaturizedv3*.ttf"]
+
+{{ if $installMapleMono }}
+[maple_mono_normal]
+type = "archive"
+url = "https://github.com/subframe7536/maple-font/releases/download/v7.9/MapleMonoNormal-TTF.zip"
+{{ if eq .chezmoi.os "darwin" }}
+targetPath = "Library/Fonts"
+{{ else if eq .chezmoi.os "linux" }}
+targetPath = ".local/share/fonts"
+{{ end }}
+include = ["MapleMonoNormal*.ttf"]
+{{ end }}

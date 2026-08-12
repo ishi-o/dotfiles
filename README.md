@@ -92,3 +92,9 @@ This WSLg choice follows the current [WSLg Weston configuration](https://github.
 
 The external configuration downloads the [Consolas ligaturized v3](https://github.com/somq/consolas-ligaturized)
 font into the current user's font directory on Linux and macOS.
+
+Kitty uses Consolas by default. To use Maple Mono Normal instead, set
+`KITTY_FONT=maple` before running `chezmoi apply`; this changes the Kitty
+font family and its baseline/line-height adjustments. The Maple Mono installer
+is disabled by default. Enable it explicitly with `INSTALL_MAPLE_MONO=1` when
+applying the configuration.

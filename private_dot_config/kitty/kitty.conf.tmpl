@@ -1,3 +1,5 @@
+{{- $kittyFont := lower (env "KITTY_FONT") -}}
+{{- $useMapleMono := or (eq $kittyFont "maple") (eq $kittyFont "maple-mono") (eq $kittyFont "maple mono") -}}
 {{- if and (eq .chezmoi.os "linux") (env "WSL_DISTRO_NAME") (stat "/mnt/wslg") }}
 # WSLg does not configure a Wayland input-method service by default. Keep Kitty
 # on XWayland so it can use Fcitx's X11/IBus compatibility frontend.
@@ -16,9 +18,15 @@ cursor_text_color background
 ### CURSOR
 
 ### TEXT
+{{ if $useMapleMono }}
+adjust_line_height 0
+adjust_baseline 0
+adjust_column_width 0
+{{ else }}
 adjust_line_height 0
 adjust_baseline -3
 adjust_column_width 0
+{{ end }}
 ### TEXT
 
 ### REMOTE_SSH
@@ -33,11 +41,19 @@ clipboard_control write-clipboard write-primary read-clipboard read-primary
 ### CLIPBOARD
 
 # KITTY_FONTS
+{{ if $useMapleMono -}}
+font_family      family="Maple Mono Normal"
+{{ else -}}
 font_family      family="Consolas ligaturized v3"
+{{ end -}}
 bold_font        auto
 italic_font      auto
 bold_italic_font auto
+{{ if $useMapleMono }}
+font_size 18
+{{ else }}
 font_size 20
+{{ end }}
 # KITTY_FONTS
 
 # AUTO_SESSION
