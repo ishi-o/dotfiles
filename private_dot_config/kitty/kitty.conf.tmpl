@@ -105,8 +105,8 @@ map --when-focus-on var:ZSH_SELECTOR_MODE=2 alt+j
 map --when-focus-on var:ZSH_SELECTOR_MODE=2 alt+k
 
 # Window splitting
-map ctrl+\ launch --location=vsplit
-map ctrl+- launch --location=hsplit
+map ctrl+\ launch --location=vsplit --cwd=current
+map ctrl+- launch --location=hsplit --cwd=current
 
 # Zoom the active pane and restore the previous layout on the next press.
 map ctrl+shift+z toggle_layout stack
