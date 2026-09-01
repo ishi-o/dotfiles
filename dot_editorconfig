@@ -1,0 +1,56 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+[COMMIT_EDITMSG]
+indent_style = tab
+indent_size = 2
+tab_width = 2
+
+[*.{go}]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+[*.{md,markdown,mdx}]
+indent_style = tab
+indent_size = 2
+tab_width = 2
+
+[*.{cs,csx,py,pyi,rs,groovy,gvy,gradle,php,php3,php4,php5,php7,php8,kt,kts,swift}]
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+[*.{c,h,cc,cpp,cxx,hpp,hxx,bash,sh,zsh,fish,css,scss,graphql,gql,html,htm,js,jsx,mjs,cjs,ts,tsx,mts,cts,json,json5,jsonc,java,lua,luadoc,rb,rake,gemspec,scala,sbt,sql,toml,proto,xml,xsd,xsl,xslt,yaml,yml,typ,tex,sty,cls,vim,rst}]
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+[Dockerfile*]
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+[Makefile]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+[*.{mk,make}]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+[.bashrc]
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+[.vimrc]
+indent_style = space
+indent_size = 2
+tab_width = 2
