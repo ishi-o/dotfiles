@@ -1,16 +1,18 @@
-model = "gpt-5.6-luna"
-# model = "astron-code-latest"
+# model = "gpt-5.6-luna"
+# model_provider = "openai"
 
-model_provider = "openai"
-# model_provider = "glm5"
+model = "glm-5.3"
+model_provider = "ZAI"
+model_catalog_json = "~/.config/codex/models.json"
 
 model_reasoning_effort = "max"
+
 approvals_reviewer = "user"
 
-[model_providers.glm5]
-name = "xf-glm5"
-base_url = "https://maas-coding-api.cn-huabei-1.xf-yun.com/v1"
-env_key = "XFYUN_API_KEY"
+[model_providers.ZAI]
+name = "ZAI"
+base_url = "https://open.bigmodel.cn/api/v1"
+env_key = "GLM_API_KEY"
 wire_api = "responses"
 
 [tui]
@@ -30,3 +32,6 @@ args = [
   "sse-only",
   "--allow-http",
 ]
+
+[plugins."superpowers@openai-curated"]
+enabled = true
