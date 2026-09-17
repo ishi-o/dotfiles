@@ -19,7 +19,7 @@ echo "OS: $OS, ARCH: $ARCH"
 echo "Getting latest release version..."
 
 if [[ -z "$LATEST_RELEASE" ]]; then
-  LATEST_RELEASE=$(curl -s https://api.github.com/repos/neovim/neovim/releases/latest | grep "tag_name" | cut -d '"' -f 4)
+  LATEST_RELEASE="nightly"
 fi
 
 if [ -z "$LATEST_RELEASE" ]; then
