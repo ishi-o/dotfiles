@@ -1,9 +1,9 @@
 [user]
 	name = Ishio
-	email = 458457289@qq.com
+	email = ishio.liu@outlook.com
 [core]
 	editor = nvim
-	pager = delta
+	; pager = delta
 [url "git@github.com:"]
 	insteadOf = https://github.com/
 [init]
@@ -27,15 +27,21 @@
 	dw = diff --word-diff
 	diffs = diff --staged
 	st = status -sb
+	bl = blame
+	bll = blame -L
 [difftool "nvimdiff"]
 	cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
 [diff]
 	tool = nvimdiff
 [difftool]
 	prompt = false
-[interactive]
-	diffFilter = delta --color-only
-[delta]
-	navigate = true
+; [interactive]
+; 	diffFilter = delta --color-only
+; [delta]
+; 	navigate = true
 [merge]
 	conflictStyle = zdiff3
+; [remote "origin"]
+; 	fetch = +refs/heads/*:refs/remotes/origin/*
+; [remote "upstream"]
+; 	fetch = +refs/heads/*:refs/remotes/upstream/*
