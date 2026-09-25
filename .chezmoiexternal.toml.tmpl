@@ -2,8 +2,8 @@
 {{- $useSSH := regexMatch "(?m)^origin[[:space:]]+(git@|ssh://|git\\+ssh://)" $origin -}}
 {{- $usrHome := or (env "USR_HOME") (joinPath .chezmoi.homeDir "usr/local") -}}
 {{- $usrHomeRel := trimPrefix (printf "%s/" .chezmoi.homeDir) $usrHome -}}
-{{- $installMapleMonoValue := lower (env "INSTALL_MAPLE_MONO") -}}
-{{- $installMapleMono := or (eq $installMapleMonoValue "1") (eq $installMapleMonoValue "true") -}}
+{{- $installFontsValue := lower (or (env "INSTALL_FONTS") "true") -}}
+{{- $installFonts := not (or (eq $installFontsValue "false") (eq $installFontsValue "0") (eq $installFontsValue "no") (eq $installFontsValue "off")) -}}
 [".config/nvim"]
 type = "git-repo"
 {{ if $useSSH }}
@@ -12,6 +12,7 @@ url = "git@github.com:ishi-o/ishio.nvim.git"
 url = "https://github.com/ishi-o/ishio.nvim.git"
 {{ end }}
 
+{{ if $installFonts }}
 [consolas_ligaturized]
 type = "archive"
 url = "https://github.com/somq/consolas-ligaturized/archive/refs/tags/3.1.tar.gz"
@@ -19,17 +20,20 @@ url = "https://github.com/somq/consolas-ligaturized/archive/refs/tags/3.1.tar.gz
 targetPath = "Library/Fonts"
 {{ else if eq .chezmoi.os "linux" }}
 targetPath = ".local/share/fonts"
+{{ else if eq .chezmoi.os "windows" }}
+targetPath = ".local/share/fonts"
 {{ end }}
 stripComponents = 1
 include = ["*/Consolasligaturizedv3*.ttf"]
 
-{{ if $installMapleMono }}
 [maple_mono_normal]
 type = "archive"
 url = "https://github.com/subframe7536/maple-font/releases/download/v7.9/MapleMonoNormal-TTF.zip"
 {{ if eq .chezmoi.os "darwin" }}
 targetPath = "Library/Fonts"
 {{ else if eq .chezmoi.os "linux" }}
+targetPath = ".local/share/fonts"
+{{ else if eq .chezmoi.os "windows" }}
 targetPath = ".local/share/fonts"
 {{ end }}
 include = ["MapleMonoNormal*.ttf"]

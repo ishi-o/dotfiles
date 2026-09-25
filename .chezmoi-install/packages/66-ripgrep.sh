@@ -15,7 +15,7 @@ install_ripgrep() {
   fi
 
   case "$os" in
-  darwin|linux)
+  darwin|linux|windows)
     ;;
   *)
     echo "Unsupported operating system for ripgrep: $os"
@@ -37,6 +37,9 @@ install_ripgrep() {
   linux:arm64|linux:aarch64)
     target="aarch64-unknown-linux-musl"
     ;;
+  windows:amd64|windows:x86_64)
+    target="x86_64-pc-windows-msvc"
+    ;;
   *)
     echo "Unsupported architecture for ripgrep: $os/$arch"
     return 1
@@ -45,10 +48,15 @@ install_ripgrep() {
 
   local version="${pkg_version#v}"
   local archive_name="ripgrep-${version}-${target}"
-  local url="https://github.com/BurntSushi/ripgrep/releases/download/${version}/${archive_name}.tar.gz"
+  local archive_extension="tar.gz"
+  [ "$os" = "windows" ] && archive_extension="zip"
+  local url="https://github.com/BurntSushi/ripgrep/releases/download/${version}/${archive_name}.${archive_extension}"
+  local binary="rg"
+  [ "$os" = "windows" ] && binary="rg.exe"
 
   download_binary \
-    "$pkg_name" "$version" "$url" "rg" "$HOME/.local/bin/rg"
+    "$pkg_name" "$version" "$url" "$binary" \
+    "$HOME/.local/bin/$binary"
 }
 
 install_ripgrep

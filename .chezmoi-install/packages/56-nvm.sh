@@ -5,6 +5,14 @@ pkg_version="${NVM_VERSION:-v0.40.3}"
 node_version="${NODE_VERSION:-22}"
 
 install_nvm() {
+  if [ "$os" = "windows" ]; then
+    if check_installed npm; then
+      return 0
+    fi
+    winget install --id OpenJS.NodeJS.LTS --exact --silent --accept-package-agreements --accept-source-agreements
+    return $?
+  fi
+
   if [ ! -f "$NVM_DIR/nvm.sh" ]; then
     echo "Installing nvm ${pkg_version}..."
     git clone --depth 1 --branch "$pkg_version" https://github.com/nvm-sh/nvm.git "$NVM_DIR" || return 1

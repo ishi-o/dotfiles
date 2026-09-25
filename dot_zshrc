@@ -71,6 +71,10 @@ alias vim='nvim'
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 command -v nvm >/dev/null 2>&1 && nvm use --silent default >/dev/null 2>&1
+if [ -n "${PROXY_URL_HTTP:-}" ] && command -v npm >/dev/null 2>&1; then
+    npm config set proxy "$PROXY_URL_HTTP" --location=user
+    npm config set https-proxy "$PROXY_URL_HTTP" --location=user
+fi
 ### END_NVM
 
 fpath=(

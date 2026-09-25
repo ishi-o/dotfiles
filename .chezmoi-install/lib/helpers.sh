@@ -111,6 +111,15 @@ download_extract() {
     tar -Jxf "$archive" ${tar_flags[@]+"${tar_flags[@]}"} -C "$dest_dir" || return 1
   elif [[ "$base_archive" == *.tar.bz2 ]] || [[ "$base_archive" == *.tbz ]]; then
     tar -jxf "$archive" ${tar_flags[@]+"${tar_flags[@]}"} -C "$dest_dir" || return 1
+  elif [[ "$base_archive" == *.zip ]]; then
+    if command -v unzip >/dev/null 2>&1; then
+      unzip -q "$archive" -d "$dest_dir" || return 1
+    else
+      local windows_archive windows_dest
+      windows_archive="$(cygpath -w "$archive")"
+      windows_dest="$(cygpath -w "$dest_dir")"
+      powershell.exe -NoProfile -Command "Expand-Archive -LiteralPath '$windows_archive' -DestinationPath '$windows_dest' -Force" || return 1
+    fi
   else
     echo "Unsupported archive format: $base_archive" >&2
     return 1

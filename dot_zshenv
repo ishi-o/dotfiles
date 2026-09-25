@@ -4,9 +4,15 @@
 export EDITOR='nvim'
 export VISUAL='nvim'
 
-# Optional network proxy.
-# PROXY_URL_HTTP="http://127.0.0.1:10808"
-# PROXY_URL="socks5://127.0.0.1:10808"
+# Optional network proxy. WSL uses the Windows host as the proxy address.
+if [ -n "${WSL_DISTRO_NAME:-}" ]; then
+    WIN_HOST=$(ip route show default 2>/dev/null | awk '{print $3; exit}')
+    if [ -n "$WIN_HOST" ]; then
+        PROXY_URL_HTTP="http://${WIN_HOST}:10808"
+        PROXY_URL="socks5://${WIN_HOST}:10808"
+    fi
+    unset WIN_HOST
+fi
 if [ -n "${PROXY_URL_HTTP:-}" ]; then
     export HTTP_PROXY="$PROXY_URL_HTTP"
     export http_proxy="$PROXY_URL_HTTP"

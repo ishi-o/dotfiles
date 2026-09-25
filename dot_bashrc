@@ -5,7 +5,10 @@ fi
 shopt -s cdspell
 
 . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env"
-. "${XDG_CONFIG_HOME:-$HOME/.config}/env"
+. "$XDG_CONFIG_HOME/env"
+
+export EDITOR='nvim'
+export VISUAL='nvim'
 
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
@@ -15,9 +18,15 @@ alias vi=nvim
 alias vim=nvim
 [ -f "$CARGO_HOME/env" ] && . "$CARGO_HOME/env"
 
-# Optional network proxy. HTTP traffic and other traffic use separate proxies.
-# export PROXY_URL_HTTP="http://127.0.0.1:10808"
-# export PROXY_URL="socks5://127.0.0.1:10808"
+# Optional network proxy. WSL uses the Windows host as the proxy address.
+if [ -n "${WSL_DISTRO_NAME:-}" ]; then
+	WIN_HOST=$(ip route show default 2>/dev/null | awk '{print $3; exit}')
+	if [ -n "$WIN_HOST" ]; then
+		PROXY_URL_HTTP="http://${WIN_HOST}:10808"
+		PROXY_URL="socks5://${WIN_HOST}:10808"
+	fi
+	unset WIN_HOST
+fi
 if [ -n "${PROXY_URL_HTTP:-}" ]; then
 	export HTTP_PROXY="$PROXY_URL_HTTP"
 	export http_proxy="$PROXY_URL_HTTP"
@@ -29,6 +38,11 @@ fi
 if [ -n "${PROXY_URL_HTTP:-}" ] || [ -n "${PROXY_URL:-}" ]; then
 	export NO_PROXY="${NO_PROXY:-${no_proxy:-localhost,127.0.0.1,::1}}"
 	export no_proxy="${no_proxy:-$NO_PROXY}"
+fi
+
+if [ -n "${PROXY_URL_HTTP:-}" ] && command -v npm >/dev/null 2>&1; then
+	npm config set proxy "$PROXY_URL_HTTP" --location=user
+	npm config set https-proxy "$PROXY_URL_HTTP" --location=user
 fi
 
 [ -f "$XDG_CONFIG_HOME/fzf/fzf.bash" ] && source "$XDG_CONFIG_HOME/fzf/fzf.bash"

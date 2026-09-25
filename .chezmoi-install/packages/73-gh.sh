@@ -14,7 +14,7 @@ install_gh() {
   fi
 
   case "$os" in
-  darwin|linux)
+  darwin|linux|windows)
     ;;
   *)
     echo "Unsupported operating system for gh: $os"
@@ -36,6 +36,9 @@ install_gh() {
   linux:arm64|linux:aarch64)
     target="arm64"
     ;;
+  windows:amd64|windows:x86_64)
+    target="amd64"
+    ;;
   *)
     echo "Unsupported architecture for gh: $os/$arch"
     return 1
@@ -48,10 +51,15 @@ install_gh() {
     release_os="macOS"
   fi
   local archive_name="gh_${version}_${release_os}_${target}"
-  local url="https://github.com/cli/cli/releases/download/v${version}/${archive_name}.tar.gz"
+  local archive_extension="tar.gz"
+  [ "$os" = "windows" ] && archive_extension="zip"
+  local url="https://github.com/cli/cli/releases/download/v${version}/${archive_name}.${archive_extension}"
+  local binary="bin/gh"
+  [ "$os" = "windows" ] && binary="bin/gh.exe"
 
   download_binary \
-    "$pkg_name" "$version" "$url" "bin/gh" "$HOME/.local/bin/gh"
+    "$pkg_name" "$version" "$url" "$binary" \
+    "$HOME/.local/bin/gh$([ "$os" = "windows" ] && printf '.exe')"
 }
 
 install_gh

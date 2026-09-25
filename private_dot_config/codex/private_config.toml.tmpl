@@ -1,11 +1,8 @@
-# model = "gpt-5.6-luna"
-# model_provider = "openai"
-
 model = "glm-5.3"
-model_provider = "ZAI"
-model_catalog_json = "~/.config/codex/models.json"
+model_provider = "volcengine-agent-plan"
+model_supports_reasoning_summaries = true
 
-model_reasoning_effort = "max"
+model_reasoning_effort = "medium"
 
 approvals_reviewer = "user"
 
@@ -15,8 +12,15 @@ base_url = "https://open.bigmodel.cn/api/v1"
 env_key = "GLM_API_KEY"
 wire_api = "responses"
 
+[model_providers.volcengine-agent-plan]
+name = "volcengine-agent-plan"
+base_url = "https://ark.cn-beijing.volces.com/api/plan/v3"
+env_key = "ARK_API_KEY"
+wire_api = "responses"
+
 [tui]
 vim_mode_default = true
+screen_reader_detection_done = true
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
@@ -35,3 +39,9 @@ args = [
 
 [plugins."superpowers@openai-curated"]
 enabled = true
+
+[projects."{{ .chezmoi.homeDir }}/.config/nvim"]
+trust_level = "trusted"
+
+[projects."{{ .chezmoi.sourceDir }}"]
+trust_level = "trusted"

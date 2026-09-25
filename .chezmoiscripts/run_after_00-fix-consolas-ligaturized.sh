@@ -15,6 +15,9 @@ else
   Linux)
     font_dir="$HOME/.local/share/fonts"
     ;;
+  MINGW*|MSYS*|CYGWIN*)
+    font_dir="$HOME/.local/share/fonts"
+    ;;
   *)
     exit 0
     ;;

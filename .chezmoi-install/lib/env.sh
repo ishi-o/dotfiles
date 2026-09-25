@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 # Environment detection and configuration
 
+kernel="$(uname | tr '[:upper:]' '[:lower:]')"
+os="$kernel"
+case "$kernel" in
+  mingw*|msys*|cygwin*)
+    os="windows"
+    if [ -n "${USERPROFILE:-}" ]; then
+      HOME="$(cygpath -u "$USERPROFILE")"
+      export HOME
+    fi
+    ;;
+esac
+export os
+
 # User-local installation directory
 export USR_HOME="${USR_HOME:-$HOME/usr/local}"
 
@@ -15,7 +28,14 @@ export MISE_CONFIG_DIR="${MISE_CONFIG_DIR:-$XDG_CONFIG_HOME/mise}"
 export MISE_DATA_DIR="${MISE_DATA_DIR:-$XDG_DATA_HOME/mise}"
 export MISE_CACHE_DIR="${MISE_CACHE_DIR:-$XDG_CACHE_HOME/mise}"
 export MISE_STATE_DIR="${MISE_STATE_DIR:-$XDG_STATE_HOME/mise}"
-export MISE_INSTALL_PATH="${MISE_INSTALL_PATH:-$USR_HOME/mise/bin/mise}"
+if [ "${MISE_INSTALL_PATH:-}" = "" ]; then
+  if [ "$os" = "windows" ]; then
+    MISE_INSTALL_PATH="$USR_HOME/mise/bin/mise.exe"
+  else
+    MISE_INSTALL_PATH="$USR_HOME/mise/bin/mise"
+  fi
+fi
+export MISE_INSTALL_PATH
 
 # Keep tool configuration and mutable package data out of $HOME.
 export CODEX_HOME="${CODEX_HOME:-$XDG_CONFIG_HOME/codex}"
@@ -29,10 +49,6 @@ export RUSTUP_HOME="${RUSTUP_HOME:-$XDG_DATA_HOME/rustup}"
 export FZF_HOME="${FZF_HOME:-$XDG_DATA_HOME/fzf}"
 export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/npmrc}"
 export NPM_CONFIG_CACHE="${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}"
-
-# Detect operating system (darwin, linux, etc.)
-os="$(uname | tr '[:upper:]' '[:lower:]')"
-export os
 
 # Detect architecture and normalize to common names
 arch="$(uname -m)"

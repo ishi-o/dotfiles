@@ -20,6 +20,14 @@ trap cleanup_temp_files EXIT INT TERM
 source "$SCRIPT_DIR/lib/env.sh"
 source "$SCRIPT_DIR/lib/helpers.sh"
 
+step_enabled() {
+  local value="${1:-true}"
+  case "$(printf '%s' "$value" | tr '[:upper:]' '[:lower:]')" in
+  false|0|no|off) return 1 ;;
+  esac
+  return 0
+}
+
 # Handle skip flag
 if [ "${SKIP_INSTALL:-false}" != "false" ]; then
   echo "Skipping install..."
@@ -35,6 +43,24 @@ shopt -s nullglob
 packages=("$SCRIPT_DIR/packages/"*.sh)
 shopt -u nullglob
 
+if [ "$os" = "windows" ]; then
+  windows_packages=(
+    03-uv
+    04-mise
+    50-nvim
+    56-nvm
+    57-codex
+    58-claude
+    59-mcp-hub
+    60-fzf
+    63-fd
+    65-kubectl
+    66-ripgrep
+    70-rust
+    73-gh
+  )
+fi
+
 if [ ${#packages[@]} -eq 0 ]; then
   echo "No packages found in $SCRIPT_DIR/packages/"
 else
@@ -49,6 +75,32 @@ else
   # Install in filename order
   for pkg_file in "${sorted_packages[@]}"; do
     pkg_basename=$(basename "$pkg_file" .sh)
+    if [ "$os" = "windows" ]; then
+      case " ${windows_packages[*]} " in
+      *" $pkg_basename "*)
+        ;;
+      *)
+        echo "==> Skipping $pkg_basename on Windows"
+        continue
+        ;;
+      esac
+    fi
+
+    case "$pkg_basename" in
+    06-cjk-fonts)
+      step_enabled "${INSTALL_FONTS:-true}" || {
+        echo "==> Skipping $pkg_basename (INSTALL_FONTS=false)"
+        continue
+      }
+      ;;
+    60-fzf|63-fd|64-tree|65-kubectl|66-ripgrep|67-xclip|70-rust|71-kitty|72-tree-sitter|73-gh)
+      step_enabled "${INSTALL_DEV_TOOLS:-true}" || {
+        echo "==> Skipping $pkg_basename (INSTALL_DEV_TOOLS=false)"
+        continue
+      }
+      ;;
+    esac
+
     echo "==> Processing: $pkg_basename"
 
     # Source the package file (which will execute the install function)

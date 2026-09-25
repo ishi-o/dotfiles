@@ -19,6 +19,15 @@ install_rust() {
 
   echo "Installing Rust via rustup..."
 
+  if [ "$os" = "windows" ]; then
+    local installer="/tmp/rustup-init.exe.$$"
+    curl -sSfL "https://win.rustup.rs/x86_64" -o "$installer" || return 1
+    "$installer" -y --no-modify-path
+    local installer_status=$?
+    rm -f "$installer"
+    return "$installer_status"
+  fi
+
   # Download and run rustup installer
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
