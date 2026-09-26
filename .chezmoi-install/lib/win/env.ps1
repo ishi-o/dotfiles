@@ -36,3 +36,14 @@ foreach ($entry in $toolDirectories.GetEnumerator()) {
     New-Item -ItemType Directory -Path $entry.Value -Force | Out-Null
     Set-UserEnvironmentVariable -Name $entry.Key -Value $entry.Value
 }
+
+$proxyEnvironment = [ordered]@{
+    HTTP_PROXY  = "http://127.0.0.1:10808"
+    HTTPS_PROXY = "http://127.0.0.1:10808"
+    ALL_PROXY    = "socks5://127.0.0.1:10808"
+    NO_PROXY     = "localhost,127.0.0.1,::1"
+}
+
+foreach ($entry in $proxyEnvironment.GetEnumerator()) {
+    Set-UserEnvironmentVariable -Name $entry.Key -Value $entry.Value
+}

@@ -1,6 +1,12 @@
 scoop install msys2
+if ($LASTEXITCODE -ne 0) {
+    throw "scoop install msys2 failed"
+}
 
 $msys2Root = (scoop prefix msys2).Trim()
+if (-not $msys2Root -or -not (Test-Path -LiteralPath $msys2Root)) {
+    throw "MSYS2 root not found"
+}
 $msys2Bash = Join-Path $msys2Root "usr\bin\bash.exe"
 
 if (-not (Test-Path -LiteralPath $msys2Bash)) {

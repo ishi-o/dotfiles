@@ -86,7 +86,16 @@ MSYS2-specific configuration is required.
 
 ## Proxy
 
-Configure the proxies in `~/.zshenv` or `~/.bashrc`:
+On Windows, `.chezmoi-install/lib/win/env.ps1` sets these user environment variables:
+
+```powershell
+HTTP_PROXY  = "http://127.0.0.1:10808"
+HTTPS_PROXY = "http://127.0.0.1:10808"
+ALL_PROXY    = "socks5://127.0.0.1:10808"
+NO_PROXY     = "localhost,127.0.0.1,::1"
+```
+
+On POSIX, configure the proxies in `~/.zshenv` or `~/.bashrc`:
 
 ```sh
 PROXY_URL_HTTP="http://127.0.0.1:10808"
