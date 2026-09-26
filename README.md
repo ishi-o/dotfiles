@@ -6,44 +6,11 @@ environment uses XDG-style directories, and the default shell is Zsh inside
 MSYS2. The repository also manages shell and Kitty configuration, packages,
 fonts, and an external Neovim configuration.
 
-## Installation
+## Packages
 
-```sh
-sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
-export PATH="$HOME/.local/bin:$PATH"
-
-chezmoi init https://github.com/ishi-o/dotfiles.git
-chezmoi apply
-```
-
-Use `git@github.com:ishi-o/dotfiles.git` instead if GitHub SSH is configured.
-
-`chezmoi apply` installs packages, downloads external files, and applies the
-configuration. Start a new shell afterwards.
-
-The installers ask before installing missing optional components. Pressing
-Enter accepts the default answer.
-
-## Repository command
-
-`dots` is a task-oriented shortcut for this repository:
-
-```sh
-./dots init
-./dots apply
-./dots status
-./dots diff
-./dots install zsh
-./dots install fonts
-./dots install dev
-```
-
-Available install groups are `shell`, `build`, `runtimes`, `editor`,
-`tools`/`dev`, `fonts`, `ai`, `terminal`, and `all`. Package names such as
-`zsh`, `uv`, `mise`, `gh`, and `codegraph` can also be installed directly.
-
-The repository-root `dots` file is a symlink to
-`private_dot_local/bin/executable_dots` and is ignored by chezmoi.
+See [`PACKAGES.md`](PACKAGES.md) for the full installer inventory and deeper
+customization. The repository-root `dots` entry point supports grouped and
+per-package installation; see that document for details.
 
 ## Proxy
 
@@ -55,8 +22,8 @@ PROXY_URL="socks5://127.0.0.1:10808"
 ```
 
 `PROXY_URL_HTTP` is used for HTTP traffic; `PROXY_URL` is used as `ALL_PROXY`.
-Before running `chezmoi init` or `chezmoi apply`, declare the variables once
-in the current shell if they are not already active:
+Before applying the repository, declare the variables once in the current
+shell if they are not already active:
 
 ```sh
 export PROXY_URL_HTTP="http://127.0.0.1:10808"
@@ -93,29 +60,10 @@ macOS.
 
 Maple Mono is optional:
 
-```sh
-KITTY_FONT=maple INSTALL_MAPLE_MONO=1 chezmoi apply
-```
+Set `KITTY_FONT=maple` and `INSTALL_MAPLE_MONO=1` when applying the
+repository.
 
 If it is already installed, omit `INSTALL_MAPLE_MONO=1`.
-
-## Reapplying and rerunning installers
-
-```sh
-chezmoi diff
-chezmoi apply
-```
-
-The main package installer is `run_once_before_` and is skipped after a
-successful run. To rerun all `run_once_` scripts:
-
-```sh
-chezmoi state delete-bucket --bucket=scriptState
-chezmoi apply
-```
-
-The font repair and mise installation scripts are `run_after_` scripts; they
-run on every apply and are safe to repeat.
 
 ## Optional graphical input method
 
