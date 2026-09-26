@@ -2,14 +2,6 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
-	export HOME="$(cygpath -u "$USERPROFILE")"
-fi
-
-if [ -n "${MSYSTEM:-}" ] && [ -z "${ZSH_VERSION:-}" ] && command -v zsh >/dev/null 2>&1; then
-	exec zsh -l
-fi
-
 shopt -s cdspell
 
 . "$HOME/.config/shell/env"
@@ -148,3 +140,7 @@ if [ "$fcitx5_enabled" = true ]; then
 	fi
 fi
 unset fcitx5_enabled fcitx5_is_wsl fcitx5_pid fcitx5_args fcitx5_needs_start
+
+if [ -z "${ZSH_VERSION:-}" ] && [ -x /usr/bin/zsh ] && [[ "$(uname -s)" == MSYS_NT* ]]; then
+	exec /usr/bin/zsh
+fi

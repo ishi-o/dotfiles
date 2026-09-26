@@ -36,13 +36,3 @@ foreach ($entry in $toolDirectories.GetEnumerator()) {
     New-Item -ItemType Directory -Path $entry.Value -Force | Out-Null
     Set-UserEnvironmentVariable -Name $entry.Key -Value $entry.Value
 }
-
-$windowsShellEnvironment = [ordered]@{
-    MSYSTEM = "MINGW64"
-    SHELL   = "/usr/bin/zsh"
-    HOME    = $env:USERPROFILE
-}
-
-foreach ($entry in $windowsShellEnvironment.GetEnumerator()) {
-    Set-UserEnvironmentVariable -Name $entry.Key -Value $entry.Value
-}

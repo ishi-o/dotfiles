@@ -49,7 +49,7 @@ After that, use the `dots` entry point for everything.
 POSIX:
 
 ```sh
-dots apply
+dots init
 dots update
 dots install <target>
 ```
@@ -57,12 +57,15 @@ dots install <target>
 Windows:
 
 ```powershell
-Dots apply
+.\Dots.cmd init
 Dots update
 Dots install <target>
 # Or install scoop and its packages in custom path
 Dots apply --scoop-prefix D:/Scoop
 ```
+
+On the first run, `Dots` is not yet in `PATH`; use `.\Dots.cmd` from the
+repository root.
 
 ## Packages
 
@@ -74,8 +77,9 @@ curated group or an individual package.
 
 ## Shell on Windows
 
-On Windows, the default shell is Zsh inside MSYS2. MSYS2 is configured so
-that its home directory resolves to the Windows user profile
+On Windows, the default shell is Zsh inside MSYS2 when both MSYS2 and Zsh are
+available. MSYS2 is configured so that its home directory resolves to the
+Windows user profile
 (`C:\Users\<user>`), which means the shell reads the same `.bashrc`,
 `.zshrc`, `.gitconfig`, and `.config` files that chezmoi manages. No separate
 MSYS2-specific configuration is required.
