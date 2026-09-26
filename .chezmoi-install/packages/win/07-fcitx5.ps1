@@ -1,0 +1,1 @@
+scoop install fcitx5

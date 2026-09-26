@@ -1,0 +1,1 @@
+scoop install libgpg-error

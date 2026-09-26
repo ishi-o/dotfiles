@@ -1,4 +1,8 @@
-. "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env"
+if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
+	export HOME="$(cygpath -u "$USERPROFILE")"
+fi
+
+. "$HOME/.config/shell/env"
 . "$HOME/.config/env"
 
 export EDITOR='nvim'

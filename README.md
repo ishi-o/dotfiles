@@ -1,7 +1,9 @@
 # Dotfiles
 
 Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/) for macOS
-and Linux. The repository also manages shell and Kitty configuration, packages,
+and Linux. Windows is also supported: packages are installed with Scoop, the
+environment uses XDG-style directories, and the default shell is Zsh inside
+MSYS2. The repository also manages shell and Kitty configuration, packages,
 fonts, and an external Neovim configuration.
 
 ## Installation
@@ -18,6 +20,30 @@ Use `git@github.com:ishi-o/dotfiles.git` instead if GitHub SSH is configured.
 
 `chezmoi apply` installs packages, downloads external files, and applies the
 configuration. Start a new shell afterwards.
+
+The installers ask before installing missing optional components. Pressing
+Enter accepts the default answer.
+
+## Repository command
+
+`dots` is a task-oriented shortcut for this repository:
+
+```sh
+./dots init
+./dots apply
+./dots status
+./dots diff
+./dots install zsh
+./dots install fonts
+./dots install dev
+```
+
+Available install groups are `shell`, `build`, `runtimes`, `editor`,
+`tools`/`dev`, `fonts`, `ai`, `terminal`, and `all`. Package names such as
+`zsh`, `uv`, `mise`, `gh`, and `codegraph` can also be installed directly.
+
+The repository-root `dots` file is a symlink to
+`private_dot_local/bin/executable_dots` and is ignored by chezmoi.
 
 ## Proxy
 

@@ -2,9 +2,17 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
+	export HOME="$(cygpath -u "$USERPROFILE")"
+fi
+
+if [ -n "${MSYSTEM:-}" ] && [ -z "${ZSH_VERSION:-}" ] && command -v zsh >/dev/null 2>&1; then
+	exec zsh -l
+fi
+
 shopt -s cdspell
 
-. "${XDG_CONFIG_HOME:-$HOME/.config}/shell/env"
+. "$HOME/.config/shell/env"
 . "$XDG_CONFIG_HOME/env"
 
 export EDITOR='nvim'
@@ -13,6 +21,29 @@ export VISUAL='nvim'
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 command -v nvm >/dev/null 2>&1 && nvm use --silent default >/dev/null 2>&1
+
+if [ -f /etc/bash_completion ]; then
+	. /etc/bash_completion
+elif [ -f /usr/share/bash-completion/bash_completion ]; then
+	. /usr/share/bash-completion/bash_completion
+fi
+
+if command -v buf >/dev/null 2>&1; then
+	eval "$(buf completion bash)"
+fi
+if command -v chezmoi >/dev/null 2>&1; then
+	eval "$(chezmoi completion bash)"
+fi
+if command -v rustup >/dev/null 2>&1; then
+	eval "$(rustup completions bash)"
+	eval "$(rustup completions bash cargo)"
+fi
+
+if [ -d "${XDG_CONFIG_HOME:-$HOME/.config}/bash/completions" ]; then
+	for completion in "${XDG_CONFIG_HOME:-$HOME/.config}/bash/completions"/*.bash; do
+		[ -f "$completion" ] && . "$completion"
+	done
+fi
 
 alias vi=nvim
 alias vim=nvim

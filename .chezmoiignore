@@ -1,6 +1,15 @@
 README.md
 .chezmoi-install/
 .github/
+dots
+
+{{ if eq .chezmoi.os "windows" }}
+**/*.sh
+**/*.sh.tmpl
+{{ else }}
+**/*.ps1
+**/*.ps1.tmpl
+{{ end }}
 
 {{- if ne .chezmoi.os "linux" }}
 .config/fcitx5
