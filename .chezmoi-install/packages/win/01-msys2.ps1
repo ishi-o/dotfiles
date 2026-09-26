@@ -31,4 +31,15 @@ Set-Content -LiteralPath $nsswitchConfig -Value $nsswitchContent
 
 [Environment]::SetEnvironmentVariable("MSYSTEM", "MINGW64", "User")
 [Environment]::SetEnvironmentVariable("SHELL", "/usr/bin/zsh", "User")
-[Environment]::SetEnvironmentVariable("HOME", $env:USERPROFILE, "User")
+
+[$nsswitch = "C:\msys64\etc\nsswitch.conf"
+if (Test-Path $nsswitch) {
+    $content = Get-Content $nsswitch -Raw
+    $patched = $content -replace '(?m)^\s*#?\s*db_home\s*:.*$', 'db_home: env windows cygwin desc'
+    if ($patched -ne $content) {
+        Set-Content -Path $nsswitch -Value $patched -NoNewline
+        Write-Host "==> Patched $nsswitch"
+    } else {
+        Write-Host "==> $nsswitch already configured"
+    }
+}Environment]::SetEnvironmentVariable("HOME", $env:USERPROFILE, "User")

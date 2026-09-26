@@ -44,7 +44,9 @@ Bootstrap the source with chezmoi once:
 chezmoi init ishi-o
 ```
 
-After that, use the `dots` entry point for everything:
+After that, use the `dots` entry point for everything.
+
+POSIX:
 
 ```sh
 dots apply
@@ -52,12 +54,31 @@ dots update
 dots install <target>
 ```
 
+Windows:
+
+```powershell
+Dots apply
+Dots update
+Dots install <target>
+# Or install scoop and its packages in custom path
+Dots apply --scoop-prefix D:/Scoop
+```
+
 ## Packages
 
 See [`PACKAGES.md`](PACKAGES.md) for the full installer inventory and deeper
-customization. The repository-root `dots` entry point drives everything after
-bootstrap: `dots apply` and `dots update` sync the source, and
-`dots install <target>` installs a curated group or an individual package.
+customization. The repository-root entry point drives everything after
+bootstrap: `dots apply` / `Dots apply` and `dots update` / `Dots update` sync
+the source, and `dots install <target>` / `Dots install <target>` install a
+curated group or an individual package.
+
+## Shell on Windows
+
+On Windows, the default shell is Zsh inside MSYS2. MSYS2 is configured so
+that its home directory resolves to the Windows user profile
+(`C:\Users\<user>`), which means the shell reads the same `.bashrc`,
+`.zshrc`, `.gitconfig`, and `.config` files that chezmoi manages. No separate
+MSYS2-specific configuration is required.
 
 ## Proxy
 

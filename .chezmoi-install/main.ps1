@@ -2,6 +2,14 @@ $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
+$bin = Join-Path $env:USERPROFILE ".local\bin"
+$u = [Environment]::GetEnvironmentVariable("Path", "User")
+if ($u -notlike "*$bin*") {
+    [Environment]::SetEnvironmentVariable("Path", "$bin;$u", "User")
+    $env:Path = "$bin;$env:Path"
+    Write-Host "==> Added $bin to user PATH"
+}
+
 . (Join-Path $scriptDir "lib\win\env.ps1")
 
 function Confirm-Install {

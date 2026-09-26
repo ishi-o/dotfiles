@@ -10,38 +10,29 @@ Installers are split by platform:
 
 ## Windows
 
-### Prerequisite: Git
+All Windows packages are installed with Scoop, which defaults to
+`%USERPROFILE%\scoop`. To install it somewhere else, pass `--scoop-prefix` to
+any `Dots` command:
 
-chezmoi clones and updates the source repository through Git, so Git must be
-available on `PATH` before `dots init` or `dots apply` is run. Install it
-from the official Git for Windows installer or with `winget install Git.Git`.
-The repository does not ship an installer for Git itself.
-
-If a specific install location is required, choose it during the official
-installer's setup.
-
-### Packages
-
-All other Windows packages are installed with Scoop. Scoop installs to
-`%USERPROFILE%\scoop` by default. To install it somewhere else, pass
-`--scoop-prefix` to any `dots` command:
-
-```sh
-./dots apply --scoop-prefix D:/Scoop
+```powershell
+Dots apply --scoop-prefix D:/Scoop
 ```
 
 or set `SCOOP_DIR` when running the full installer directly:
 
 ```powershell
 $env:SCOOP_DIR = "D:\Scoop"
-./main.ps1
+.\main.ps1
 ```
 
 The installer assigns `SCOOP_DIR` to `SCOOP`, persists it to the user
 environment, and then runs the official Scoop installer, which honors the
 variable. All packages installed afterwards land under the chosen directory.
 
-Zsh is installed inside MSYS2.
+Zsh is installed inside MSYS2. During MSYS2 installation, `nsswitch.conf` is
+patched so that the MSYS2 home directory resolves to the Windows user
+profile, allowing the shell to read the configuration files managed by
+chezmoi directly.
 
 ## Install groups
 
@@ -58,7 +49,8 @@ Zsh is installed inside MSYS2.
 
 ## Targeted installation
 
-Use `dots` to install a group or an individual package:
+Use `dots` (POSIX) or `Dots` (Windows) to install a group or an individual
+package:
 
 ```sh
 ./dots install shell
@@ -66,6 +58,8 @@ Use `dots` to install a group or an individual package:
 ./dots install ai
 ./dots install codegraph
 ```
+
+The same commands work as `Dots install <target>` on Windows.
 
 During a full install, missing optional components are confirmed
 interactively. Pressing Enter accepts the default answer.
