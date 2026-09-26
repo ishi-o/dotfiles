@@ -1,1 +1,1 @@
-scoop install extras/libnpth
+scoop install libnpth

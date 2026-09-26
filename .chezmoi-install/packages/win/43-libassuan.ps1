@@ -1,1 +1,1 @@
-scoop install extras/libassuan
+scoop install libassuan

@@ -1,1 +1,1 @@
-scoop install extras/utf8proc
+scoop install utf8proc

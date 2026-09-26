@@ -1,1 +1,1 @@
-scoop install extras/texinfo
+scoop install texinfo

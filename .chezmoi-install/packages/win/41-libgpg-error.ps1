@@ -1,1 +1,1 @@
-scoop install extras/libgpg-error
+scoop install libgpg-error

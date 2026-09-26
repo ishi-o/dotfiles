@@ -1,1 +1,1 @@
-scoop install extras/libksba
+scoop install libksba
