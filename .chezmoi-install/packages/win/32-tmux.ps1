@@ -1,1 +1,1 @@
-scoop install tmux
+scoop install extras/tmux

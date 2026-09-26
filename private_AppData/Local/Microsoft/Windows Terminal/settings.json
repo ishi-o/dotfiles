@@ -1,0 +1,122 @@
+{
+  "$help": "https://aka.ms/terminal-documentation",
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+  "actions": [
+    {
+      "command": {
+        "action": "copy",
+        "singleLine": false
+      },
+      "id": "User.copy"
+    },
+    {
+      "command": "paste",
+      "id": "User.paste"
+    },
+    {
+      "command": {
+        "action": "splitPane",
+        "split": "auto",
+        "splitMode": "duplicate"
+      },
+      "id": "User.splitPane"
+    },
+    {
+      "command": "find",
+      "id": "User.find"
+    },
+    {
+      "command": "toggleFocusMode",
+      "id": "User.toggleFocusMode"
+    }
+  ],
+  "copyFormatting": "none",
+  "copyOnSelect": true,
+  "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+  "keybindings": [
+    {
+      "id": "User.paste",
+      "keys": "ctrl+shift+v"
+    },
+    {
+      "id": "User.copy",
+      "keys": "ctrl+c"
+    },
+    {
+      "id": "User.find",
+      "keys": "ctrl+shift+f"
+    },
+    {
+      "id": "User.splitPane",
+      "keys": "alt+shift+d"
+    },
+    {
+      "id": "User.toggleFocusMode",
+      "keys": "ctrl+shift+z"
+    }
+  ],
+  "newTabMenu": [
+    {
+      "type": "remainingProfiles"
+    }
+  ],
+  "profiles": {
+    "defaults": {
+      "colorScheme": "Everforest Light - Medium",
+      "cursorShape": "filledBox",
+      "font": {
+        "face": "Consolas Ligaturized v3",
+        "size": 11
+      },
+      "opacity": 95,
+      "padding": "8",
+      "scrollbarState": "hidden",
+      "useAcrylic": true
+    },
+    "list": [
+      {
+        "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+        "name": "PowerShell",
+        "hidden": false
+      },
+      {
+        "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+        "name": "Command Prompt",
+        "hidden": true
+      },
+      {
+        "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
+        "name": "Git Bash",
+        "hidden": false,
+        "source": "Git"
+      }
+    ]
+  },
+  "schemes": [
+    {
+      "name": "Everforest Light - Medium",
+      "background": "#FDF6E3",
+      "foreground": "#5C6A72",
+      "cursorColor": "#5C6A72",
+      "selectionBackground": "#E0DCC7",
+      "black": "#5C6A72",
+      "red": "#F85552",
+      "green": "#8DA101",
+      "yellow": "#DFA000",
+      "blue": "#3A94C5",
+      "purple": "#DF69BA",
+      "cyan": "#35A77C",
+      "white": "#FDF6E3",
+      "brightBlack": "#A6B0A0",
+      "brightRed": "#F85552",
+      "brightGreen": "#8DA101",
+      "brightYellow": "#DFA000",
+      "brightBlue": "#3A94C5",
+      "brightPurple": "#DF69BA",
+      "brightCyan": "#35A77C",
+      "brightWhite": "#FDF6E3"
+    }
+  ],
+  "theme": "light",
+  "themes": []
+}

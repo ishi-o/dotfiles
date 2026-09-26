@@ -12,7 +12,7 @@ esac
 
 powershell.exe -NoProfile -Command '
 $ErrorActionPreference = "Stop"
-$fontDir = Join-Path $env:USERPROFILE ".local\share\fonts"
+$fontDir = Join-Path $env:LOCALAPPDATA "Microsoft\Windows\Fonts"
 if (-not (Test-Path -LiteralPath $fontDir)) {
     exit 0
 }

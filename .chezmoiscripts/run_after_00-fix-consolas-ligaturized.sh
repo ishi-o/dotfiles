@@ -16,7 +16,7 @@ else
     font_dir="$HOME/.local/share/fonts"
     ;;
   MINGW*|MSYS*|CYGWIN*)
-    font_dir="$HOME/.local/share/fonts"
+    font_dir="$LOCALAPPDATA/Microsoft/Windows/Fonts"
     ;;
   *)
     exit 0

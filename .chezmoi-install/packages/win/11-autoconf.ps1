@@ -1,1 +1,1 @@
-scoop install autoconf
+scoop install extras/autoconf

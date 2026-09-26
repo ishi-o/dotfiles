@@ -1,1 +1,1 @@
-scoop install cjk-fonts
+scoop install extras/cjk-fonts

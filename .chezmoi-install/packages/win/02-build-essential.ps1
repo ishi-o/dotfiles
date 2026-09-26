@@ -1,1 +1,1 @@
-scoop install build-essential
+scoop install gcc make

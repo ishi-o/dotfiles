@@ -1,10 +1,10 @@
 # Dotfiles
 
 Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/) for macOS
-and Linux. Windows is also supported: packages are installed with Scoop, the
-environment uses XDG-style directories, and the default shell is Zsh inside
-MSYS2. The repository also manages shell and Kitty configuration, packages,
-fonts, and an external Neovim configuration.
+and Linux. Windows is also supported: packages are installed with Scoop, AI
+tools are installed with npm, the environment uses XDG-style directories, and
+the default shell is Zsh inside MSYS2. The repository also manages shell and
+Kitty configuration, packages, fonts, and an external Neovim configuration.
 
 ## Installation
 

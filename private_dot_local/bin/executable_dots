@@ -62,7 +62,7 @@ install_group() {
     packages=(50-nvim)
     ;;
   tools | dev)
-    packages=(60-fzf 63-fd 64-tree 65-kubectl 66-ripgrep 67-xclip 72-tree-sitter 73-gh)
+    packages=(60-fzf 63-fd 64-tree 65-kubectl 66-ripgrep 67-xclip 68-netcat 72-tree-sitter 73-gh)
     ;;
   fonts)
     packages=(06-cjk-fonts 07-fcitx5)

@@ -21,7 +21,7 @@ targetPath = "Library/Fonts"
 {{ else if eq .chezmoi.os "linux" }}
 targetPath = ".local/share/fonts"
 {{ else if eq .chezmoi.os "windows" }}
-targetPath = ".local/share/fonts"
+targetPath = "AppData/Local/Microsoft/Windows/Fonts"
 {{ end }}
 stripComponents = 1
 include = ["*/Consolasligaturizedv3*.ttf"]
@@ -34,7 +34,7 @@ targetPath = "Library/Fonts"
 {{ else if eq .chezmoi.os "linux" }}
 targetPath = ".local/share/fonts"
 {{ else if eq .chezmoi.os "windows" }}
-targetPath = ".local/share/fonts"
+targetPath = "AppData/Local/Microsoft/Windows/Fonts"
 {{ end }}
 include = ["MapleMonoNormal*.ttf"]
 {{ end }}

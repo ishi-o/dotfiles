@@ -1,1 +1,1 @@
-scoop install xclip
+scoop install extras/xclip

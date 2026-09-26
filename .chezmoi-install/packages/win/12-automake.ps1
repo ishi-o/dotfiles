@@ -1,1 +1,1 @@
-scoop install automake
+scoop install extras/automake

@@ -1,0 +1,13 @@
+{{- $isWsl := and (eq .chezmoi.os "linux") (hasPrefix "microsoft" .chezmoi.kernel.osrelease) -}}
+
+Host github.com
+  HostName github.com
+  User git
+  Port 22
+{{- if eq .chezmoi.os "windows" }}
+  ProxyCommand powershell -NoProfile -Command "$p = $env:PROXY_URL -replace '^(socks5|http)://',''; if (-not $p) { $p = '127.0.0.1:10808' }; ncat.exe --proxy-type socks5 --proxy $p %h %p"
+{{- else if $isWsl }}
+  ProxyCommand sh -c 'exec nc -X 5 -x "$(ip route show default | awk "{print \$3}"):10808" %h %p'
+{{- else }}
+  ProxyCommand sh -c 'exec nc -X 5 -x "${PROXY_URL#*://}" %h %p'
+{{- end }}

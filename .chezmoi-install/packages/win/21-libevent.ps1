@@ -1,1 +1,1 @@
-scoop install libevent
+scoop install extras/libevent

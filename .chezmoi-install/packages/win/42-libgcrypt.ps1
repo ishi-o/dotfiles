@@ -1,1 +1,1 @@
-scoop install libgcrypt
+scoop install extras/libgcrypt

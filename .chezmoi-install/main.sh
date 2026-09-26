@@ -41,7 +41,7 @@ fonts_missing() {
 
 dev_tools_missing() {
   local command
-  for command in fzf fd tree kubectl rg gh kitty rustup tree-sitter xclip; do
+  for command in fzf fd tree kubectl rg gh nc kitty rustup tree-sitter xclip; do
     command -v "$command" >/dev/null 2>&1 || return 0
   done
   return 1
@@ -87,7 +87,7 @@ else
         continue
       fi
       ;;
-    60-fzf|63-fd|64-tree|65-kubectl|66-ripgrep|67-xclip|70-rust|71-kitty|72-tree-sitter|73-gh)
+    60-fzf|63-fd|64-tree|65-kubectl|66-ripgrep|67-xclip|68-netcat|70-rust|71-kitty|72-tree-sitter|73-gh)
       if [ "$install_dev_tools" != "true" ]; then
         echo "==> Skipping $pkg_basename"
         continue

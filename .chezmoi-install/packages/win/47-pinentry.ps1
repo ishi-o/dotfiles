@@ -1,1 +1,1 @@
-scoop install pinentry
+scoop install extras/pinentry

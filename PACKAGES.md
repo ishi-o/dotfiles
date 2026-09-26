@@ -10,9 +10,10 @@ Installers are split by platform:
 
 ## Windows
 
-All Windows packages are installed with Scoop, which defaults to
-`%USERPROFILE%\scoop`. To install it somewhere else, pass `--scoop-prefix` to
-any `Dots` command:
+Windows packages are installed with Scoop, which defaults to
+`%USERPROFILE%\scoop`. AI tools (`codex`, `claude`, `mcp-hub`, and
+`codegraph`) are installed globally with npm through nvm. To install Scoop
+somewhere else, pass `--scoop-prefix` to any `Dots` command:
 
 ```powershell
 Dots apply --scoop-prefix D:/Scoop
@@ -42,10 +43,10 @@ chezmoi directly.
 | `build`         | `build-essential`, `unzip`, `m4`, `autoconf`, `automake`, `pkg-config`, `openssl`, `libevent`, `ncurses`, `utf8proc`, `gettext`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry`, `gpg` |
 | `runtimes`      | `uv`, `mise`, `nvm`, `luajit`, `rust`                                                                                                                                                                                         |
 | `editor`        | `nvim`                                                                                                                                                                                                                        |
-| `tools` / `dev` | `fzf`, `fd`, `tree`, `kubectl`, `ripgrep`, `xclip`, `tree-sitter`, `gh`                                                                                                                                                       |
+| `tools` / `dev` | `fzf`, `fd`, `tree`, `kubectl`, `ripgrep`, `xclip`, `netcat` (`nc`/`ncat`), `tree-sitter`, `gh`                                                                                                                                   |
 | `fonts`         | CJK fonts, `fcitx5`                                                                                                                                                                                                           |
-| `ai`            | `codex`, `claude`, `mcp-hub`, `codegraph`                                                                                                                                                                                     |
-| `terminal`      | `tmux`, `kitty`                                                                                                                                                                                                               |
+| `ai`            | `codex`, `claude`, `mcp-hub`, `codegraph` (npm)                                                                                                                                                                               |
+| `terminal`      | POSIX `tmux`, `kitty`; Windows `tmux`, Windows Terminal                                                                                                                                                                         |
 
 ## Targeted installation
 

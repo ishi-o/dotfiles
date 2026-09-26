@@ -1,1 +1,1 @@
-scoop install nvim
+scoop install neovim

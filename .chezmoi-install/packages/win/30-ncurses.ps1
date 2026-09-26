@@ -1,1 +1,1 @@
-scoop install ncurses
+scoop install extras/ncurses

@@ -1,8 +1,13 @@
+# model = "gpt-5.6-luna"
+# model_provider = "openai"
+
+# model = "glm-5.3"
+# model_provider = "ZAI"
+# model_catalog_json = "~/.config/codex/models.json"
+
 model = "glm-5.3"
 model_provider = "volcengine-agent-plan"
-model_supports_reasoning_summaries = true
-
-model_reasoning_effort = "medium"
+model_catalog_json = "~/.config/codex/models.json"
 
 approvals_reviewer = "user"
 
@@ -39,9 +44,3 @@ args = [
 
 [plugins."superpowers@openai-curated"]
 enabled = true
-
-[projects."{{ .chezmoi.homeDir }}/.config/nvim"]
-trust_level = "trusted"
-
-[projects."{{ .chezmoi.sourceDir }}"]
-trust_level = "trusted"

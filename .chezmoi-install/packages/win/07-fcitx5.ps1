@@ -1,1 +1,1 @@
-scoop install fcitx5
+scoop install extras/fcitx5

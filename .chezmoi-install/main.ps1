@@ -39,7 +39,8 @@ $devToolCommands = @(
     "kubectl",
     "rg",
     "gh",
-    "kitty",
+    "ncat",
+    "wt",
     "rustup",
     "tree-sitter",
     "xclip"
@@ -63,6 +64,10 @@ if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
     Invoke-RestMethod -Uri "https://get.scoop.sh" | Invoke-Expression
 }
 
+if (-not (scoop bucket list | Where-Object { $_.Name -eq "extras" })) {
+    scoop bucket add extras
+}
+
 $fontPackages = @("06-cjk-fonts")
 $devToolPackages = @(
     "60-fzf",
@@ -71,13 +76,15 @@ $devToolPackages = @(
     "65-kubectl",
     "66-ripgrep",
     "67-xclip",
+    "68-netcat",
+    "69-windows-terminal",
     "70-rust",
-    "71-kitty",
     "72-tree-sitter",
     "73-gh"
 )
 
 $packages = Get-ChildItem -LiteralPath (Join-Path $scriptDir "packages\win") -Filter "*.ps1" | Sort-Object Name
+$failedPackages = @()
 
 foreach ($package in $packages) {
     if ($fontPackages -contains $package.BaseName -and -not $installFonts) {
@@ -91,5 +98,16 @@ foreach ($package in $packages) {
     }
 
     Write-Host "==> Processing: $($package.BaseName)"
-    & $package.FullName
+    try {
+        & $package.FullName
+    }
+    catch {
+        Write-Warning "Failed to install $($package.BaseName): $($_.Exception.Message)"
+        $failedPackages += $package.BaseName
+    }
+}
+
+if ($failedPackages.Count -gt 0) {
+    Write-Warning "Failed packages: $($failedPackages -join ', ')"
+    exit 1
 }

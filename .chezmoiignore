@@ -2,8 +2,8 @@ README.md
 PACKAGES.md
 .chezmoi-install/
 .github/
-/dots
-/Dots.cmd
+dots
+Dots.cmd
 
 {{ if eq .chezmoi.os "windows" }}
 **/*.sh
@@ -12,6 +12,8 @@ PACKAGES.md
 **/*.ps1
 **/*.ps1.tmpl
 **/*.cmd
+.wslconfig
+AppData/
 {{ end }}
 
 {{- if ne .chezmoi.os "linux" }}
