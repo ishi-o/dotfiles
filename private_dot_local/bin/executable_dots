@@ -7,33 +7,64 @@ usage() {
 Usage: dots <command> [args]
 
 Commands:
-  init                Reinitialize chezmoi, reset script state, and apply
-  apply               Apply the current chezmoi state
+  init [options]      Reinitialize chezmoi, reset script state, and apply
+  apply [options]     Apply the current chezmoi state
   diff                Show pending changes
   status              Show chezmoi status
   edit                Open the source in the configured editor
-  update              Pull the source repository and apply
+  update [options]    Pull the source repository and apply
   doctor              Run chezmoi doctor
   install <target>    Install a package or a curated group
+
+Options (accepted by any command):
+  --scoop-prefix <dir>   Install Scoop under <dir>
 
 Install groups:
   shell, build, runtimes, editor, tools, fonts, ai, terminal, all
 
 Examples:
   dots init
-  dots install zsh
+  dots init --scoop-prefix D:/Scoop
+  dots apply --scoop-prefix D:/Scoop
   dots install fonts
   dots install dev
 EOF
 }
 
-case "$(uname -s)" in
-  MINGW*|MSYS*|CYGWIN*)
-    os="windows"
+scoop_prefix=""
+
+args=()
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+  --scoop-prefix)
+    shift
+    scoop_prefix="${1:-}"
+    if [ -z "$scoop_prefix" ]; then
+      echo "--scoop-prefix requires a path" >&2
+      exit 2
+    fi
+    shift
     ;;
   *)
-    os="posix"
+    args+=("$1")
+    shift
     ;;
+  esac
+done
+
+set -- "${args[@]:-}"
+
+if [ -n "$scoop_prefix" ]; then
+  export SCOOP_DIR="$scoop_prefix"
+fi
+
+case "$(uname -s)" in
+MINGW* | MSYS* | CYGWIN*)
+  os="windows"
+  ;;
+*)
+  os="posix"
+  ;;
 esac
 
 run_installer() {
@@ -73,47 +104,47 @@ install_group() {
   local packages=()
 
   case "$group" in
-    shell)
-      if [ "$os" = "windows" ]; then
-        packages=(01-msys2)
-      else
-        packages=(01-zsh)
-      fi
-      ;;
-    build)
-      packages=(02-build-essential 04-unzip 10-m4 11-autoconf 12-automake 13-pkg-config 20-openssl 21-libevent 30-ncurses 31-utf8proc 40-gettext 41-libgpg-error 42-libgcrypt 43-libassuan 44-libksba 45-libnpth 46-texinfo 47-pinentry 48-gpg)
-      ;;
-    runtimes)
-      packages=(03-uv 04-mise 56-nvm 62-luajit 70-rust)
-      ;;
-    editor)
-      packages=(50-nvim)
-      ;;
-    tools|dev)
-      packages=(60-fzf 63-fd 64-tree 65-kubectl 66-ripgrep 67-xclip 72-tree-sitter 73-gh)
-      ;;
-    fonts)
-      packages=(06-cjk-fonts 07-fcitx5)
-      ;;
-    ai)
-      packages=(57-codex 58-claude 59-mcp-hub 59-codegraph)
-      ;;
-    terminal)
-      packages=(32-tmux 71-kitty)
-      ;;
-    all)
-      if [ "$os" = "windows" ]; then
-        run_installer "$(source_dir)/.chezmoi-install/main.ps1"
-      else
-        run_installer "$(source_dir)/.chezmoi-install/main.sh"
-      fi
-      return
-      ;;
-    *)
-      echo "Unknown install group: $group" >&2
-      usage >&2
-      exit 2
-      ;;
+  shell)
+    if [ "$os" = "windows" ]; then
+      packages=(01-msys2)
+    else
+      packages=(01-zsh)
+    fi
+    ;;
+  build)
+    packages=(02-build-essential 04-unzip 10-m4 11-autoconf 12-automake 13-pkg-config 20-openssl 21-libevent 30-ncurses 31-utf8proc 40-gettext 41-libgpg-error 42-libgcrypt 43-libassuan 44-libksba 45-libnpth 46-texinfo 47-pinentry 48-gpg)
+    ;;
+  runtimes)
+    packages=(03-uv 04-mise 56-nvm 62-luajit 70-rust)
+    ;;
+  editor)
+    packages=(50-nvim)
+    ;;
+  tools | dev)
+    packages=(60-fzf 63-fd 64-tree 65-kubectl 66-ripgrep 67-xclip 72-tree-sitter 73-gh)
+    ;;
+  fonts)
+    packages=(06-cjk-fonts 07-fcitx5)
+    ;;
+  ai)
+    packages=(57-codex 58-claude 59-mcp-hub 59-codegraph)
+    ;;
+  terminal)
+    packages=(32-tmux 71-kitty)
+    ;;
+  all)
+    if [ "$os" = "windows" ]; then
+      run_installer "$(source_dir)/.chezmoi-install/main.ps1"
+    else
+      run_installer "$(source_dir)/.chezmoi-install/main.sh"
+    fi
+    return
+    ;;
+  *)
+    echo "Unknown install group: $group" >&2
+    usage >&2
+    exit 2
+    ;;
   esac
 
   local package
@@ -136,68 +167,68 @@ install_group() {
 }
 
 case "${1:-help}" in
-  init)
-    shift
-    chezmoi init "$@"
-    chezmoi state delete-bucket --bucket=scriptState
-    exec chezmoi apply
-    ;;
-  apply)
-    shift
-    exec chezmoi apply "$@"
-    ;;
-  diff)
-    shift
-    exec chezmoi diff "$@"
-    ;;
-  status)
-    shift
-    exec chezmoi status "$@"
-    ;;
-  edit)
-    shift
-    exec chezmoi edit "$@"
-    ;;
-  update)
-    shift
-    git -C "$(source_dir)" pull --ff-only
-    exec chezmoi apply "$@"
-    ;;
-  doctor)
-    shift
-    exec chezmoi doctor "$@"
-    ;;
-  install)
-    shift
-    if [ "$#" -eq 0 ]; then
-      echo "dots install requires a package or group name" >&2
-      exit 2
-    fi
+init)
+  shift
+  chezmoi init "$@"
+  chezmoi state delete-bucket --bucket=scriptState
+  exec chezmoi apply
+  ;;
+apply)
+  shift
+  exec chezmoi apply "$@"
+  ;;
+diff)
+  shift
+  exec chezmoi diff "$@"
+  ;;
+status)
+  shift
+  exec chezmoi status "$@"
+  ;;
+edit)
+  shift
+  exec chezmoi edit "$@"
+  ;;
+update)
+  shift
+  git -C "$(source_dir)" pull --ff-only
+  exec chezmoi apply "$@"
+  ;;
+doctor)
+  shift
+  exec chezmoi doctor "$@"
+  ;;
+install)
+  shift
+  if [ "$#" -eq 0 ]; then
+    echo "dots install requires a package or group name" >&2
+    exit 2
+  fi
 
-    target="$1"
-    shift
+  target="$1"
+  shift
 
-    case "$target" in
-      shell|build|runtimes|editor|tools|dev|fonts|ai|terminal|all)
-        install_group "$target"
-        ;;
-      *)
-        installer="$(find_installer "$target")"
-        if [ -z "$installer" ]; then
-          echo "Installer not found for target: $target" >&2
-          exit 1
-        fi
-        echo "==> Installing $target"
-        run_installer "$installer"
-        ;;
-    esac
-    ;;
-  help|-h|--help)
-    usage
+  case "$target" in
+  shell | build | runtimes | editor | tools | dev | fonts | ai | terminal | all)
+    install_group "$target"
     ;;
   *)
-    echo "Unknown command: $1" >&2
-    usage >&2
-    exit 2
+    installer="$(find_installer "$target")"
+    if [ -z "$installer" ]; then
+      echo "Installer not found for target: $target" >&2
+      exit 1
+    fi
+    echo "==> Installing $target"
+    run_installer "$installer"
     ;;
+  esac
+  ;;
+help | -h | --help)
+  usage
+  ;;
+*)
+  echo "Unknown command: $1" >&2
+  usage >&2
+  exit 2
+  ;;
 esac

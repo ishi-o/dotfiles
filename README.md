@@ -6,11 +6,58 @@ environment uses XDG-style directories, and the default shell is Zsh inside
 MSYS2. The repository also manages shell and Kitty configuration, packages,
 fonts, and an external Neovim configuration.
 
+## Installation
+
+chezmoi and Git are prerequisites and must be installed manually.
+
+<details>
+<summary>MacOS Homebrew</summary>
+
+```sh
+brew install chezmoi git
+```
+
+</details>
+
+<details>
+<summary>Linux / MacOS</summary>
+
+```sh
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+```
+
+</details>
+
+<details>
+<summary>Windows</summary>
+
+```powershell
+winget install twpayne.chezmoi
+winget install Git.Git
+```
+
+</details>
+
+Bootstrap the source with chezmoi once:
+
+```sh
+chezmoi init ishi-o
+```
+
+After that, use the `dots` entry point for everything:
+
+```sh
+dots apply
+dots update
+dots install <target>
+```
+
 ## Packages
 
 See [`PACKAGES.md`](PACKAGES.md) for the full installer inventory and deeper
-customization. The repository-root `dots` entry point supports grouped and
-per-package installation; see that document for details.
+customization. The repository-root `dots` entry point drives everything after
+bootstrap: `dots apply` and `dots update` sync the source, and
+`dots install <target>` installs a curated group or an individual package.
 
 ## Proxy
 

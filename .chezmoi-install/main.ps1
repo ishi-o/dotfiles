@@ -47,6 +47,10 @@ if ($missingDevTools.Count -gt 0 -and
 }
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+    if ($env:SCOOP_DIR) {
+        $env:SCOOP = $env:SCOOP_DIR
+        [Environment]::SetEnvironmentVariable("SCOOP", $env:SCOOP_DIR, "User")
+    }
     Write-Host "==> Installing Scoop..."
     Invoke-RestMethod -Uri "https://get.scoop.sh" | Invoke-Expression
 }
