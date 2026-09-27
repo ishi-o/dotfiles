@@ -1,4 +1,6 @@
 ### START_ZPLUG
+. "$HOME/.config/shell/msys2-path"
+
 if [ ! -f "$USR_HOME/zplug/init.zsh" ]; then
   if command -v git >/dev/null 2>&1; then
     mkdir -p "$(dirname "$USR_HOME/zplug")"

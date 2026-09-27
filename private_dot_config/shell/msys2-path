@@ -1,0 +1,35 @@
+# Expose Windows-managed tools from MSYS2 before shell initialization runs
+# applications. POSIX-compatible so zsh and bash can both source this file.
+
+case "$(uname -s 2>/dev/null)" in
+MSYS_NT*)
+    if [ -z "${MSYS2_EXTERNAL_PATHS_DONE:-}" ] && command -v cygpath >/dev/null 2>&1; then
+        msys2_user_profile="$(cygpath -u "${USERPROFILE:-$HOME}")"
+        msys2_local_apps="$(cygpath -u "${LOCALAPPDATA:-$msys2_user_profile/AppData/Local}")"
+        msys2_program_files="$(cygpath -u "${ProgramFiles:-/c/Program Files}")"
+
+        if [ -n "${SCOOP:-}" ]; then
+            msys2_scoop_root="$(cygpath -u "$SCOOP")"
+        else
+            msys2_scoop_root="$msys2_user_profile/scoop"
+        fi
+
+        for msys2_path in \
+            "$msys2_scoop_root/apps/git/current/cmd" \
+            "$msys2_program_files/Git/cmd" \
+            "$msys2_scoop_root/shims" \
+            "$msys2_local_apps/Microsoft/WindowsApps" \
+            "$msys2_local_apps/Microsoft/WinGet/Links"; do
+            if [ -d "$msys2_path" ]; then
+                case ":$PATH:" in
+                    *":$msys2_path:"*) ;;
+                    *) PATH="$msys2_path:$PATH" ;;
+                esac
+            fi
+        done
+
+        export PATH MSYS2_EXTERNAL_PATHS_DONE=1
+        unset msys2_user_profile msys2_local_apps msys2_program_files msys2_scoop_root msys2_path
+    fi
+    ;;
+esac

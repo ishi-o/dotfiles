@@ -1,3 +1,5 @@
+. "$HOME/.config/shell/msys2-path"
+
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi

@@ -2,6 +2,7 @@ if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
 	export HOME="$(cygpath -u "$USERPROFILE")"
 fi
 
+. "$HOME/.config/shell/msys2-path"
 . "$HOME/.config/shell/env"
 . "$HOME/.config/env"
 
