@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 
-# Kitty on macOS uses the font's fixed-pitch metadata when it builds its
-# font list. The upstream Consolas ligaturized files have fixed glyph
-# advances, but leave post.isFixedPitch unset.
 set -euo pipefail
 
-if [ -n "${CONSOLAS_LIGATURIZED_FONT_DIR:-}" ]; then
-  font_dir="$CONSOLAS_LIGATURIZED_FONT_DIR"
+if [ -n "${YAHEI_CONSOLAS_HYBRID_FONT_DIR:-}" ]; then
+  font_dir="$YAHEI_CONSOLAS_HYBRID_FONT_DIR"
 else
   case "$(uname -s)" in
   Darwin)
@@ -16,7 +13,11 @@ else
     font_dir="$HOME/.local/share/fonts"
     ;;
   MINGW*|MSYS*|CYGWIN*)
-    font_dir="$LOCALAPPDATA/Microsoft/Windows/Fonts"
+    if [ -n "${LOCALAPPDATA:-}" ] && command -v cygpath >/dev/null 2>&1; then
+      font_dir="$(cygpath -u "$LOCALAPPDATA")/Microsoft/Windows/Fonts"
+    else
+      exit 0
+    fi
     ;;
   *)
     exit 0
@@ -24,53 +25,37 @@ else
   esac
 fi
 
-# The external archive is optional on unsupported platforms and may not have
-# been downloaded yet. Do not require Python when there is no font to repair.
-font_found=false
-for font_path in "$font_dir"/Consolasligaturizedv3*.ttf; do
-  if [ -f "$font_path" ]; then
-    font_found=true
+font_name='YaHei Consolas Hybrid 1.12 For Powerline.ttf'
+font_path="$font_dir/$font_name"
+
+if [ ! -f "$font_path" ]; then
+  exit 0
+fi
+
+python_command=()
+for candidate in \
+    "$(command -v python3 || true)" \
+    /usr/bin/python3 \
+    /bin/python3; do
+  if [ -n "$candidate" ] && "$candidate" -c 'import sys' >/dev/null 2>&1; then
+    python_command=("$candidate")
     break
   fi
 done
 
-if [ "$font_found" != true ]; then
-  exit 0
-fi
-
-python3_path="$(command -v python3 || true)"
-if [ -z "$python3_path" ] && [ -x "$HOME/.local/bin/python3" ]; then
-  python3_path="$HOME/.local/bin/python3"
-fi
-
-uv_path="$(command -v uv || true)"
-if [ -z "$uv_path" ] && [ -x "$HOME/.local/bin/uv" ]; then
-  uv_path="$HOME/.local/bin/uv"
-fi
-
-if [ -n "$python3_path" ]; then
-  python_command=("$python3_path")
-elif [ -n "$uv_path" ]; then
-  python_command=("$uv_path" run --no-project python3)
-else
-  echo "Error: Python 3 is required to repair Consolas ligaturized font metadata." >&2
+if [ "${#python_command[@]}" -eq 0 ]; then
+  echo "Error: Python 3 is required to repair the YaHei Consolas Hybrid font." >&2
   exit 1
 fi
 
-"${python_command[@]}" - "$font_dir" <<'PY'
-from pathlib import Path
+"${python_command[@]}" - "$font_path" <<'PY'
 import os
 import struct
 import sys
+from pathlib import Path
 
 
 MAGIC_CHECKSUM = 0xB1B0AFBA
-FONT_NAMES = (
-    "Consolasligaturizedv3.ttf",
-    "Consolasligaturizedv3-Bold.ttf",
-    "Consolasligaturizedv3-Italic.ttf",
-    "Consolasligaturizedv3-BoldItalic.ttf",
-)
 
 
 def checksum(data: bytes) -> int:
@@ -106,8 +91,6 @@ def fix_font(path: Path) -> None:
         raise RuntimeError(f"{path}: unexpected post.isFixedPitch={fixed_pitch}")
 
     data = bytearray(original)
-    # checkSumAdjustment is zero while the table and whole-font checksums are
-    # calculated, as required by the TrueType specification.
     struct.pack_into(">I", data, head_offset + 8, 0)
     struct.pack_into(">I", data, post_offset + 12, 1)
     struct.pack_into(
@@ -135,9 +118,5 @@ def fix_font(path: Path) -> None:
     print(f"{path.name}: post.isFixedPitch 0 -> 1")
 
 
-font_dir = Path(sys.argv[1])
-for font_name in FONT_NAMES:
-    path = font_dir / font_name
-    if path.is_file():
-        fix_font(path)
+fix_font(Path(sys.argv[1]))
 PY

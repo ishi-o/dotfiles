@@ -13,18 +13,16 @@ url = "https://github.com/ishi-o/ishio.nvim.git"
 {{ end }}
 
 {{ if $installFonts }}
-[consolas_ligaturized]
-type = "archive"
-url = "https://github.com/somq/consolas-ligaturized/archive/refs/tags/3.1.tar.gz"
+[yahei_consolas_hybrid]
+type = "file"
+url = "https://raw.githubusercontent.com/Magnetic2014/YaHei-Consolas-Hybrid-For-Powerline/master/YaHei%20Consolas%20Hybrid%201.12%20For%20Powerline.ttf"
 {{ if eq .chezmoi.os "darwin" }}
-targetPath = "Library/Fonts"
+targetPath = "Library/Fonts/YaHei Consolas Hybrid 1.12 For Powerline.ttf"
 {{ else if eq .chezmoi.os "linux" }}
-targetPath = ".local/share/fonts"
+targetPath = ".local/share/fonts/YaHei Consolas Hybrid 1.12 For Powerline.ttf"
 {{ else if eq .chezmoi.os "windows" }}
-targetPath = "AppData/Local/Microsoft/Windows/Fonts"
+targetPath = "AppData/Local/Microsoft/Windows/Fonts/YaHei Consolas Hybrid 1.12 For Powerline.ttf"
 {{ end }}
-stripComponents = 1
-include = ["*/Consolasligaturizedv3*.ttf"]
 
 [maple_mono_normal]
 type = "archive"

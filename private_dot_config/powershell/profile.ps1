@@ -7,3 +7,6 @@ $PSStyle.Formatting.Warning = $PSStyle.Foreground.FromRgb(223, 160, 0)
 $PSStyle.Formatting.Verbose = $PSStyle.Foreground.FromRgb(58, 148, 197)
 $PSStyle.Formatting.Debug = $PSStyle.Foreground.FromRgb(223, 105, 186)
 Set-PSReadLineOption -Colors @{ Default = $PSStyle.Foreground.FromRgb(92, 106, 114) }
+
+Set-Alias -Name vi -Value nvim
+Set-Alias -Name vim -Value nvim

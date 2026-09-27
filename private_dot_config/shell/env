@@ -36,6 +36,16 @@ export NPM_CONFIG_CACHE="${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}"
 
 export PATH="$USR_HOME/mise/bin:$USR_HOME/bin:$USR_HOME/nvim/bin:$HOME/.local/bin:$HOME/bin:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$HOME/.local/share/coursier/bin:$PATH"
 
+if [ -r /etc/profile.d/apps-bin-path.sh ]; then
+    . /etc/profile.d/apps-bin-path.sh
+fi
+if [ -d /snap/bin ]; then
+    case ":$PATH:" in
+        *":/snap/bin:"*) ;;
+        *) PATH="/snap/bin:$PATH"; export PATH ;;
+    esac
+fi
+
 proxy_config="$XDG_CONFIG_HOME/proxy/config"
 if [ -r "$proxy_config" ]; then
     . "$proxy_config"

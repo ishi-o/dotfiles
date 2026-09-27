@@ -91,14 +91,14 @@ MSYS2-specific configuration is required.
 
 ## Managed runtimes
 
-[`private_dot_config/mise/config.toml`](private_dot_config/mise/config.toml)
+[`private_dot_config/mise/config.toml.tmpl`](private_dot_config/mise/config.toml.tmpl)
 defines the mise-managed runtimes:
 
 | Runtime | Manager                         | Version    |
 | ------- | ------------------------------- | ---------- |
 | Go      | mise                            | latest     |
 | Java    | mise                            | OpenJDK 21 |
-| Lua     | mise                            | 5.4        |
+| Lua     | mise (not on Windows)           | 5.4        |
 | Node.js | nvm                             | 22         |
 | Python  | uv                              | 3.13, 3.14 |
 | Rust    | rustup                          | stable     |
@@ -106,12 +106,13 @@ defines the mise-managed runtimes:
 
 After the config is applied, a post-apply script runs `mise install`; it does
 not modify the config with `mise use`. Bash and Zsh activate mise at startup.
+On MSYS2, activation uses a POSIX path for the mise executable.
 
 ## Fonts and Kitty
 
-The default font is [Consolas ligaturized v3](https://github.com/somq/consolas-ligaturized).
-Its fixed-pitch metadata is repaired automatically so Kitty can discover it on
-macOS.
+The default font is [YaHei Consolas Hybrid for Powerline](https://github.com/Magnetic2014/YaHei-Consolas-Hybrid-For-Powerline).
+It is installed automatically and used by Kitty, Windows Terminal, Zed, and
+Fcitx5.
 
 Maple Mono is optional:
 

@@ -1,0 +1,64 @@
+# Keep Bash and Zsh completion behavior aligned for the tools this dotfiles
+# repository installs or expects to be available.
+
+if [ -n "${ZSH_VERSION:-}" ]; then
+    fpath=(
+        "$XDG_CONFIG_HOME/zfunc"
+        $fpath
+    )
+    autoload -Uz compinit
+    compinit
+
+    if command -v buf >/dev/null 2>&1; then
+        eval "$(buf completion zsh 2>/dev/null)"
+    fi
+    if command -v chezmoi >/dev/null 2>&1; then
+        eval "$(chezmoi completion zsh 2>/dev/null)"
+    fi
+    if command -v gh >/dev/null 2>&1; then
+        eval "$(gh completion -s zsh 2>/dev/null)"
+    fi
+    if command -v kubectl >/dev/null 2>&1; then
+        eval "$(kubectl completion zsh 2>/dev/null)"
+    fi
+    if command -v mise >/dev/null 2>&1; then
+        eval "$(mise completion zsh 2>/dev/null)"
+    fi
+    if command -v rustup >/dev/null 2>&1; then
+        eval "$(rustup completions zsh 2>/dev/null)"
+        eval "$(rustup completions zsh cargo 2>/dev/null)"
+    fi
+elif [ -n "${BASH_VERSION:-}" ]; then
+    if [ -f /etc/bash_completion ]; then
+        . /etc/bash_completion
+    elif [ -f /usr/share/bash-completion/bash_completion ]; then
+        . /usr/share/bash-completion/bash_completion
+    fi
+
+    if command -v buf >/dev/null 2>&1; then
+        eval "$(buf completion bash 2>/dev/null)"
+    fi
+    if command -v chezmoi >/dev/null 2>&1; then
+        eval "$(chezmoi completion bash 2>/dev/null)"
+    fi
+    if command -v gh >/dev/null 2>&1; then
+        eval "$(gh completion -s bash 2>/dev/null)"
+    fi
+    if command -v kubectl >/dev/null 2>&1; then
+        eval "$(kubectl completion bash 2>/dev/null)"
+    fi
+    if command -v mise >/dev/null 2>&1; then
+        eval "$(mise completion bash 2>/dev/null)"
+    fi
+    if command -v rustup >/dev/null 2>&1; then
+        eval "$(rustup completions bash 2>/dev/null)"
+        eval "$(rustup completions bash cargo 2>/dev/null)"
+    fi
+
+    if [ -d "$XDG_CONFIG_HOME/bash/completions" ]; then
+        for completion in "$XDG_CONFIG_HOME/bash/completions"/*.bash; do
+            [ -f "$completion" ] && . "$completion"
+        done
+    fi
+    unset completion
+fi
