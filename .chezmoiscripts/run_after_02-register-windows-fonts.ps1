@@ -1,19 +1,11 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-case "$(uname -s)" in
-MINGW*|MSYS*|CYGWIN*)
-  ;;
-*)
-  exit 0
-  ;;
-esac
-
-powershell.exe -NoProfile -Command '
 $ErrorActionPreference = "Stop"
+
+if (-not $env:LOCALAPPDATA) {
+    exit 0
+}
+
 $fontDir = Join-Path $env:LOCALAPPDATA "Microsoft\Windows\Fonts"
-if (-not (Test-Path -LiteralPath $fontDir)) {
+if (-not (Test-Path -LiteralPath $fontDir -PathType Container)) {
     exit 0
 }
 
@@ -29,8 +21,9 @@ public static class FontApi
 "@
 
 $registryPath = "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
-Get-ChildItem -LiteralPath $fontDir -Filter "*.ttf" | ForEach-Object {
+New-Item -Path $registryPath -Force | Out-Null
+
+Get-ChildItem -LiteralPath $fontDir -Filter "*.ttf" -File | ForEach-Object {
     [FontApi]::AddFontResource($_.FullName) | Out-Null
     New-ItemProperty -Path $registryPath -Name ($_.BaseName + " (TrueType)") -Value $_.FullName -PropertyType String -Force | Out-Null
 }
-'

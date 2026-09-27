@@ -1,13 +1,7 @@
-{{- $isWsl := and (eq .chezmoi.os "linux") (hasPrefix "microsoft" .chezmoi.kernel.osrelease) -}}
-
 Host github.com
   HostName github.com
   User git
   Port 22
-{{- if eq .chezmoi.os "windows" }}
-  ProxyCommand powershell -NoProfile -ExecutionPolicy Bypass -Command "& '$HOME/.local/bin/proxy-ssh.ps1' %h %p"
-{{- else if $isWsl }}
-  ProxyCommand sh -c 'exec "$HOME/.local/bin/proxy-ssh" %h %p'
-{{- else }}
+{{- if ne .chezmoi.os "windows" }}
   ProxyCommand sh -c 'exec "$HOME/.local/bin/proxy-ssh" %h %p'
 {{- end }}

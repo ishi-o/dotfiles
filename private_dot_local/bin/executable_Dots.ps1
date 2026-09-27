@@ -72,7 +72,7 @@ function Get-ProxyScript {
         return $localScript
     }
 
-    $rootScript = Join-Path $PSScriptRoot "..\..\Set-Proxy.ps1"
+    $rootScript = Join-Path $PSScriptRoot "..\..\Set-Proxy.cmd"
     if (Test-Path -LiteralPath $rootScript -PathType Leaf) {
         return (Resolve-Path -LiteralPath $rootScript).Path
     }

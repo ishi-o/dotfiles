@@ -14,10 +14,10 @@ From the chezmoi source directory, use `set-proxy`:
 ./set-proxy http://127.0.0.1:10808 socks5://127.0.0.1:10808
 ```
 
-On Windows, use `Set-Proxy.ps1`:
+On Windows, use `Set-Proxy.cmd`:
 
-```powershell
-.\Set-Proxy.ps1 http://127.0.0.1:10808 socks5://127.0.0.1:10808
+```bat
+.\Set-Proxy.cmd http://127.0.0.1:10808 socks5://127.0.0.1:10808
 ```
 
 Package installers read the resulting configuration directly.
@@ -71,7 +71,7 @@ set-proxy --sync
 set-proxy --clear
 ```
 
-On Windows, use `Set-Proxy.ps1` with the same positional URLs and `-NoProxy`,
+On Windows, use `Set-Proxy.cmd` with the same positional URLs and `-NoProxy`,
 `-Show`, `-Sync`, `-Clear`, and `-Help` options.
 
 ## Consumers

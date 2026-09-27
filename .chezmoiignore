@@ -5,7 +5,7 @@ PACKAGES.md
 dots
 Dots.cmd
 set-proxy
-Set-Proxy.ps1
+Set-Proxy.cmd
 
 {{ if eq .chezmoi.os "windows" }}
 **/*.sh
