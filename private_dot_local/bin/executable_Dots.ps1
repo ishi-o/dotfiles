@@ -39,6 +39,7 @@ Examples:
 
 function Invoke-Installer {
     param([string]$Path)
+
     & $Path
 }
 
@@ -93,22 +94,46 @@ function Find-Installer {
         Select-Object -First 1 -ExpandProperty FullName
 }
 
+function Invoke-MSYS2Installer {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]$Packages
+    )
+
+    $installer = Join-Path (Get-SourceDir) ".chezmoi-install\packages\win\01-msys2.ps1"
+    if (-not (Test-Path -LiteralPath $installer -PathType Leaf)) {
+        throw "MSYS2 installer not found"
+    }
+
+    & $installer -Packages $Packages
+}
+
 function Install-Group {
     param([string]$Group)
 
     $dir = Join-Path (Get-SourceDir) ".chezmoi-install\packages\win"
+    . (Join-Path $dir "..\..\lib\win\msys2.ps1")
+    $msys2Packages = @()
     $packages = switch ($Group) {
-        "shell"    { @("01-msys2") }
-        "build"    { @("02-build-essential","05-unzip","10-m4","11-autoconf","12-automake","13-pkg-config","20-openssl","21-libevent","30-ncurses","31-utf8proc","40-gettext","41-libgpg-error","42-libgcrypt","43-libassuan","44-libksba","45-libnpth","46-texinfo","47-pinentry","48-gpg") }
+        "shell"    { @() }
+        "build"    { @("02-build-essential","05-unzip","10-m4","13-pkg-config","20-openssl","40-gettext","48-gpg") }
         "runtimes" { @("03-uv","04-mise","56-nvm","62-luajit","70-rust","74-mingw") }
         "editor"   { @("50-nvim") }
-        "tools"    { @("60-fzf","63-fd","64-tree","65-kubectl","66-ripgrep","67-xclip","68-netcat","72-tree-sitter","73-gh") }
-        "dev"      { @("60-fzf","63-fd","64-tree","65-kubectl","66-ripgrep","67-xclip","68-netcat","72-tree-sitter","73-gh") }
-        "fonts"    { @("06-cjk-fonts","07-fcitx5") }
+        "tools"    { @("60-fzf","63-fd","65-kubectl","66-ripgrep","68-netcat","72-tree-sitter","73-gh") }
+        "dev"      { @("60-fzf","63-fd","65-kubectl","66-ripgrep","68-netcat","72-tree-sitter","73-gh") }
+        "fonts"    { @("06-cjk-fonts") }
         "ai"       { @("57-codex","58-claude","59-mcp-hub","59-codegraph") }
-        "terminal" { @("32-tmux","69-windows-terminal") }
+        "terminal" { @("69-windows-terminal") }
         "all"      { Invoke-Installer (Join-Path (Get-SourceDir) ".chezmoi-install\main.ps1"); return }
         default    { Write-Error "Unknown install group: $Group"; Show-Usage; exit 2 }
+    }
+
+    $msys2Packages = Get-MSYS2GroupPackages -Group $Group
+
+    if ($msys2Packages.Count -gt 0) {
+        Write-Host "==> Installing MSYS2 packages: $($msys2Packages -join ', ')"
+        Invoke-MSYS2Installer -Packages $msys2Packages
     }
 
     foreach ($pkg in $packages) {
@@ -243,6 +268,19 @@ switch ($command) {
                 Install-Group $target
             }
             default {
+                . (Join-Path (Get-SourceDir) ".chezmoi-install\lib\win\msys2.ps1")
+                if ($target -eq "msys2") {
+                    Write-Host "==> Installing MSYS2 packages: zsh"
+                    Invoke-MSYS2Installer -Packages @("zsh")
+                    break
+                }
+
+                if (Test-MSYS2Package -Package $target) {
+                    Write-Host "==> Installing MSYS2 package: $target"
+                    Invoke-MSYS2Installer -Packages @($target)
+                    break
+                }
+
                 $installer = Find-Installer $target
                 if (-not $installer) {
                     Write-Error "Installer not found for target: $target"

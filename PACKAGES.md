@@ -35,16 +35,21 @@ patched so that the MSYS2 home directory resolves to the Windows user
 profile, allowing the shell to read the configuration files managed by
 chezmoi directly.
 
+All Windows MSYS2 packages are handled by the central
+`01-msys2.ps1` installer. It accepts the requested package names and installs
+them in a single `pacman --needed` transaction. Targeted commands such as
+`Dots install tmux` route through the same installer.
+
 ## Install groups
 
 | Group           | Packages                                                                                                                                                                                                                      |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `shell`         | POSIX `zsh`; Windows `msys2` + `zsh`                                                                                                                                                                                          |
-| `build`         | POSIX `build-essential`, `unzip`, `m4`, `autoconf`, `automake`, `pkg-config`, `openssl`, `libevent`, `ncurses`, `utf8proc`, `gettext`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry`, `gpg`; Windows also installs `autoconf`, `automake`, `libevent`, `ncurses`, `utf8proc`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry` through MSYS2 |
+| `build`         | POSIX `build-essential`, `unzip`, `m4`, `autoconf`, `automake`, `pkg-config`, `openssl`, `libevent`, `ncurses`, `utf8proc`, `gettext`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry`, `gpg`; Windows installs the available MSYS2 subset in one `pacman` transaction |
 | `runtimes`      | `uv`, `mise`, `nvm`, `luajit`; POSIX `rust`; Windows `rustup-gnu` and separate `mingw` |
 | `editor`        | `nvim`                                                                                                                                                                                                                        |
-| `tools` / `dev` | Common `fzf`, `fd`, `kubectl`, `ripgrep`, `netcat` (`nc`/`ncat`), `tree-sitter` (Cargo), `gh`; `tree` and `xclip` through MSYS2 on Windows |
-| `fonts`         | CJK fonts; `fcitx5` through MSYS2 on Windows |
+| `tools` / `dev` | Common `fzf`, `fd`, `kubectl`, `ripgrep`, `netcat` (`nc`/`ncat`), `tree-sitter` (Cargo), `gh`; `tree` through MSYS2 on Windows |
+| `fonts`         | CJK fonts |
 | `ai`            | `codex`, `claude`, `mcp-hub`, `codegraph` (npm)                                                                                                                                                                               |
 | `terminal`      | POSIX `tmux`, `kitty`; Windows `tmux` through MSYS2 and Windows Terminal |
 

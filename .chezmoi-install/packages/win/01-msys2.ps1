@@ -1,6 +1,15 @@
-scoop install msys2
-if ($LASTEXITCODE -ne 0) {
-    throw "scoop install msys2 failed"
+param(
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string[]]$Packages
+)
+
+. (Join-Path $PSScriptRoot "..\..\lib\win\msys2.ps1")
+
+Install-MSYS2Packages -Packages (@($Packages | Select-Object -Unique))
+
+if ("zsh" -notin $Packages) {
+    return
 }
 
 $msys2Root = (scoop prefix msys2).Trim()
@@ -8,26 +17,8 @@ if (-not $msys2Root -or -not (Test-Path -LiteralPath $msys2Root)) {
     throw "MSYS2 root not found"
 }
 
-$msys2UsrBin = Join-Path $msys2Root "usr\bin"
-if (-not (Test-Path -LiteralPath $msys2UsrBin -PathType Container)) {
-    throw "MSYS2 usr/bin not found at $msys2UsrBin"
-}
-
-$pacman = Join-Path $msys2UsrBin "pacman.exe"
-if (-not (Test-Path -LiteralPath $pacman -PathType Leaf)) {
-    throw "MSYS2 pacman not found at $pacman"
-}
-
-$env:Path = "$msys2UsrBin;$env:Path"
-
-$env:MSYSTEM = "MSYS"
-& $pacman -Sy --needed --noconfirm zsh
-if ($LASTEXITCODE -ne 0) {
-    throw "MSYS2 zsh installation failed"
-}
-Remove-Item Env:\MSYSTEM -ErrorAction SilentlyContinue
-
 $msys2Zsh = Join-Path $msys2Root "usr\bin\zsh.exe"
+
 if (-not (Test-Path -LiteralPath $msys2Zsh)) {
     throw "MSYS2 zsh not found at $msys2Zsh"
 }

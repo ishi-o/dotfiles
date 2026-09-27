@@ -14,9 +14,15 @@ function Initialize-Nvm {
 
     $nvm = Join-Path $nvmHome "nvm.exe"
 
-    & $nvm config set node_mirror=https://npmmirror.com/mirrors/node/
-    if ($LASTEXITCODE -ne 0) {
-        throw "nvm node mirror configuration failed"
+    $nvmSettings = Join-Path $nvmHome "settings.txt"
+    if (Test-Path -LiteralPath $nvmSettings -PathType Leaf) {
+        $settings = @(Get-Content -LiteralPath $nvmSettings)
+        $officialSettings = @($settings | Where-Object {
+            $_ -notmatch '^\s*(?:node_mirror|npm_mirror)\s*:'
+        })
+        if ($officialSettings.Count -ne $settings.Count) {
+            Set-Content -LiteralPath $nvmSettings -Value $officialSettings
+        }
     }
 
     if ($InstallNode) {
@@ -33,5 +39,10 @@ function Initialize-Nvm {
 
     if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
         throw "npm was not found after enabling NVM"
+    }
+
+    npm config set registry https://registry.npmjs.org/
+    if ($LASTEXITCODE -ne 0) {
+        throw "npm official registry configuration failed"
     }
 }

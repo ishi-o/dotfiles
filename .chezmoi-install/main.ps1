@@ -43,7 +43,7 @@ $devToolCommands = @(
     "wt",
     "rustup",
     "tree-sitter",
-    "xclip"
+    "tree"
 )
 
 $installDevTools = $true
@@ -68,14 +68,16 @@ if (-not (scoop bucket list | Where-Object { $_.Name -eq "extras" })) {
     scoop bucket add extras
 }
 
-$fontPackages = @("06-cjk-fonts", "07-fcitx5")
+. (Join-Path $scriptDir "lib\win\msys2.ps1")
+$msys2Packages = Get-MSYS2GroupPackages -Group "all" `
+    -IncludeDevTools:$installDevTools
+
+$fontPackages = @("06-cjk-fonts")
 $devToolPackages = @(
     "60-fzf",
     "63-fd",
-    "64-tree",
     "65-kubectl",
     "66-ripgrep",
-    "67-xclip",
     "68-netcat",
     "69-windows-terminal",
     "70-rust",
@@ -87,7 +89,20 @@ $devToolPackages = @(
 $packages = Get-ChildItem -LiteralPath (Join-Path $scriptDir "packages\win") -Filter "*.ps1" | Sort-Object Name
 $failedPackages = @()
 
+$msys2Installer = $packages | Where-Object { $_.BaseName -eq "01-msys2" } |
+    Select-Object -First 1
+if (-not $msys2Installer) {
+    throw "MSYS2 installer not found"
+}
+
+Write-Host "==> Processing: MSYS2 ($($msys2Packages -join ', '))"
+& $msys2Installer.FullName -Packages $msys2Packages
+
 foreach ($package in $packages) {
+    if ($package.BaseName -eq "01-msys2") {
+        continue
+    }
+
     if ($fontPackages -contains $package.BaseName -and -not $installFonts) {
         Write-Host "==> Skipping $($package.BaseName)"
         continue
