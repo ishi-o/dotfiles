@@ -5,9 +5,13 @@
 # model_provider = "ZAI"
 # model_catalog_json = "~/.config/codex/models.json"
 
-model = "glm-5.3"
-model_provider = "volcengine-agent-plan"
-model_catalog_json = "~/.config/codex/models.json"
+# model = "glm-5.3"
+# model_provider = "volcengine-agent-plan"
+# model_catalog_json = "~/.config/codex/models.json"
+
+# model = "glm-5.3"
+# model_provider = "volcengine-coding-plan"
+# model_catalog_json = "~/.config/codex/models.json"
 
 approvals_reviewer = "user"
 
@@ -21,6 +25,12 @@ wire_api = "responses"
 name = "volcengine-agent-plan"
 base_url = "https://ark.cn-beijing.volces.com/api/plan/v3"
 env_key = "ARK_API_KEY"
+wire_api = "responses"
+
+[model_providers.volcengine-coding-plan]
+name = "volcengine-agent-plan"
+base_url = "https://ark.cn-beijing.volces.com/api/coding/v3"
+env_key = "ARK_CODING_API_KEY"
 wire_api = "responses"
 
 [tui]

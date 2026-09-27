@@ -4,6 +4,7 @@ export ANTHROPIC_AUTH_TOKEN=
 export ANTHROPIC_BASE_URL=https://open.bigmodel.cn/api/anthropic
 export OPENAI_API_KEY=
 export ARK_API_KEY=
+export ARK_CODING_API_KEY=
 if [ -f "$HOME/.config/env.local" ]; then
   . "$HOME/.config/env.local"
 fi
