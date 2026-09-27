@@ -16,6 +16,7 @@ Set-Proxy.cmd
 **/*.cmd
 .wslconfig
 AppData/
+scoop/
 {{ end }}
 
 {{- if ne .chezmoi.os "linux" }}

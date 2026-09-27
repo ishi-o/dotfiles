@@ -100,7 +100,7 @@ function Install-Group {
     $packages = switch ($Group) {
         "shell"    { @("01-msys2") }
         "build"    { @("02-build-essential","05-unzip","10-m4","11-autoconf","12-automake","13-pkg-config","20-openssl","21-libevent","30-ncurses","31-utf8proc","40-gettext","41-libgpg-error","42-libgcrypt","43-libassuan","44-libksba","45-libnpth","46-texinfo","47-pinentry","48-gpg") }
-        "runtimes" { @("03-uv","04-mise","56-nvm","62-luajit","70-rust") }
+        "runtimes" { @("03-uv","04-mise","56-nvm","62-luajit","70-rust","74-mingw") }
         "editor"   { @("50-nvim") }
         "tools"    { @("60-fzf","63-fd","64-tree","65-kubectl","66-ripgrep","67-xclip","68-netcat","72-tree-sitter","73-gh") }
         "dev"      { @("60-fzf","63-fd","64-tree","65-kubectl","66-ripgrep","67-xclip","68-netcat","72-tree-sitter","73-gh") }

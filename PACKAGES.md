@@ -40,13 +40,13 @@ chezmoi directly.
 | Group           | Packages                                                                                                                                                                                                                      |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `shell`         | POSIX `zsh`; Windows `msys2` + `zsh`                                                                                                                                                                                          |
-| `build`         | `build-essential`, `unzip`, `m4`, `autoconf`, `automake`, `pkg-config`, `openssl`, `libevent`, `ncurses`, `utf8proc`, `gettext`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry`, `gpg` |
-| `runtimes`      | `uv`, `mise`, `nvm`, `luajit`, `rust`                                                                                                                                                                                         |
+| `build`         | POSIX `build-essential`, `unzip`, `m4`, `autoconf`, `automake`, `pkg-config`, `openssl`, `libevent`, `ncurses`, `utf8proc`, `gettext`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry`, `gpg`; Windows also installs `autoconf`, `automake`, `libevent`, `ncurses`, `utf8proc`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry` through MSYS2 |
+| `runtimes`      | `uv`, `mise`, `nvm`, `luajit`; POSIX `rust`; Windows `rustup-gnu` and separate `mingw` |
 | `editor`        | `nvim`                                                                                                                                                                                                                        |
-| `tools` / `dev` | `fzf`, `fd`, `tree`, `kubectl`, `ripgrep`, `xclip`, `netcat` (`nc`/`ncat`), `tree-sitter` (Cargo), `gh`                                                                                                                                   |
-| `fonts`         | CJK fonts, `fcitx5`                                                                                                                                                                                                           |
+| `tools` / `dev` | Common `fzf`, `fd`, `kubectl`, `ripgrep`, `netcat` (`nc`/`ncat`), `tree-sitter` (Cargo), `gh`; `tree` and `xclip` through MSYS2 on Windows |
+| `fonts`         | CJK fonts; `fcitx5` through MSYS2 on Windows |
 | `ai`            | `codex`, `claude`, `mcp-hub`, `codegraph` (npm)                                                                                                                                                                               |
-| `terminal`      | POSIX `tmux`, `kitty`; Windows `tmux`, Windows Terminal                                                                                                                                                                         |
+| `terminal`      | POSIX `tmux`, `kitty`; Windows `tmux` through MSYS2 and Windows Terminal |
 
 ## Targeted installation
 

@@ -1,4 +1,3 @@
-scoop install extras/utf8proc
-if ($LASTEXITCODE -ne 0) {
-    throw "scoop install extras/utf8proc failed"
-}
+. (Join-Path $PSScriptRoot "..\..\lib\win\msys2.ps1")
+
+Install-MSYS2Packages utf8proc

@@ -1,4 +1,3 @@
-scoop install extras/libgcrypt
-if ($LASTEXITCODE -ne 0) {
-    throw "scoop install extras/libgcrypt failed"
-}
+. (Join-Path $PSScriptRoot "..\..\lib\win\msys2.ps1")
+
+Install-MSYS2Packages libgcrypt

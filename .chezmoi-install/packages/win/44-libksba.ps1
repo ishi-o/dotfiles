@@ -1,4 +1,3 @@
-scoop install extras/libksba
-if ($LASTEXITCODE -ne 0) {
-    throw "scoop install extras/libksba failed"
-}
+. (Join-Path $PSScriptRoot "..\..\lib\win\msys2.ps1")
+
+Install-MSYS2Packages libksba

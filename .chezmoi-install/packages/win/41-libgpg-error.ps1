@@ -1,4 +1,3 @@
-scoop install extras/libgpg-error
-if ($LASTEXITCODE -ne 0) {
-    throw "scoop install extras/libgpg-error failed"
-}
+. (Join-Path $PSScriptRoot "..\..\lib\win\msys2.ps1")
+
+Install-MSYS2Packages libgpg-error

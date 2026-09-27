@@ -68,7 +68,7 @@ if (-not (scoop bucket list | Where-Object { $_.Name -eq "extras" })) {
     scoop bucket add extras
 }
 
-$fontPackages = @("06-cjk-fonts")
+$fontPackages = @("06-cjk-fonts", "07-fcitx5")
 $devToolPackages = @(
     "60-fzf",
     "63-fd",
@@ -80,7 +80,8 @@ $devToolPackages = @(
     "69-windows-terminal",
     "70-rust",
     "72-tree-sitter",
-    "73-gh"
+    "73-gh",
+    "74-mingw"
 )
 
 $packages = Get-ChildItem -LiteralPath (Join-Path $scriptDir "packages\win") -Filter "*.ps1" | Sort-Object Name
