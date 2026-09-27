@@ -72,6 +72,11 @@ function Get-ProxyScript {
         return $localScript
     }
 
+    $sourceScript = Join-Path $PSScriptRoot "executable_Set-Proxy.ps1"
+    if (Test-Path -LiteralPath $sourceScript -PathType Leaf) {
+        return $sourceScript
+    }
+
     $rootScript = Join-Path $PSScriptRoot "..\..\Set-Proxy.cmd"
     if (Test-Path -LiteralPath $rootScript -PathType Leaf) {
         return (Resolve-Path -LiteralPath $rootScript).Path
@@ -174,19 +179,19 @@ while ($i -lt $args.Count) {
 
 if ($scoopPrefix) { $env:SCOOP_DIR = $scoopPrefix }
 
-$proxyArgs = @()
-if ($proxyHttp) { $proxyArgs += @("-Http", $proxyHttp) }
-if ($proxySocks) { $proxyArgs += @("-Socks", $proxySocks) }
-if ($proxyNoProxy) { $proxyArgs += @("-NoProxy", $proxyNoProxy) }
+$proxyParameters = @{}
+if ($proxyHttp) { $proxyParameters.Http = $proxyHttp }
+if ($proxySocks) { $proxyParameters.Socks = $proxySocks }
+if ($proxyNoProxy) { $proxyParameters.NoProxy = $proxyNoProxy }
 if ($proxyClear) {
-    if ($proxyArgs.Count -gt 0) {
+    if ($proxyParameters.Count -gt 0) {
         Write-Error "--clear-proxy cannot be combined with other proxy options"
         exit 2
     }
-    $proxyArgs = @("-Clear")
+    $proxyParameters.Clear = $true
 }
-if ($proxyArgs.Count -gt 0) {
-    & (Get-ProxyScript) @proxyArgs
+if ($proxyParameters.Count -gt 0) {
+    & (Get-ProxyScript) @proxyParameters
     if (-not $?) {
         exit 1
     }
