@@ -46,6 +46,22 @@ source_dir() {
   chezmoi source-path
 }
 
+reset_script_state() {
+  local output
+  if ! output="$(chezmoi state delete-bucket --bucket=scriptState 2>&1)"; then
+    if [[ "$output" != *"bucket not found"* ]]; then
+      echo "chezmoi state delete-bucket failed: $output" >&2
+      return 1
+    fi
+  fi
+}
+
+init_dots() {
+  chezmoi init "$@"
+  reset_script_state
+  chezmoi apply
+}
+
 proxy_script_path() {
   local proxy_script="$script_dir/set-proxy"
   [ -x "$proxy_script" ] || proxy_script="$HOME/.local/bin/set-proxy"
@@ -209,9 +225,7 @@ set -- "${command_args[@]}"
 case "${1:-help}" in
 init)
   shift
-  chezmoi init "$@"
-  chezmoi state delete-bucket --bucket=scriptState
-  exec chezmoi apply
+  init_dots "$@"
   ;;
 apply)
   shift
@@ -232,7 +246,7 @@ edit)
 update)
   shift
   git -C "$(source_dir)" pull --ff-only
-  exec chezmoi apply "$@"
+  init_dots "$@"
   ;;
 doctor)
   shift

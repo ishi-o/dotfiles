@@ -46,6 +46,26 @@ function Get-SourceDir {
     (chezmoi source-path).Trim()
 }
 
+function Reset-ScriptState {
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $output = chezmoi state delete-bucket --bucket=scriptState 2>&1
+    $exitCode = $LASTEXITCODE
+    $ErrorActionPreference = $previousErrorActionPreference
+
+    if ($exitCode -ne 0 -and "$output" -notmatch "bucket not found") {
+        throw "chezmoi state delete-bucket failed: $output"
+    }
+}
+
+function Initialize-Dots {
+    param([string[]]$Rest = @())
+
+    chezmoi init @Rest
+    Reset-ScriptState
+    chezmoi apply
+}
+
 function Get-ProxyScript {
     $localScript = Join-Path $PSScriptRoot "Set-Proxy.ps1"
     if (Test-Path -LiteralPath $localScript -PathType Leaf) {
@@ -177,9 +197,7 @@ $rest = if ($argsList.Count -gt 1) { $argsList[1..($argsList.Count - 1)] } else 
 
 switch ($command) {
     "init" {
-        chezmoi init @rest
-        chezmoi state delete-bucket --bucket=scriptState
-        chezmoi apply
+        Initialize-Dots @rest
     }
     "apply" {
         chezmoi apply @rest
@@ -195,7 +213,7 @@ switch ($command) {
     }
     "update" {
         git -C (Get-SourceDir) pull --ff-only
-        chezmoi apply @rest
+        Initialize-Dots @rest
     }
     "doctor" {
         chezmoi doctor @rest

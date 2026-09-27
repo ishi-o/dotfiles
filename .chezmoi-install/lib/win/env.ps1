@@ -44,7 +44,7 @@ New-Item -ItemType Directory -Path $npmCache -Force | Out-Null
 Set-UserEnvironmentVariable -Name "NPM_CONFIG_USERCONFIG" -Value $npmConfig
 Set-UserEnvironmentVariable -Name "NPM_CONFIG_CACHE" -Value $npmCache
 
-$proxyConfig = Join-Path $XDG_CONFIG_HOME "proxy\config"
+$proxyConfig = Join-Path $env:XDG_CONFIG_HOME "proxy\config"
 if (Test-Path -LiteralPath $proxyConfig -PathType Leaf) {
     $proxy = @{
         Http = ""
