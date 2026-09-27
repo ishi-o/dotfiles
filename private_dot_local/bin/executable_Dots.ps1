@@ -15,18 +15,25 @@ Commands:
   update              Pull the source repository and apply
   doctor              Run chezmoi doctor
   install <target>    Install a package or a curated group
+  proxy [args]        Run Set-Proxy.ps1
 
-Options (accepted by any command):
+Options (accepted by non-proxy commands):
   --scoop-prefix <dir>   Install Scoop under <dir>
+  --proxy <url>          Set the HTTP/HTTPS proxy before running the command
+  --socks <url>          Set the SOCKS proxy before running the command
+  --no-proxy <list>      Set hosts which bypass the proxy
+  --clear-proxy          Clear the proxy before running the command
 
 Install groups:
   shell, build, runtimes, editor, tools, fonts, ai, terminal, all
 
 Examples:
   Dots init
+  Dots init --proxy http://127.0.0.1:10808 --socks socks5://127.0.0.1:10808
   Dots apply --scoop-prefix D:/Scoop
   Dots install fonts
   Dots install dev
+  Dots proxy http://127.0.0.1:10808 socks5://127.0.0.1:10808
 '@ | Write-Host
 }
 
@@ -37,6 +44,21 @@ function Invoke-Installer {
 
 function Get-SourceDir {
     (chezmoi source-path).Trim()
+}
+
+function Get-ProxyScript {
+    $localScript = Join-Path $PSScriptRoot "Set-Proxy.ps1"
+    if (Test-Path -LiteralPath $localScript -PathType Leaf) {
+        return $localScript
+    }
+
+    $rootScript = Join-Path $PSScriptRoot "..\..\Set-Proxy.ps1"
+    if (Test-Path -LiteralPath $rootScript -PathType Leaf) {
+        return (Resolve-Path -LiteralPath $rootScript).Path
+    }
+
+    Write-Error "Set-Proxy.ps1 was not found"
+    exit 1
 }
 
 function Find-Installer {
@@ -76,7 +98,20 @@ function Install-Group {
     }
 }
 
+if ($args.Count -gt 0 -and $args[0] -eq "proxy") {
+    $proxyRest = if ($args.Count -gt 1) { $args[1..($args.Count - 1)] } else { @() }
+    & (Get-ProxyScript) @proxyRest
+    if (-not $?) {
+        exit 1
+    }
+    exit 0
+}
+
 $scoopPrefix = ""
+$proxyHttp = ""
+$proxySocks = ""
+$proxyNoProxy = ""
+$proxyClear = $false
 $argsList = @()
 
 $i = 0
@@ -88,6 +123,28 @@ while ($i -lt $args.Count) {
             $scoopPrefix = $args[$i]
             $i++
         }
+        "--proxy" {
+            $i++
+            if ($i -ge $args.Count) { Write-Error "--proxy requires a URL"; exit 2 }
+            $proxyHttp = $args[$i]
+            $i++
+        }
+        "--socks" {
+            $i++
+            if ($i -ge $args.Count) { Write-Error "--socks requires a URL"; exit 2 }
+            $proxySocks = $args[$i]
+            $i++
+        }
+        "--no-proxy" {
+            $i++
+            if ($i -ge $args.Count) { Write-Error "--no-proxy requires a list"; exit 2 }
+            $proxyNoProxy = $args[$i]
+            $i++
+        }
+        "--clear-proxy" {
+            $proxyClear = $true
+            $i++
+        }
         default {
             $argsList += $args[$i]
             $i++
@@ -96,6 +153,24 @@ while ($i -lt $args.Count) {
 }
 
 if ($scoopPrefix) { $env:SCOOP_DIR = $scoopPrefix }
+
+$proxyArgs = @()
+if ($proxyHttp) { $proxyArgs += @("-Http", $proxyHttp) }
+if ($proxySocks) { $proxyArgs += @("-Socks", $proxySocks) }
+if ($proxyNoProxy) { $proxyArgs += @("-NoProxy", $proxyNoProxy) }
+if ($proxyClear) {
+    if ($proxyArgs.Count -gt 0) {
+        Write-Error "--clear-proxy cannot be combined with other proxy options"
+        exit 2
+    }
+    $proxyArgs = @("-Clear")
+}
+if ($proxyArgs.Count -gt 0) {
+    & (Get-ProxyScript) @proxyArgs
+    if (-not $?) {
+        exit 1
+    }
+}
 
 $command = if ($argsList.Count -gt 0) { $argsList[0] } else { "help" }
 $rest = if ($argsList.Count -gt 1) { $argsList[1..($argsList.Count - 1)] } else { @() }
@@ -124,6 +199,12 @@ switch ($command) {
     }
     "doctor" {
         chezmoi doctor @rest
+    }
+    "proxy" {
+        & (Get-ProxyScript) @rest
+        if (-not $?) {
+            exit 1
+        }
     }
     "install" {
         if ($rest.Count -eq 0) {

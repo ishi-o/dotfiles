@@ -37,13 +37,55 @@ foreach ($entry in $toolDirectories.GetEnumerator()) {
     Set-UserEnvironmentVariable -Name $entry.Key -Value $entry.Value
 }
 
-$proxyEnvironment = [ordered]@{
-    HTTP_PROXY  = "http://127.0.0.1:10808"
-    HTTPS_PROXY = "http://127.0.0.1:10808"
-    ALL_PROXY    = "socks5://127.0.0.1:10808"
-    NO_PROXY     = "localhost,127.0.0.1,::1"
-}
+$npmConfig = Join-Path $env:USERPROFILE ".config\npm\npmrc"
+$npmCache = Join-Path $env:USERPROFILE ".cache\npm"
+New-Item -ItemType Directory -Path (Split-Path -Parent $npmConfig) -Force | Out-Null
+New-Item -ItemType Directory -Path $npmCache -Force | Out-Null
+Set-UserEnvironmentVariable -Name "NPM_CONFIG_USERCONFIG" -Value $npmConfig
+Set-UserEnvironmentVariable -Name "NPM_CONFIG_CACHE" -Value $npmCache
 
-foreach ($entry in $proxyEnvironment.GetEnumerator()) {
-    Set-UserEnvironmentVariable -Name $entry.Key -Value $entry.Value
+$proxyConfig = Join-Path $XDG_CONFIG_HOME "proxy\config"
+if (Test-Path -LiteralPath $proxyConfig -PathType Leaf) {
+    $proxy = @{
+        Http = ""
+        Socks = ""
+        NoProxy = ""
+    }
+    foreach ($line in Get-Content -LiteralPath $proxyConfig) {
+        if ($line -match "^\s*PROXY_HTTP='(.*)'\s*$") {
+            $proxy.Http = $Matches[1]
+        }
+        elseif ($line -match "^\s*PROXY_SOCKS='(.*)'\s*$") {
+            $proxy.Socks = $Matches[1]
+        }
+        elseif ($line -match "^\s*PROXY_NO_PROXY='(.*)'\s*$") {
+            $proxy.NoProxy = $Matches[1]
+        }
+    }
+
+    if ($proxy.Http) {
+        Set-UserEnvironmentVariable -Name "HTTP_PROXY" -Value $proxy.Http
+        Set-UserEnvironmentVariable -Name "HTTPS_PROXY" -Value $proxy.Http
+    }
+    else {
+        [Environment]::SetEnvironmentVariable("HTTP_PROXY", $null, "User")
+        [Environment]::SetEnvironmentVariable("HTTPS_PROXY", $null, "User")
+        Remove-Item Env:\HTTP_PROXY -ErrorAction SilentlyContinue
+        Remove-Item Env:\HTTPS_PROXY -ErrorAction SilentlyContinue
+    }
+    if ($proxy.Socks) {
+        Set-UserEnvironmentVariable -Name "ALL_PROXY" -Value $proxy.Socks
+    }
+    else {
+        [Environment]::SetEnvironmentVariable("ALL_PROXY", $null, "User")
+        Remove-Item Env:\ALL_PROXY -ErrorAction SilentlyContinue
+    }
+    if ($proxy.Http -or $proxy.Socks) {
+        $noProxyValue = if ($proxy.NoProxy) { $proxy.NoProxy } else { "localhost,127.0.0.1,::1" }
+        Set-UserEnvironmentVariable -Name "NO_PROXY" -Value $noProxyValue
+    }
+    else {
+        [Environment]::SetEnvironmentVariable("NO_PROXY", $null, "User")
+        Remove-Item Env:\NO_PROXY -ErrorAction SilentlyContinue
+    }
 }

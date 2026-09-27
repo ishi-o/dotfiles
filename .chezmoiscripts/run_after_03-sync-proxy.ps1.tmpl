@@ -1,0 +1,18 @@
+$ErrorActionPreference = "Stop"
+
+$configHome = Join-Path $env:USERPROFILE ".config"
+$configPath = Join-Path $configHome "proxy\config"
+if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) {
+    exit 0
+}
+
+$setProxy = Join-Path $env:USERPROFILE ".local\bin\Set-Proxy.ps1"
+if (-not (Test-Path -LiteralPath $setProxy -PathType Leaf)) {
+    Write-Warning "Set-Proxy.ps1 is not installed; skipping proxy synchronization."
+    exit 0
+}
+
+& $setProxy -Sync
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}

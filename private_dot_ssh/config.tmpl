@@ -5,9 +5,9 @@ Host github.com
   User git
   Port 22
 {{- if eq .chezmoi.os "windows" }}
-  ProxyCommand powershell -NoProfile -Command "$p = $env:PROXY_URL -replace '^(socks5|http)://',''; if (-not $p) { $p = '127.0.0.1:10808' }; ncat.exe --proxy-type socks5 --proxy $p %h %p"
+  ProxyCommand powershell -NoProfile -ExecutionPolicy Bypass -Command "& '$HOME/.local/bin/proxy-ssh.ps1' %h %p"
 {{- else if $isWsl }}
-  ProxyCommand sh -c 'exec nc -X 5 -x "$(ip route show default | awk "{print \$3}"):10808" %h %p'
+  ProxyCommand sh -c 'exec "$HOME/.local/bin/proxy-ssh" %h %p'
 {{- else }}
-  ProxyCommand sh -c 'exec nc -X 5 -x "${PROXY_URL#*://}" %h %p'
+  ProxyCommand sh -c 'exec "$HOME/.local/bin/proxy-ssh" %h %p'
 {{- end }}

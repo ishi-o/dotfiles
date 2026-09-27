@@ -50,6 +50,32 @@ export FZF_HOME="${FZF_HOME:-$XDG_DATA_HOME/fzf}"
 export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/npmrc}"
 export NPM_CONFIG_CACHE="${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}"
 
+proxy_config="$XDG_CONFIG_HOME/proxy/config"
+if [ -r "$proxy_config" ]; then
+  . "$proxy_config"
+  PROXY_HTTP="${PROXY_HTTP:-}"
+  PROXY_SOCKS="${PROXY_SOCKS:-}"
+  PROXY_NO_PROXY="${PROXY_NO_PROXY:-}"
+  if [ -n "$PROXY_HTTP" ]; then
+    export HTTP_PROXY="$PROXY_HTTP" HTTPS_PROXY="$PROXY_HTTP"
+    export http_proxy="$PROXY_HTTP" https_proxy="$PROXY_HTTP"
+  else
+    unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
+  fi
+  if [ -n "$PROXY_SOCKS" ]; then
+    export ALL_PROXY="$PROXY_SOCKS" all_proxy="$PROXY_SOCKS"
+  else
+    unset ALL_PROXY all_proxy
+  fi
+  if [ -n "$PROXY_HTTP" ] || [ -n "$PROXY_SOCKS" ]; then
+    export NO_PROXY="${PROXY_NO_PROXY:-localhost,127.0.0.1,::1}"
+    export no_proxy="$NO_PROXY"
+  else
+    unset NO_PROXY no_proxy
+  fi
+  unset proxy_config PROXY_HTTP PROXY_SOCKS PROXY_NO_PROXY
+fi
+
 # Detect architecture and normalize to common names
 arch="$(uname -m)"
 [ "$arch" = "x86_64" ] && arch=amd64

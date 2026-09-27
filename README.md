@@ -44,6 +44,9 @@ Bootstrap the source with chezmoi once:
 chezmoi init ishi-o
 ```
 
+If package downloads require a proxy, use `set-proxy` before the first apply
+and see [`PROXY.md`](PROXY.md).
+
 After that, use the `dots` entry point for everything.
 
 POSIX:
@@ -83,37 +86,6 @@ Windows user profile
 (`C:\Users\<user>`), which means the shell reads the same `.bashrc`,
 `.zshrc`, `.gitconfig`, and `.config` files that chezmoi manages. No separate
 MSYS2-specific configuration is required.
-
-## Proxy
-
-On Windows, `.chezmoi-install/lib/win/env.ps1` sets these user environment variables:
-
-```powershell
-HTTP_PROXY  = "http://127.0.0.1:10808"
-HTTPS_PROXY = "http://127.0.0.1:10808"
-ALL_PROXY    = "socks5://127.0.0.1:10808"
-NO_PROXY     = "localhost,127.0.0.1,::1"
-```
-
-On POSIX, configure the proxies in `~/.zshenv` or `~/.bashrc`:
-
-```sh
-PROXY_URL_HTTP="http://127.0.0.1:10808"
-PROXY_URL="socks5://127.0.0.1:10808"
-```
-
-`PROXY_URL_HTTP` is used for HTTP traffic; `PROXY_URL` is used as `ALL_PROXY`.
-Before applying the repository, declare the variables once in the current
-shell if they are not already active:
-
-```sh
-export PROXY_URL_HTTP="http://127.0.0.1:10808"
-export PROXY_URL="socks5://127.0.0.1:10808"
-export HTTP_PROXY="$PROXY_URL_HTTP"
-export ALL_PROXY="$PROXY_URL"
-export http_proxy="$PROXY_URL_HTTP"
-export all_proxy="$PROXY_URL"
-```
 
 ## Managed runtimes
 

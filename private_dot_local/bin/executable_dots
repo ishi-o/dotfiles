@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 usage() {
   cat <<'EOF'
 Usage: dots <command> [args]
@@ -15,15 +17,24 @@ Commands:
   update              Pull the source repository and apply
   doctor              Run chezmoi doctor
   install <target>    Install a package or a curated group
+  proxy [args]        Run set-proxy
+
+Options (accepted by non-proxy commands):
+  --proxy <url>       Set the HTTP/HTTPS proxy before running the command
+  --socks <url>       Set the SOCKS proxy before running the command
+  --no-proxy <list>   Set hosts which bypass the proxy
+  --clear-proxy       Clear the proxy before running the command
 
 Install groups:
   shell, build, runtimes, editor, tools, fonts, ai, terminal, all
 
 Examples:
   dots init
+  dots init --proxy http://127.0.0.1:10808 --socks socks5://127.0.0.1:10808
   dots install zsh
   dots install fonts
   dots install dev
+  dots proxy http://127.0.0.1:10808 socks5://127.0.0.1:10808
 EOF
 }
 
@@ -33,6 +44,38 @@ run_installer() {
 
 source_dir() {
   chezmoi source-path
+}
+
+proxy_script_path() {
+  local proxy_script="$script_dir/set-proxy"
+  [ -x "$proxy_script" ] || proxy_script="$HOME/.local/bin/set-proxy"
+  printf '%s\n' "$proxy_script"
+}
+
+load_proxy_environment() {
+  local proxy_config="${XDG_CONFIG_HOME:-$HOME/.config}/proxy/config"
+  [ -r "$proxy_config" ] || return 0
+  . "$proxy_config"
+  PROXY_HTTP="${PROXY_HTTP:-}"
+  PROXY_SOCKS="${PROXY_SOCKS:-}"
+  if [ -n "$PROXY_HTTP" ]; then
+    export HTTP_PROXY="$PROXY_HTTP" HTTPS_PROXY="$PROXY_HTTP"
+    export http_proxy="$PROXY_HTTP" https_proxy="$PROXY_HTTP"
+  else
+    unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
+  fi
+  if [ -n "$PROXY_SOCKS" ]; then
+    export ALL_PROXY="$PROXY_SOCKS" all_proxy="$PROXY_SOCKS"
+  else
+    unset ALL_PROXY all_proxy
+  fi
+  if [ -n "$PROXY_HTTP" ] || [ -n "$PROXY_SOCKS" ]; then
+    export NO_PROXY="${PROXY_NO_PROXY:-localhost,127.0.0.1,::1}"
+    export no_proxy="$NO_PROXY"
+  else
+    unset NO_PROXY no_proxy
+  fi
+  unset PROXY_HTTP PROXY_SOCKS PROXY_NO_PROXY
 }
 
 find_installer() {
@@ -97,6 +140,72 @@ install_group() {
   done
 }
 
+if [ "${1:-}" = proxy ]; then
+  shift
+  exec "$(proxy_script_path)" "$@"
+fi
+
+command_args=()
+proxy_args=()
+proxy_clear=false
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --proxy)
+      [ "$#" -ge 2 ] || {
+        echo "--proxy requires a URL" >&2
+        exit 2
+      }
+      proxy_args+=(--http "$2")
+      shift 2
+      ;;
+    --socks)
+      [ "$#" -ge 2 ] || {
+        echo "--socks requires a URL" >&2
+        exit 2
+      }
+      proxy_args+=(--socks "$2")
+      shift 2
+      ;;
+    --no-proxy)
+      [ "$#" -ge 2 ] || {
+        echo "--no-proxy requires a list" >&2
+        exit 2
+      }
+      proxy_args+=(--no-proxy "$2")
+      shift 2
+      ;;
+    --clear-proxy)
+      proxy_clear=true
+      shift
+      ;;
+    --)
+      shift
+      command_args+=("$@")
+      break
+      ;;
+    *)
+      command_args+=("$1")
+      shift
+      ;;
+  esac
+done
+
+if [ "$proxy_clear" = true ]; then
+  [ "${#proxy_args[@]}" -eq 0 ] || {
+    echo "--clear-proxy cannot be combined with other proxy options" >&2
+    exit 2
+  }
+  proxy_args=(--clear)
+fi
+
+if [ "${#proxy_args[@]}" -gt 0 ]; then
+  "$(proxy_script_path)" "${proxy_args[@]}"
+  load_proxy_environment
+fi
+
+set -- "${command_args[@]}"
+
 case "${1:-help}" in
 init)
   shift
@@ -128,6 +237,10 @@ update)
 doctor)
   shift
   exec chezmoi doctor "$@"
+  ;;
+proxy)
+  shift
+  exec "$(proxy_script_path)" "$@"
   ;;
 install)
   shift

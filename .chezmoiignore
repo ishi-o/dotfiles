@@ -4,6 +4,8 @@ PACKAGES.md
 .github/
 dots
 Dots.cmd
+set-proxy
+Set-Proxy.ps1
 
 {{ if eq .chezmoi.os "windows" }}
 **/*.sh

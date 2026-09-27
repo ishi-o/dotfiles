@@ -4,6 +4,8 @@
 [core]
 	editor = nvim
 	; pager = delta
+[include]
+	path = ~/.config/proxy/gitconfig
 [url "git@github.com:"]
 	insteadOf = https://github.com/
 [init]
