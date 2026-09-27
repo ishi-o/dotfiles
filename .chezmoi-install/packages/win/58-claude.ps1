@@ -1,8 +1,7 @@
 $ErrorActionPreference = "Stop"
 
-$env:NVM_HOME = (scoop prefix nvm).Trim()
-$env:NVM_SYMLINK = Join-Path (scoop config root).Trim() "persist\nvm\.nodejs"
-$env:Path = "$env:NVM_HOME;$env:NVM_SYMLINK;$env:Path"
+. (Join-Path $PSScriptRoot "..\..\lib\win\node.ps1")
+Initialize-Nvm
 
 npm install -g @anthropic-ai/claude-code
 if ($LASTEXITCODE -ne 0) {

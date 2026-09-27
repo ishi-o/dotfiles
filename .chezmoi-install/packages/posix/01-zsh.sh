@@ -62,3 +62,20 @@ set_zsh_as_default() {
 }
 
 install_zsh
+
+install_zplug() {
+  if [ -f "$USR_HOME/zplug/init.zsh" ]; then
+    return 0
+  fi
+
+  command -v git >/dev/null 2>&1 || {
+    echo "Error: git is required to install zplug." >&2
+    return 1
+  }
+
+  mkdir -p "$(dirname "$USR_HOME/zplug")"
+  rm -rf "$USR_HOME/zplug"
+  git clone --depth 1 https://github.com/zplug/zplug "$USR_HOME/zplug"
+}
+
+install_zplug

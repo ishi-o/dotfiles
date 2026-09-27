@@ -1,10 +1,17 @@
 ### START_ZPLUG
 if [ ! -f "$USR_HOME/zplug/init.zsh" ]; then
-  export ZPLUG_HOME="$USR_HOME/zplug"
-  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
-  export PATH="$ZPLUG_HOME/bin:$PATH"
+  if command -v git >/dev/null 2>&1; then
+    mkdir -p "$(dirname "$USR_HOME/zplug")"
+    git clone --depth 1 https://github.com/zplug/zplug "$USR_HOME/zplug"
+  fi
 fi
-source $USR_HOME/zplug/init.zsh
+if [ ! -f "$USR_HOME/zplug/init.zsh" ]; then
+  zplug() { return 0; }
+else
+  export ZPLUG_HOME="$USR_HOME/zplug"
+  export PATH="$ZPLUG_HOME/bin:$PATH"
+  source "$ZPLUG_HOME/init.zsh"
+fi
 
 ## START_OHMYZSH
 ZSH_THEME="gozilla"
@@ -58,9 +65,14 @@ zplug load
 source "$XDG_CONFIG_HOME/zsh/keybinds.zsh"
 source "$XDG_CONFIG_HOME/zsh/kitty.zsh"
 
-if [ -x "$MISE_INSTALL_PATH" ]; then
-  eval "$("$MISE_INSTALL_PATH" activate zsh)"
+mise_path="$(command -v mise 2>/dev/null || true)"
+if [ -z "$mise_path" ] && [ -x "$MISE_INSTALL_PATH" ]; then
+  mise_path="$MISE_INSTALL_PATH"
 fi
+if [ -n "$mise_path" ]; then
+  eval "$("$mise_path" activate zsh)"
+fi
+unset mise_path
 
 ### START_ALIAS 
 alias vi='nvim'

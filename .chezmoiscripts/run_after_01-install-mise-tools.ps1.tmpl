@@ -1,0 +1,39 @@
+$ErrorActionPreference = "Stop"
+
+$env:MISE_CONFIG_DIR = Join-Path $env:USERPROFILE ".config\mise"
+$env:MISE_DATA_DIR = Join-Path $env:USERPROFILE ".local\share\mise"
+$env:MISE_CACHE_DIR = Join-Path $env:USERPROFILE ".cache\mise"
+$env:MISE_STATE_DIR = Join-Path $env:USERPROFILE ".local\state\mise"
+$miseConfig = Join-Path $env:MISE_CONFIG_DIR "config.toml"
+$scoopRoot = if ($env:SCOOP) {
+    $env:SCOOP
+}
+elseif ($env:SCOOP_DIR) {
+    $env:SCOOP_DIR
+}
+else {
+    Join-Path $env:USERPROFILE "scoop"
+}
+$misePath = Join-Path $scoopRoot "shims\mise.exe"
+
+if (-not (Test-Path -LiteralPath $misePath -PathType Leaf)) {
+    Write-Warning "mise is not installed; skipping configured mise tools."
+    exit 0
+}
+
+if (-not (Test-Path -LiteralPath $miseConfig -PathType Leaf)) {
+    Write-Warning "mise config is not installed; skipping configured mise tools."
+    exit 0
+}
+
+Write-Host "Installing tools from $miseConfig..."
+Push-Location $env:USERPROFILE
+try {
+    & $misePath install
+    if ($LASTEXITCODE -ne 0) {
+        throw "mise install failed"
+    }
+}
+finally {
+    Pop-Location
+}

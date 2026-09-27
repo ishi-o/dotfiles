@@ -43,9 +43,14 @@ alias vim=nvim
 
 [ -f "$XDG_CONFIG_HOME/fzf/fzf.bash" ] && source "$XDG_CONFIG_HOME/fzf/fzf.bash"
 
-if [ -x "$MISE_INSTALL_PATH" ]; then
-	eval "$("$MISE_INSTALL_PATH" activate bash)"
+mise_path="$(command -v mise 2>/dev/null || true)"
+if [ -z "$mise_path" ] && [ -x "$MISE_INSTALL_PATH" ]; then
+	mise_path="$MISE_INSTALL_PATH"
 fi
+if [ -n "$mise_path" ]; then
+	eval "$("$mise_path" activate bash)"
+fi
+unset mise_path
 
 # Ensure a working D-Bus session bus.
 # WSLg may leave a stale socket; detect and restart if needed.

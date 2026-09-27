@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-scoop install ncat
+scoop install nmap
 if ($LASTEXITCODE -ne 0) {
-    throw "scoop install ncat failed"
+    throw "scoop install nmap failed"
 }

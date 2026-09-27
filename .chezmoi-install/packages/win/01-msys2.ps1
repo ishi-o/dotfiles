@@ -14,12 +14,28 @@ if (-not (Test-Path -LiteralPath $msys2Bash)) {
 }
 
 $env:MSYSTEM = "MSYS"
-& $msys2Bash -lc "pacman -Sy --needed --noconfirm zsh"
+& $msys2Bash --noprofile --norc -c "pacman -Sy --needed --noconfirm zsh"
+if ($LASTEXITCODE -ne 0) {
+    throw "MSYS2 zsh installation failed"
+}
 Remove-Item Env:\MSYSTEM -ErrorAction SilentlyContinue
 
 $msys2Zsh = Join-Path $msys2Root "usr\bin\zsh.exe"
 if (-not (Test-Path -LiteralPath $msys2Zsh)) {
     throw "MSYS2 zsh not found at $msys2Zsh"
+}
+
+$zplugHome = Join-Path $env:USERPROFILE "usr\local\zplug"
+$zplugInit = Join-Path $zplugHome "init.zsh"
+if (-not (Test-Path -LiteralPath $zplugInit -PathType Leaf)) {
+    if (Test-Path -LiteralPath $zplugHome) {
+        Remove-Item -LiteralPath $zplugHome -Recurse -Force
+    }
+    New-Item -ItemType Directory -Path (Split-Path -Parent $zplugHome) -Force | Out-Null
+    git clone --depth 1 https://github.com/zplug/zplug $zplugHome
+    if ($LASTEXITCODE -ne 0) {
+        throw "zplug installation failed"
+    }
 }
 
 $nsswitchConfig = Join-Path $msys2Root "etc\nsswitch.conf"
