@@ -54,6 +54,7 @@ POSIX:
 ```sh
 dots init
 dots update
+dots update --init
 dots install <target>
 ```
 
@@ -62,6 +63,7 @@ Windows:
 ```powershell
 .\Dots.cmd init
 Dots update
+Dots update --init
 Dots install <target>
 # Or install scoop and its packages in custom path
 Dots apply --scoop-prefix D:/Scoop

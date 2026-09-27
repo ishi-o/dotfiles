@@ -13,6 +13,7 @@ Commands:
   status              Show chezmoi status
   edit                Open the source in the configured editor
   update              Pull the source repository and apply
+  update --init       Pull, reinitialize, reset script state, and apply
   doctor              Run chezmoi doctor
   install <target>    Install a package or a curated group
   proxy [args]        Run Set-Proxy.ps1
@@ -245,8 +246,21 @@ switch ($command) {
         chezmoi edit @rest
     }
     "update" {
+        $updateInit = $false
+        $updateArgs = @()
+        foreach ($arg in $rest) {
+            if ($arg -eq "--init") {
+                $updateInit = $true
+            } else {
+                $updateArgs += $arg
+            }
+        }
         git -C (Get-SourceDir) pull --ff-only
-        Initialize-Dots @rest
+        if ($updateInit) {
+            Initialize-Dots @updateArgs
+        } else {
+            chezmoi apply @updateArgs
+        }
     }
     "doctor" {
         chezmoi doctor @rest
