@@ -26,7 +26,7 @@ Options:
   -NoProxy <list>     Comma-separated hosts which bypass the proxy
   -Clear              Remove all proxy settings
   -Show               Show the saved proxy configuration
-  -Sync               Regenerate Git, npm, and Scoop configuration
+  -Sync               Regenerate Git and npm configuration
 
 The configuration is stored in %USERPROFILE%\.config\proxy\config.
 '@ | Write-Host
@@ -213,25 +213,6 @@ function Update-NpmProxyConfiguration {
     $lines | Set-Content -LiteralPath $npmConfig -Encoding ascii
 }
 
-function Update-ScoopProxyConfiguration {
-    param([Parameter(Mandatory = $true)][hashtable]$Values)
-
-    if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-        return
-    }
-
-    $proxy = if ($Values.Http) { $Values.Http } else { $Values.Socks }
-    if ($proxy) {
-        scoop config proxy $proxy
-    }
-    else {
-        scoop config rm proxy
-    }
-    if ($LASTEXITCODE -ne 0) {
-        throw "Scoop failed to update its proxy configuration"
-    }
-}
-
 $configPath = Get-ProxyConfigurationPath
 
 $optionsSelected = $Clear -or $Show -or $Sync -or $Http -or $Socks -or $NoProxy
@@ -286,11 +267,6 @@ else {
 $gitConfig = Join-Path (Split-Path -Parent $configPath) "gitconfig"
 Update-GitProxyConfiguration -ConfigFile $gitConfig -Values $values
 Update-NpmProxyConfiguration -Values $values
-Update-ScoopProxyConfiguration -Values $values
 
 Write-Host "Proxy configuration: $configPath"
-Write-Host "Updated: Git, npm" -NoNewline
-if (Get-Command scoop -ErrorAction SilentlyContinue) {
-    Write-Host ", Scoop" -NoNewline
-}
-Write-Host
+Write-Host "Updated: Git, npm"

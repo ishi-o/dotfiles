@@ -32,15 +32,22 @@ function Install-MSYS2Packages {
         }
     }
 
-    $bash = Join-Path $msys2Root "usr\bin\bash.exe"
-    if (-not (Test-Path -LiteralPath $bash -PathType Leaf)) {
-        throw "MSYS2 bash not found at $bash"
+    $msys2UsrBin = Join-Path $msys2Root "usr\bin"
+    if (-not (Test-Path -LiteralPath $msys2UsrBin -PathType Container)) {
+        throw "MSYS2 usr/bin not found at $msys2UsrBin"
     }
+
+    $pacman = Join-Path $msys2UsrBin "pacman.exe"
+    if (-not (Test-Path -LiteralPath $pacman -PathType Leaf)) {
+        throw "MSYS2 pacman not found at $pacman"
+    }
+
+    $env:Path = "$msys2UsrBin;$env:Path"
 
     $previousMSystem = $env:MSYSTEM
     $env:MSYSTEM = "MSYS"
     try {
-        & $bash --noprofile --norc -c ("pacman -Sy --needed --noconfirm " + ($Packages -join " "))
+        & $pacman -Sy --needed --noconfirm @Packages
         if ($LASTEXITCODE -ne 0) {
             throw "MSYS2 package installation failed: $($Packages -join ', ')"
         }

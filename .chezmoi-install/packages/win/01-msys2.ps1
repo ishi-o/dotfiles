@@ -7,14 +7,21 @@ $msys2Root = (scoop prefix msys2).Trim()
 if (-not $msys2Root -or -not (Test-Path -LiteralPath $msys2Root)) {
     throw "MSYS2 root not found"
 }
-$msys2Bash = Join-Path $msys2Root "usr\bin\bash.exe"
 
-if (-not (Test-Path -LiteralPath $msys2Bash)) {
-    throw "MSYS2 bash not found at $msys2Bash"
+$msys2UsrBin = Join-Path $msys2Root "usr\bin"
+if (-not (Test-Path -LiteralPath $msys2UsrBin -PathType Container)) {
+    throw "MSYS2 usr/bin not found at $msys2UsrBin"
 }
 
+$pacman = Join-Path $msys2UsrBin "pacman.exe"
+if (-not (Test-Path -LiteralPath $pacman -PathType Leaf)) {
+    throw "MSYS2 pacman not found at $pacman"
+}
+
+$env:Path = "$msys2UsrBin;$env:Path"
+
 $env:MSYSTEM = "MSYS"
-& $msys2Bash --noprofile --norc -c "pacman -Sy --needed --noconfirm zsh"
+& $pacman -Sy --needed --noconfirm zsh
 if ($LASTEXITCODE -ne 0) {
     throw "MSYS2 zsh installation failed"
 }

@@ -198,7 +198,10 @@ if ($proxyParameters.Count -gt 0) {
 }
 
 $command = if ($argsList.Count -gt 0) { $argsList[0] } else { "help" }
-$rest = if ($argsList.Count -gt 1) { $argsList[1..($argsList.Count - 1)] } else { @() }
+$rest = @()
+if ($argsList.Count -gt 1) {
+    $rest = @($argsList[1..($argsList.Count - 1)])
+}
 
 switch ($command) {
     "init" {

@@ -82,7 +82,6 @@ The command stores the URLs once and derives all consumer settings from them:
 - SSH: the managed `proxy-ssh` helper used by `.ssh/config`
 - Git: `~/.config/proxy/gitconfig`, included by `~/.gitconfig`
 - npm: `~/.config/npm/npmrc`
-- Scoop: its persisted `proxy` setting on Windows
 
 Do not edit these derived files directly. If a derived file is lost, run:
 
