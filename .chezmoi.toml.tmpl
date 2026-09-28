@@ -7,3 +7,9 @@ encryption = "age"
 [edit]
   command = "vi"
   args = []
+
+{{- if eq .chezmoi.os "windows" }}
+[cd]
+  command = "pwsh"
+  args = ["-NoLogo"]
+{{- end }}

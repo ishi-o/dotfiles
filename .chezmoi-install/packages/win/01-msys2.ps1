@@ -4,7 +4,7 @@ param(
     [string[]]$Packages
 )
 
-. (Join-Path $PSScriptRoot "..\..\lib\win\msys2.ps1")
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
 
 Install-MSYS2Packages -Packages (@($Packages | Select-Object -Unique))
 

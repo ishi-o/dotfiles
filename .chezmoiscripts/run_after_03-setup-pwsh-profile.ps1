@@ -23,3 +23,12 @@ elseif ($pathParts[0] -ne $scoopShims) {
     $newPath = @($scoopShims) + $pathParts -join ';'
     [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
 }
+
+$miseShims = Join-Path $env:USERPROFILE ".local\share\mise\shims"
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+$pathParts = $userPath -split ';' | Where-Object { $_ -ne '' }
+
+if ($pathParts -notcontains $miseShims) {
+    $newPath = @($miseShims) + $pathParts -join ';'
+    [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+}

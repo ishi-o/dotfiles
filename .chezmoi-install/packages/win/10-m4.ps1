@@ -1,1 +1,5 @@
-scoop install m4
+$ErrorActionPreference = "Stop"
+
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
+
+Install-ScoopPackage -Package "m4"

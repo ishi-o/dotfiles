@@ -1,1 +1,5 @@
-scoop install gcc make
+$ErrorActionPreference = "Stop"
+
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
+
+Install-ScoopPackage -Package @("gcc", "make")

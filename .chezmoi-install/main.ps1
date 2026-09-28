@@ -11,6 +11,7 @@ if ($u -notlike "*$bin*") {
 }
 
 . (Join-Path $scriptDir "lib\win\env.ps1")
+. (Join-Path $scriptDir "lib\win\helpers.ps1")
 
 function Confirm-Install {
     param([Parameter(Mandatory = $true)][string]$Prompt)
@@ -68,7 +69,8 @@ if (-not (scoop bucket list | Where-Object { $_.Name -eq "extras" })) {
     scoop bucket add extras
 }
 
-. (Join-Path $scriptDir "lib\win\msys2.ps1")
+Initialize-ScoopUpdateCheck
+
 $msys2Packages = Get-MSYS2GroupPackages -Group "all" `
     -IncludeDevTools:$installDevTools
 

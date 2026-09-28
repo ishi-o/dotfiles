@@ -114,7 +114,7 @@ function Install-Group {
     param([string]$Group)
 
     $dir = Join-Path (Get-SourceDir) ".chezmoi-install\packages\win"
-    . (Join-Path $dir "..\..\lib\win\msys2.ps1")
+    . (Join-Path $dir "..\..\lib\win\helpers.ps1")
     $msys2Packages = @()
     $packages = switch ($Group) {
         "shell"    { @() }
@@ -282,7 +282,7 @@ switch ($command) {
                 Install-Group $target
             }
             default {
-                . (Join-Path (Get-SourceDir) ".chezmoi-install\lib\win\msys2.ps1")
+                . (Join-Path (Get-SourceDir) ".chezmoi-install\lib\win\helpers.ps1")
                 if ($target -eq "msys2") {
                     Write-Host "==> Installing MSYS2 packages: zsh"
                     Invoke-MSYS2Installer -Packages @("zsh")

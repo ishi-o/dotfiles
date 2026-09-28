@@ -1,9 +1,7 @@
 $ErrorActionPreference = "Stop"
 
-scoop install nvm
-if ($LASTEXITCODE -ne 0) {
-    throw "scoop install nvm failed"
-}
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
 
-. (Join-Path $PSScriptRoot "..\..\lib\win\node.ps1")
+Install-ScoopPackage -Package "nvm"
+
 Initialize-Nvm -InstallNode

@@ -18,6 +18,7 @@ MSYS_NT*)
             "$msys2_scoop_root/apps/git/current/cmd" \
             "$msys2_program_files/Git/cmd" \
             "$msys2_scoop_root/shims" \
+            "$msys2_user_profile/.local/share/mise/shims" \
             "$msys2_local_apps/Microsoft/WindowsApps" \
             "$msys2_local_apps/Microsoft/WinGet/Links"; do
             if [ -d "$msys2_path" ]; then

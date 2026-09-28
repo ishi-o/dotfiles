@@ -1,5 +1,84 @@
 $ErrorActionPreference = "Stop"
 
+function Initialize-ScoopUpdateCheck {
+    if ($env:DOTS_SCOOP_UPDATE_CHECKED -eq "1") {
+        return
+    }
+
+    Write-Host "==> Checking for Scoop and bucket updates..."
+    & scoop update
+    if ($LASTEXITCODE -ne 0) {
+        throw "scoop update failed"
+    }
+
+    $env:DOTS_SCOOP_UPDATE_CHECKED = "1"
+}
+
+function Install-ScoopPackage {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]$Package
+    )
+
+    Initialize-ScoopUpdateCheck
+    & scoop install --no-update @Package
+    if ($LASTEXITCODE -ne 0) {
+        throw "scoop install failed: $($Package -join ', ')"
+    }
+}
+
+# Node.js helpers.
+function Initialize-Nvm {
+    param([switch]$InstallNode)
+
+    $nvmHome = (scoop prefix nvm).Trim()
+    if (-not $nvmHome -or -not (Test-Path -LiteralPath $nvmHome -PathType Container)) {
+        throw "NVM home not found"
+    }
+
+    $env:NVM_HOME = $nvmHome
+    $env:NVM_SYMLINK = Join-Path $nvmHome "nodejs"
+    [Environment]::SetEnvironmentVariable("NVM_HOME", $env:NVM_HOME, "User")
+    [Environment]::SetEnvironmentVariable("NVM_SYMLINK", $env:NVM_SYMLINK, "User")
+    $env:Path = "$env:NVM_HOME;$env:NVM_SYMLINK;$env:Path"
+
+    $nvm = Join-Path $nvmHome "nvm.exe"
+
+    $nvmSettings = Join-Path $nvmHome "settings.txt"
+    if (Test-Path -LiteralPath $nvmSettings -PathType Leaf) {
+        $settings = @(Get-Content -LiteralPath $nvmSettings)
+        $officialSettings = @($settings | Where-Object {
+            $_ -notmatch '^\s*(?:node_mirror|npm_mirror)\s*:'
+        })
+        if ($officialSettings.Count -ne $settings.Count) {
+            Set-Content -LiteralPath $nvmSettings -Value $officialSettings
+        }
+    }
+
+    if ($InstallNode) {
+        & $nvm install 22
+        if ($LASTEXITCODE -ne 0) {
+            throw "nvm install 22 failed"
+        }
+    }
+
+    & $nvm use 22
+    if ($LASTEXITCODE -ne 0) {
+        throw "nvm use 22 failed"
+    }
+
+    if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
+        throw "npm was not found after enabling NVM"
+    }
+
+    npm config set registry https://registry.npmjs.org/
+    if ($LASTEXITCODE -ne 0) {
+        throw "npm official registry configuration failed"
+    }
+}
+
+# MSYS2 helpers.
 $script:MSYS2PackageNames = @(
     "zsh",
     "autoconf",
@@ -88,10 +167,7 @@ function Install-MSYS2Packages {
     }
 
     if (-not $msys2Root -or -not (Test-Path -LiteralPath $msys2Root -PathType Container)) {
-        scoop install msys2
-        if ($LASTEXITCODE -ne 0) {
-            throw "scoop install msys2 failed"
-        }
+        Install-ScoopPackage -Package "msys2"
         $msys2Root = (scoop prefix msys2).Trim()
         if (-not $msys2Root -or -not (Test-Path -LiteralPath $msys2Root -PathType Container)) {
             throw "MSYS2 root not found"

@@ -1,9 +1,8 @@
 $ErrorActionPreference = "Stop"
 
-scoop install extras/windows-terminal
-if ($LASTEXITCODE -ne 0) {
-    throw "scoop install extras/windows-terminal failed"
-}
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
+
+Install-ScoopPackage -Package "extras/windows-terminal"
 
 $terminalRoot = (scoop prefix windows-terminal).Trim()
 if (-not $terminalRoot -or -not (Test-Path -LiteralPath $terminalRoot)) {

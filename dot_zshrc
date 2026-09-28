@@ -73,13 +73,11 @@ if [ -z "$mise_path" ] && [ -x "$MISE_INSTALL_PATH" ]; then
 fi
 if [ -n "$mise_path" ]; then
   case "$(uname -s 2>/dev/null)" in
-    MSYS_NT*)
-      if command -v cygpath >/dev/null 2>&1; then
-        export __MISE_EXE_LINUX="$(cygpath -u "$mise_path")"
-      fi
-      ;;
+    # mise activation emits Windows-style PATH entries in MSYS2. Use
+    # the Windows user PATH and mise shims instead.
+    MSYS_NT*) ;;
+    *) eval "$("$mise_path" activate zsh)" ;;
   esac
-  eval "$("$mise_path" activate zsh)"
 fi
 unset mise_path
 

@@ -1,6 +1,5 @@
 $ErrorActionPreference = "Stop"
 
-scoop install mingw
-if ($LASTEXITCODE -ne 0) {
-    throw "scoop install mingw failed"
-}
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
+
+Install-ScoopPackage -Package "mingw"

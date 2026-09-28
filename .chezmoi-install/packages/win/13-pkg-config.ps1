@@ -1,1 +1,5 @@
-scoop install pkg-config
+$ErrorActionPreference = "Stop"
+
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
+
+Install-ScoopPackage -Package "pkg-config"

@@ -1,6 +1,5 @@
 $ErrorActionPreference = "Stop"
 
-scoop install nmap
-if ($LASTEXITCODE -ne 0) {
-    throw "scoop install nmap failed"
-}
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
+
+Install-ScoopPackage -Package "nmap"

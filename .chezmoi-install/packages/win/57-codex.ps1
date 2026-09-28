@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-. (Join-Path $PSScriptRoot "..\..\lib\win\node.ps1")
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
 Initialize-Nvm
 
 npm install -g @openai/codex
