@@ -9,13 +9,13 @@
       "colorScheme": "Everforest Light - Medium",
       "cursorShape": "filledBox",
       "font": {
-        "face": "YaHei Consolas Hybrid,Cascadia Mono",
+        "face": "Consolas,Symbols Nerd Font Mono,LXGW WenKai Mono",
         "size": 16
       },
-      "opacity": 95,
+      "opacity": 100,
       "padding": "8",
       "scrollbarState": "hidden",
-      "useAcrylic": true
+      "useAcrylic": false
     },
     "list": [
       {

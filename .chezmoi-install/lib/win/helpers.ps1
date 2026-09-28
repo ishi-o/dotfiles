@@ -163,7 +163,7 @@ function Test-MSYS2Package {
 function Get-MSYS2GroupPackages {
     param(
         [Parameter(Mandatory = $true)]
-        [ValidateSet("shell", "build", "tools", "dev", "fonts", "terminal", "all")]
+        [ValidateSet("shell", "build", "tools", "dev", "terminal", "all")]
         [string]$Group,
         [switch]$IncludeDevTools
     )

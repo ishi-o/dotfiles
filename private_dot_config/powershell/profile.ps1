@@ -34,3 +34,16 @@ Set-PSReadLineKeyHandler -Chord @(
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 } -BriefDescription "Save the current PowerShell session" `
     -Description "Saves the working directory and command history to last.pwsh-session.json."
+
+Set-PSReadLineOption -EditMode Vi
+Set-PSReadLineOption -ViModeIndicator Cursor
+
+Set-PSReadLineKeyHandler -ViMode Insert -Chord "j" -ScriptBlock {
+    $key = [Console]::ReadKey($true)
+    if ($key.KeyChar -eq 'k') {
+        [Microsoft.PowerShell.PSConsoleReadLine]::ViCommandMode()
+    } else {
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert('j')
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($key.KeyChar)
+    }
+}

@@ -42,16 +42,16 @@ them in a single `pacman --needed` transaction. Targeted commands such as
 
 ## Install groups
 
-| Group           | Packages                                                                                                                                                                                                                      |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `shell`         | POSIX `zsh`; Windows `msys2` + `zsh`                                                                                                                                                                                          |
+| Group           | Packages                                                                                                                                                                                                                                                                                                     |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `shell`         | POSIX `zsh`; Windows `msys2` + `zsh`                                                                                                                                                                                                                                                                         |
 | `build`         | POSIX `build-essential`, `unzip`, `m4`, `autoconf`, `automake`, `pkg-config`, `openssl`, `libevent`, `ncurses`, `utf8proc`, `gettext`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry`, `gpg`; Windows installs the available MSYS2 subset in one `pacman` transaction |
-| `runtimes`      | `uv`, `mise`, `nvm`, `luajit`; POSIX `rust`; Windows `rustup-gnu` and separate `mingw` |
-| `editor`        | `nvim`                                                                                                                                                                                                                        |
-| `tools` / `dev` | Common `fzf`, `fd`, `kubectl`, `ripgrep`, `netcat` (`nc`/`ncat`), `tree-sitter` (Cargo), `gh`; `tree` through MSYS2 on Windows |
-| `fonts`         | CJK fonts |
-| `ai`            | `codex`, `claude`, `mcp-hub`, `codegraph` (npm)                                                                                                                                                                               |
-| `terminal`      | POSIX `tmux`, `kitty`; Windows `tmux` through MSYS2 and Windows Terminal |
+| `runtimes`      | `uv`, `mise`, `nvm`, `luajit`; POSIX `rust`; Windows `rustup-gnu` and separate `mingw`                                                                                                                                                                                                                       |
+| `editor`        | `nvim`                                                                                                                                                                                                                                                                                                       |
+| `tools` / `dev` | Common `fzf`, `fd`, `kubectl`, `ripgrep`, `netcat` (`nc`/`ncat`), `tree-sitter` (Cargo), `gh`; `tree` through MSYS2 on Windows                                                                                                                                                                               |
+| `ai`            | `codex`, `claude`, `mcp-hub`, `codegraph` (npm)                                                                                                                                                                                                                                                              |
+| `terminal`      | POSIX `tmux`, `kitty`; Windows `tmux` through MSYS2 and Windows Terminal                                                                                                                                                                                                                                     |
+| `input`         | POSIX `fcitx5` and Chinese addons on WSL                                                                                                                                                                                                                                                                     |
 
 ## Targeted installation
 
@@ -67,5 +67,5 @@ package:
 
 The same commands work as `Dots install <target>` on Windows.
 
-During a full install, missing optional components are confirmed
+During a full install, missing components in each prompt group are confirmed
 interactively. Pressing Enter accepts the default answer.

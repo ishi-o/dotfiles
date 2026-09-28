@@ -26,13 +26,12 @@ Options (accepted by non-proxy commands):
   --clear-proxy          Clear the proxy before running the command
 
 Install groups:
-  shell, build, runtimes, editor, tools, fonts, ai, terminal, all
+  shell, build, runtimes, editor, tools, ai, terminal, all
 
 Examples:
   Dots init
   Dots init --proxy http://127.0.0.1:10808 --socks socks5://127.0.0.1:10808
   Dots apply --scoop-prefix D:/Scoop
-  Dots install fonts
   Dots install dev
   Dots proxy http://127.0.0.1:10808 socks5://127.0.0.1:10808
 '@ | Write-Host
@@ -134,9 +133,6 @@ function Install-Group {
         }
         "dev" {
             @("60-fzf", "63-fd", "65-kubectl", "66-ripgrep", "68-netcat", "72-tree-sitter", "73-gh") 
-        }
-        "fonts" {
-            @("07-cjk-fonts") 
         }
         "ai" {
             @("57-codex", "58-claude", "59-mcp-hub", "59-codegraph") 
@@ -324,7 +320,7 @@ switch ($command) {
         }
         $target = $rest[0]
         switch ($target) {
-            { $_ -in @("shell", "build", "runtimes", "editor", "tools", "dev", "fonts", "ai", "terminal", "all") } {
+            { $_ -in @("shell", "build", "runtimes", "editor", "tools", "dev", "ai", "terminal", "all") } {
                 Install-Group $target
             }
             default {

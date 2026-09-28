@@ -28,32 +28,103 @@ function Confirm-Install {
     return $answer -notmatch '^(?i:n(o)?)$'
 }
 
-$installFonts = $true
-if (-not (Get-Command fc-list -ErrorAction SilentlyContinue)) {
-    $installFonts = Confirm-Install "Install missing CJK fonts?"
+function Test-AnyCommandMissing {
+    param([Parameter(Mandatory = $true)][string[]]$Commands)
+
+    foreach ($command in $Commands) {
+        if (-not (Get-Command $command -ErrorAction SilentlyContinue)) {
+            return $true
+        }
+    }
+    return $false
 }
 
-$devToolCommands = @(
-    "fzf",
-    "fd",
-    "tree",
-    "kubectl",
-    "rg",
-    "gh",
-    "ncat",
-    "wt",
-    "rustup",
-    "tree-sitter",
-    "tree"
-)
+function Test-MSYS2Available {
+    if (Get-Command pacman -ErrorAction SilentlyContinue) {
+        return $true
+    }
+    if (Get-Command scoop -ErrorAction SilentlyContinue) {
+        try {
+            $msys2Root = (scoop prefix msys2).Trim()
+            return [bool]$msys2Root -and
+                (Test-Path -LiteralPath (Join-Path $msys2Root "usr\bin\pacman.exe") -PathType Leaf)
+        } catch {
+            return $false
+        }
+    }
+    return $false
+}
 
-$installDevTools = $true
-$missingDevTools = @($devToolCommands |
-        Where-Object { -not (Get-Command $_ -ErrorAction SilentlyContinue) })
+function Test-MSVCAvailable {
+    $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+    if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) {
+        return $false
+    }
 
-if ($missingDevTools.Count -gt 0 -and
-    -not (Confirm-Install "Install missing developer tools?")) {
-    $installDevTools = $false
+    $installationPath = & $vswhere -products * `
+        -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+        -property installationPath
+    return -not [string]::IsNullOrWhiteSpace(($installationPath | Select-Object -First 1))
+}
+
+$installMsys2 = $true
+if (-not (Test-MSYS2Available) -and
+    -not (Confirm-Install "Install missing MSYS2 environment?")) {
+    $installMsys2 = $false
+}
+
+$installMsvc = $true
+if (-not (Test-MSVCAvailable) -and
+    -not (Confirm-Install "Install missing MSVC build tools?")) {
+    $installMsvc = $false
+}
+
+$installMingw = $true
+if (Test-AnyCommandMissing @("gcc") -and
+    -not (Confirm-Install "Install missing MinGW toolchain?")) {
+    $installMingw = $false
+}
+
+$installBase = $true
+if (Test-AnyCommandMissing @("unzip", "m4", "pkg-config", "openssl", "msgfmt", "gpg") -and
+    -not (Confirm-Install "Install missing base tools?")) {
+    $installBase = $false
+}
+
+$installRuntimes = $true
+if (Test-AnyCommandMissing @("uv", "mise", "nvm", "node", "luajit", "cargo") -and
+    -not (Confirm-Install "Install missing language runtimes?")) {
+    $installRuntimes = $false
+}
+
+$installEditor = $true
+if (Test-AnyCommandMissing @("nvim", "tree-sitter") -and
+    -not (Confirm-Install "Install missing editor tooling?")) {
+    $installEditor = $false
+}
+
+$installAi = $true
+if (Test-AnyCommandMissing @("codex", "claude", "mcp-hub", "codegraph") -and
+    -not (Confirm-Install "Install missing AI tools?")) {
+    $installAi = $false
+}
+
+$installUtilities = $true
+if (Test-AnyCommandMissing @("fzf", "fd", "rg", "gh") -and
+    -not (Confirm-Install "Install missing command-line utilities?")) {
+    $installUtilities = $false
+}
+
+$installOperations = $true
+if (Test-AnyCommandMissing @("kubectl", "ncat") -and
+    -not (Confirm-Install "Install missing operations tools?")) {
+    $installOperations = $false
+}
+
+$installTerminal = $true
+if (Test-AnyCommandMissing @("wt") -and
+    -not (Confirm-Install "Install missing Windows Terminal?")) {
+    $installTerminal = $false
 }
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
@@ -71,22 +142,40 @@ if (-not (scoop bucket list | Where-Object { $_.Name -eq "extras" })) {
 
 Initialize-ScoopUpdateCheck
 
-$msys2Packages = Get-MSYS2GroupPackages -Group "all" `
-    -IncludeDevTools:$installDevTools
+$msys2Packages = @()
+if ($installMsys2) {
+    $msys2Packages = Get-MSYS2GroupPackages -Group "all" -IncludeDevTools
+}
 
-$fontPackages = @("07-cjk-fonts")
-$devToolPackages = @(
-    "60-fzf",
-    "63-fd",
-    "65-kubectl",
-    "66-ripgrep",
-    "68-netcat",
-    "69-windows-terminal",
-    "70-rust",
-    "72-tree-sitter",
-    "73-gh",
-    "74-mingw"
-)
+$packageCategories = @{
+    "01-msys2" = "msys2"
+    "02-msvc" = "msvc"
+    "03-mingw" = "mingw"
+    "04-uv" = "runtimes"
+    "05-mise" = "runtimes"
+    "06-unzip" = "base"
+    "10-m4" = "base"
+    "13-pkg-config" = "base"
+    "20-openssl" = "base"
+    "40-gettext" = "base"
+    "48-gpg" = "base"
+    "50-nvim" = "editor"
+    "56-nvm" = "runtimes"
+    "57-codex" = "ai"
+    "58-claude" = "ai"
+    "59-mcp-hub" = "ai"
+    "59-codegraph" = "ai"
+    "60-fzf" = "utilities"
+    "62-luajit" = "runtimes"
+    "63-fd" = "utilities"
+    "65-kubectl" = "operations"
+    "66-ripgrep" = "utilities"
+    "68-netcat" = "operations"
+    "69-windows-terminal" = "terminal"
+    "70-rust" = "runtimes"
+    "72-tree-sitter" = "editor"
+    "73-gh" = "utilities"
+}
 
 $packages = Get-ChildItem -LiteralPath (Join-Path $scriptDir "packages\win") -Filter "*.ps1" | Sort-Object Name
 $failedPackages = @()
@@ -98,19 +187,40 @@ if (-not $msys2Installer) {
 }
 
 Write-Host "==> Processing: MSYS2 ($($msys2Packages -join ', '))"
-& $msys2Installer.FullName -Packages $msys2Packages
+if ($msys2Packages.Count -gt 0) {
+    try {
+        & $msys2Installer.FullName -Packages $msys2Packages
+    } catch {
+        Write-Warning "Failed to install 01-msys2: $($_.Exception.Message)"
+        $failedPackages += "01-msys2"
+    }
+}
 
 foreach ($package in $packages) {
     if ($package.BaseName -eq "01-msys2") {
         continue
     }
 
-    if ($fontPackages -contains $package.BaseName -and -not $installFonts) {
-        Write-Host "==> Skipping $($package.BaseName)"
-        continue
+    $category = $packageCategories[$package.BaseName]
+    if (-not $category) {
+        throw "No install category configured for package: $($package.BaseName)"
     }
 
-    if ($devToolPackages -contains $package.BaseName -and -not $installDevTools) {
+    $categoryEnabled = switch ($category) {
+        "msys2" { $installMsys2 }
+        "msvc" { $installMsvc }
+        "mingw" { $installMingw }
+        "base" { $installBase }
+        "runtimes" { $installRuntimes }
+        "editor" { $installEditor }
+        "ai" { $installAi }
+        "utilities" { $installUtilities }
+        "operations" { $installOperations }
+        "terminal" { $installTerminal }
+        default { throw "Unknown install category: $category" }
+    }
+
+    if (-not $categoryEnabled) {
         Write-Host "==> Skipping $($package.BaseName)"
         continue
     }

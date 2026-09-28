@@ -1,10 +1,6 @@
 # Proxy
 
-Proxy configuration has one source of truth:
-
-```text
-~/.config/proxy/config
-```
+Custom proxy are configured in `~/.config/proxy/config`
 
 ## Before the first apply
 
@@ -22,7 +18,7 @@ On Windows, use `Set-Proxy.cmd`:
 
 Package installers read the resulting configuration directly.
 
-## Entry-point commands
+## Entrypoint commands
 
 The proxy command remains available through `dots` and `Dots`:
 
@@ -40,8 +36,7 @@ Dots proxy -Sync
 Dots proxy -Clear
 ```
 
-Proxy options are also accepted after any non-proxy `dots` or `Dots` command
-and are applied before that command runs:
+Proxy options are also accepted after any non-proxy `dots` or `Dots` command and are applied before that command runs:
 
 ```sh
 dots init --proxy http://127.0.0.1:10808 --socks socks5://127.0.0.1:10808

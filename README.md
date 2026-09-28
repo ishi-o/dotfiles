@@ -1,14 +1,10 @@
 # Dotfiles
 
-Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/) for macOS
-and Linux. Windows is also supported: packages are installed with Scoop, AI
-tools are installed with npm, the environment uses XDG-style directories, and
-the default shell is Zsh inside MSYS2. The repository also manages shell and
-Kitty configuration, packages, fonts, and an external Neovim configuration.
+Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/) for macOS, Linux/WSL, MSYS2 and Windows.
 
 ## Installation
 
-chezmoi and Git are prerequisites and must be installed manually.
+**chezmoi and Git are prerequisites and must be installed manually.**
 
 <details>
 <summary>MacOS Homebrew</summary>
@@ -44,10 +40,9 @@ Bootstrap the source with chezmoi once:
 chezmoi init ishi-o
 ```
 
-If package downloads require a proxy, use `set-proxy` before the first apply
-and see [`PROXY.md`](PROXY.md).
+If package downloads require a proxy, use `set-proxy` before the first apply and see [`PROXY.md`](PROXY.md).
 
-After that, use the `dots` entry point for everything.
+After that, use the `dots` entrypoint for everything.
 
 POSIX:
 
@@ -83,11 +78,8 @@ curated group or an individual package.
 ## Shell on Windows
 
 On Windows, the default shell is Zsh inside MSYS2 when both MSYS2 and Zsh are
-available. MSYS2 is configured so that its home directory resolves to the
-Windows user profile
-(`C:\Users\<user>`), which means the shell reads the same `.bashrc`,
-`.zshrc`, `.gitconfig`, and `.config` files that chezmoi manages. No separate
-MSYS2-specific configuration is required.
+available. MSYS2 is configured so that its home directory resolves to the Windows user profile (`C:\Users\<username>`).
+And its path also contains scoop shims/Program Files on Win.
 
 ## Managed runtimes
 
@@ -104,22 +96,12 @@ defines the mise-managed runtimes:
 | Rust    | rustup                          | stable     |
 | LuaJIT  | package manager or source build | 2.1        |
 
-After the config is applied, a post-apply script runs `mise install`; it does
-not modify the config with `mise use`. Bash and Zsh activate mise at startup.
-On MSYS2, activation uses a POSIX path for the mise executable.
+After the config is applied, a post-apply script runs `mise install`; it does not modify the config with `mise use`.
 
-## Fonts and Kitty
+## Fonts
 
-The default font is [YaHei Consolas Hybrid for Powerline](https://github.com/Magnetic2014/YaHei-Consolas-Hybrid-For-Powerline).
-It is installed automatically and used by Kitty, Windows Terminal, Zed, and
-Fcitx5.
-
-Maple Mono is optional:
-
-Set `KITTY_FONT=maple` and `INSTALL_MAPLE_MONO=1` when applying the
-repository.
-
-If it is already installed, omit `INSTALL_MAPLE_MONO=1`.
+The fonts are installed automatically from [Consolas+NF+LXGWWenKai Mono](https://github.com/ishi-o/assets/releases/tag/fonts-v1.0).
+Set INSTALL_FONTS=false before apply and update fontconfig if you want to install fonts by yourself.
 
 ## Optional graphical input method
 
