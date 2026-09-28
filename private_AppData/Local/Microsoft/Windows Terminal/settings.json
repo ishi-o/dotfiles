@@ -9,8 +9,8 @@
       "colorScheme": "Everforest Light - Medium",
       "cursorShape": "filledBox",
       "font": {
-        "face": "YaHei Consolas Hybrid",
-        "size": 11
+        "face": "YaHei Consolas Hybrid,Cascadia Mono",
+        "size": 16
       },
       "opacity": 95,
       "padding": "8",
@@ -42,6 +42,201 @@
       }
     ]
   },
+  "actions": [
+    {
+      "id": "User.toggleFullscreen",
+      "command": "toggleFullscreen"
+    },
+    {
+      "id": "User.sendCtrlB",
+      "command": {
+        "action": "sendInput",
+        "input": "\u0002\u0013"
+      }
+    },
+    {
+      "id": "User.closePane",
+      "command": "closePane"
+    },
+    {
+      "id": "User.swapLeft",
+      "command": {
+        "action": "swapPane",
+        "direction": "left"
+      }
+    },
+    {
+      "id": "User.swapDown",
+      "command": {
+        "action": "swapPane",
+        "direction": "down"
+      }
+    },
+    {
+      "id": "User.swapUp",
+      "command": {
+        "action": "swapPane",
+        "direction": "up"
+      }
+    },
+    {
+      "id": "User.swapRight",
+      "command": {
+        "action": "swapPane",
+        "direction": "right"
+      }
+    },
+    {
+      "id": "User.focusLeft",
+      "command": {
+        "action": "moveFocus",
+        "direction": "left"
+      }
+    },
+    {
+      "id": "User.focusDown",
+      "command": {
+        "action": "moveFocus",
+        "direction": "down"
+      }
+    },
+    {
+      "id": "User.focusUp",
+      "command": {
+        "action": "moveFocus",
+        "direction": "up"
+      }
+    },
+    {
+      "id": "User.focusRight",
+      "command": {
+        "action": "moveFocus",
+        "direction": "right"
+      }
+    },
+    {
+      "id": "User.resizeLeft",
+      "command": {
+        "action": "resizePane",
+        "direction": "left"
+      }
+    },
+    {
+      "id": "User.resizeDown",
+      "command": {
+        "action": "resizePane",
+        "direction": "down"
+      }
+    },
+    {
+      "id": "User.resizeUp",
+      "command": {
+        "action": "resizePane",
+        "direction": "up"
+      }
+    },
+    {
+      "id": "User.resizeRight",
+      "command": {
+        "action": "resizePane",
+        "direction": "right"
+      }
+    },
+    {
+      "id": "User.splitVertical",
+      "command": {
+        "action": "splitPane",
+        "split": "right",
+        "splitMode": "duplicate"
+      }
+    },
+    {
+      "id": "User.splitHorizontal",
+      "command": {
+        "action": "splitPane",
+        "split": "down",
+        "splitMode": "duplicate"
+      }
+    },
+    {
+      "id": "User.togglePaneZoom",
+      "command": "togglePaneZoom"
+    }
+  ],
+  "keybindings": [
+    {
+      "keys": "f11",
+      "id": "User.toggleFullscreen"
+    },
+    {
+      "keys": "ctrl+shift+s",
+      "id": "User.sendCtrlB"
+    },
+    {
+      "keys": "ctrl+shift+d",
+      "id": "User.closePane"
+    },
+    {
+      "keys": "ctrl+shift+h",
+      "id": "User.swapLeft"
+    },
+    {
+      "keys": "ctrl+shift+j",
+      "id": "User.swapDown"
+    },
+    {
+      "keys": "ctrl+shift+k",
+      "id": "User.swapUp"
+    },
+    {
+      "keys": "ctrl+shift+l",
+      "id": "User.swapRight"
+    },
+    {
+      "keys": "ctrl+h",
+      "id": "User.focusLeft"
+    },
+    {
+      "keys": "ctrl+j",
+      "id": "User.focusDown"
+    },
+    {
+      "keys": "ctrl+k",
+      "id": "User.focusUp"
+    },
+    {
+      "keys": "ctrl+l",
+      "id": "User.focusRight"
+    },
+    {
+      "keys": "alt+h",
+      "id": "User.resizeLeft"
+    },
+    {
+      "keys": "alt+j",
+      "id": "User.resizeDown"
+    },
+    {
+      "keys": "alt+k",
+      "id": "User.resizeUp"
+    },
+    {
+      "keys": "alt+l",
+      "id": "User.resizeRight"
+    },
+    {
+      "keys": "ctrl+\\",
+      "id": "User.splitVertical"
+    },
+    {
+      "keys": "ctrl+-",
+      "id": "User.splitHorizontal"
+    },
+    {
+      "keys": "ctrl+shift+z",
+      "id": "User.togglePaneZoom"
+    }
+  ],
   "schemes": [
     {
       "name": "Everforest Light - Medium",
