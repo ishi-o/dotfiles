@@ -118,12 +118,12 @@ function Install-Group {
     $msys2Packages = @()
     $packages = switch ($Group) {
         "shell"    { @() }
-        "build"    { @("02-build-essential","05-unzip","10-m4","13-pkg-config","20-openssl","40-gettext","48-gpg") }
-        "runtimes" { @("03-uv","04-mise","56-nvm","62-luajit","70-rust","74-mingw") }
+        "build"    { @("02-msvc","03-mingw","06-unzip","10-m4","13-pkg-config","20-openssl","40-gettext","48-gpg") }
+        "runtimes" { @("04-uv","05-mise","56-nvm","62-luajit","70-rust","74-mingw") }
         "editor"   { @("50-nvim") }
         "tools"    { @("60-fzf","63-fd","65-kubectl","66-ripgrep","68-netcat","72-tree-sitter","73-gh") }
         "dev"      { @("60-fzf","63-fd","65-kubectl","66-ripgrep","68-netcat","72-tree-sitter","73-gh") }
-        "fonts"    { @("06-cjk-fonts") }
+        "fonts"    { @("07-cjk-fonts") }
         "ai"       { @("57-codex","58-claude","59-mcp-hub","59-codegraph") }
         "terminal" { @("69-windows-terminal") }
         "all"      { Invoke-Installer (Join-Path (Get-SourceDir) ".chezmoi-install\main.ps1"); return }

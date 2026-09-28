@@ -77,7 +77,7 @@ Initialize-ScoopUpdateCheck
 $msys2Packages = Get-MSYS2GroupPackages -Group "all" `
     -IncludeDevTools:$installDevTools
 
-$fontPackages = @("06-cjk-fonts")
+$fontPackages = @("07-cjk-fonts")
 $devToolPackages = @(
     "60-fzf",
     "63-fd",
