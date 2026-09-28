@@ -88,8 +88,8 @@ function Initialize-Nvm {
     if (Test-Path -LiteralPath $nvmSettings -PathType Leaf) {
         $settings = @(Get-Content -LiteralPath $nvmSettings)
         $officialSettings = @($settings | Where-Object {
-            $_ -notmatch '^\s*(?:node_mirror|npm_mirror)\s*:'
-        })
+                $_ -notmatch '^\s*(?:node_mirror|npm_mirror)\s*:'
+            })
         if ($officialSettings.Count -ne $settings.Count) {
             Set-Content -LiteralPath $nvmSettings -Value $officialSettings
         }
@@ -150,8 +150,10 @@ function Get-MSYS2GroupPackages {
     )
 
     $packages = switch ($Group) {
-        "shell"    { @("zsh") }
-        "build"    {
+        "shell" {
+            @("zsh") 
+        }
+        "build" {
             @(
                 "autoconf",
                 "automake",
@@ -166,10 +168,16 @@ function Get-MSYS2GroupPackages {
                 "pinentry"
             )
         }
-        "tools"    { @("tree") }
-        "dev"      { @("tree") }
-        "terminal" { @("tmux") }
-        "all"      {
+        "tools" {
+            @("tree") 
+        }
+        "dev" {
+            @("tree") 
+        }
+        "terminal" {
+            @("tmux") 
+        }
+        "all" {
             $allPackages = @()
             foreach ($groupName in @("shell", "build", "terminal")) {
                 $allPackages += Get-MSYS2GroupPackages -Group $groupName
@@ -200,8 +208,7 @@ function Install-MSYS2Packages {
     $msys2Root = ""
     try {
         $msys2Root = (scoop prefix msys2).Trim()
-    }
-    catch {
+    } catch {
         $msys2Root = ""
     }
 
@@ -232,12 +239,10 @@ function Install-MSYS2Packages {
         if ($LASTEXITCODE -ne 0) {
             throw "MSYS2 package installation failed: $($Packages -join ', ')"
         }
-    }
-    finally {
+    } finally {
         if ($null -eq $previousMSystem) {
             Remove-Item Env:\MSYSTEM -ErrorAction SilentlyContinue
-        }
-        else {
+        } else {
             $env:MSYSTEM = $previousMSystem
         }
     }

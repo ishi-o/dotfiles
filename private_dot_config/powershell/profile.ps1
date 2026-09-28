@@ -18,9 +18,9 @@ function Save-PwshSession {
 
     New-Item -ItemType Directory -Path $sessionDirectory -Force | Out-Null
     [pscustomobject]@{
-        savedAt           = (Get-Date).ToString("o")
-        workingDirectory  = $PWD.Path
-        history           = $history
+        savedAt          = (Get-Date).ToString("o")
+        workingDirectory = $PWD.Path
+        history          = $history
     } | ConvertTo-Json | Set-Content -Path $sessionFile -Encoding UTF8
 
     Write-Host "Saved PowerShell session to $sessionFile"
@@ -33,4 +33,4 @@ Set-PSReadLineKeyHandler -Chord @(
     Save-PwshSession
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 } -BriefDescription "Save the current PowerShell session" `
-  -Description "Saves the working directory and command history to last.pwsh-session.json."
+    -Description "Saves the working directory and command history to last.pwsh-session.json."

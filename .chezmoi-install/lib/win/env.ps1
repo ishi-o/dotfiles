@@ -47,18 +47,16 @@ Set-UserEnvironmentVariable -Name "NPM_CONFIG_CACHE" -Value $npmCache
 $proxyConfig = Join-Path $env:XDG_CONFIG_HOME "proxy\config"
 if (Test-Path -LiteralPath $proxyConfig -PathType Leaf) {
     $proxy = @{
-        Http = ""
-        Socks = ""
+        Http    = ""
+        Socks   = ""
         NoProxy = ""
     }
     foreach ($line in Get-Content -LiteralPath $proxyConfig) {
         if ($line -match "^\s*PROXY_HTTP='(.*)'\s*$") {
             $proxy.Http = $Matches[1]
-        }
-        elseif ($line -match "^\s*PROXY_SOCKS='(.*)'\s*$") {
+        } elseif ($line -match "^\s*PROXY_SOCKS='(.*)'\s*$") {
             $proxy.Socks = $Matches[1]
-        }
-        elseif ($line -match "^\s*PROXY_NO_PROXY='(.*)'\s*$") {
+        } elseif ($line -match "^\s*PROXY_NO_PROXY='(.*)'\s*$") {
             $proxy.NoProxy = $Matches[1]
         }
     }
@@ -66,8 +64,7 @@ if (Test-Path -LiteralPath $proxyConfig -PathType Leaf) {
     if ($proxy.Http) {
         Set-UserEnvironmentVariable -Name "HTTP_PROXY" -Value $proxy.Http
         Set-UserEnvironmentVariable -Name "HTTPS_PROXY" -Value $proxy.Http
-    }
-    else {
+    } else {
         [Environment]::SetEnvironmentVariable("HTTP_PROXY", $null, "User")
         [Environment]::SetEnvironmentVariable("HTTPS_PROXY", $null, "User")
         Remove-Item Env:\HTTP_PROXY -ErrorAction SilentlyContinue
@@ -75,16 +72,18 @@ if (Test-Path -LiteralPath $proxyConfig -PathType Leaf) {
     }
     if ($proxy.Socks) {
         Set-UserEnvironmentVariable -Name "ALL_PROXY" -Value $proxy.Socks
-    }
-    else {
+    } else {
         [Environment]::SetEnvironmentVariable("ALL_PROXY", $null, "User")
         Remove-Item Env:\ALL_PROXY -ErrorAction SilentlyContinue
     }
     if ($proxy.Http -or $proxy.Socks) {
-        $noProxyValue = if ($proxy.NoProxy) { $proxy.NoProxy } else { "localhost,127.0.0.1,::1" }
+        $noProxyValue = if ($proxy.NoProxy) {
+            $proxy.NoProxy 
+        } else {
+            "localhost,127.0.0.1,::1" 
+        }
         Set-UserEnvironmentVariable -Name "NO_PROXY" -Value $noProxyValue
-    }
-    else {
+    } else {
         [Environment]::SetEnvironmentVariable("NO_PROXY", $null, "User")
         Remove-Item Env:\NO_PROXY -ErrorAction SilentlyContinue
     }

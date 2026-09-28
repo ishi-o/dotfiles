@@ -47,14 +47,11 @@ $nsswitchContent = Get-Content -LiteralPath $nsswitchConfig
 $nsswitchContent = $nsswitchContent | ForEach-Object {
     if ($_ -match '^\s*#?\s*db_home\s*:') {
         "db_home: env windows cygwin desc"
-    }
-    elseif ($_ -match '^\s*#?\s*db_shell\s*:') {
+    } elseif ($_ -match '^\s*#?\s*db_shell\s*:') {
         "db_shell: /usr/bin/zsh"
-    }
-    elseif ($_ -match '^\s*#?\s*db_root\s*:') {
+    } elseif ($_ -match '^\s*#?\s*db_root\s*:') {
         "db_root: /usr/bin/zsh"
-    }
-    else {
+    } else {
         $_
     }
 }

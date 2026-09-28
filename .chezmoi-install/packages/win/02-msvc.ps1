@@ -15,11 +15,11 @@ function Install-MsvcBuildTools {
     Write-Host "==> Installing Visual Studio Build Tools with VCTools workload..."
     winget install Microsoft.VisualStudio.2022.BuildTools `
         --force `
-        --passive `
+        --silent `
         --wait `
         --accept-package-agreements `
         --accept-source-agreements `
-        --override "--add $vctoolsWorkload --includeRecommended"
+        --override "--passive --add $vctoolsWorkload --includeRecommended"
 
     if ($LASTEXITCODE -ne 0) {
         throw "Visual Studio Build Tools installation failed with exit code $LASTEXITCODE"

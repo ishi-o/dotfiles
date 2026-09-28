@@ -17,8 +17,7 @@ $pathParts = $userPath -split ';' | Where-Object { $_ -ne '' }
 if ($pathParts -notcontains $scoopShims) {
     $newPath = @($scoopShims) + $pathParts -join ';'
     [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
-}
-elseif ($pathParts[0] -ne $scoopShims) {
+} elseif ($pathParts[0] -ne $scoopShims) {
     $pathParts = $pathParts | Where-Object { $_ -ne $scoopShims }
     $newPath = @($scoopShims) + $pathParts -join ';'
     [Environment]::SetEnvironmentVariable("Path", $newPath, "User")

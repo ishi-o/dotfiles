@@ -117,17 +117,39 @@ function Install-Group {
     . (Join-Path $dir "..\..\lib\win\helpers.ps1")
     $msys2Packages = @()
     $packages = switch ($Group) {
-        "shell"    { @() }
-        "build"    { @("02-msvc","03-mingw","06-unzip","10-m4","13-pkg-config","20-openssl","40-gettext","48-gpg") }
-        "runtimes" { @("04-uv","05-mise","56-nvm","62-luajit","70-rust","74-mingw") }
-        "editor"   { @("50-nvim") }
-        "tools"    { @("60-fzf","63-fd","65-kubectl","66-ripgrep","68-netcat","72-tree-sitter","73-gh") }
-        "dev"      { @("60-fzf","63-fd","65-kubectl","66-ripgrep","68-netcat","72-tree-sitter","73-gh") }
-        "fonts"    { @("07-cjk-fonts") }
-        "ai"       { @("57-codex","58-claude","59-mcp-hub","59-codegraph") }
-        "terminal" { @("69-windows-terminal") }
-        "all"      { Invoke-Installer (Join-Path (Get-SourceDir) ".chezmoi-install\main.ps1"); return }
-        default    { Write-Error "Unknown install group: $Group"; Show-Usage; exit 2 }
+        "shell" {
+            @() 
+        }
+        "build" {
+            @("02-msvc", "03-mingw", "06-unzip", "10-m4", "13-pkg-config", "20-openssl", "40-gettext", "48-gpg") 
+        }
+        "runtimes" {
+            @("04-uv", "05-mise", "56-nvm", "62-luajit", "70-rust", "74-mingw") 
+        }
+        "editor" {
+            @("50-nvim") 
+        }
+        "tools" {
+            @("60-fzf", "63-fd", "65-kubectl", "66-ripgrep", "68-netcat", "72-tree-sitter", "73-gh") 
+        }
+        "dev" {
+            @("60-fzf", "63-fd", "65-kubectl", "66-ripgrep", "68-netcat", "72-tree-sitter", "73-gh") 
+        }
+        "fonts" {
+            @("07-cjk-fonts") 
+        }
+        "ai" {
+            @("57-codex", "58-claude", "59-mcp-hub", "59-codegraph") 
+        }
+        "terminal" {
+            @("69-windows-terminal") 
+        }
+        "all" {
+            Invoke-Installer (Join-Path (Get-SourceDir) ".chezmoi-install\main.ps1"); return 
+        }
+        default {
+            Write-Error "Unknown install group: $Group"; Show-Usage; exit 2 
+        }
     }
 
     $msys2Packages = Get-MSYS2GroupPackages -Group $Group
@@ -150,7 +172,11 @@ function Install-Group {
 }
 
 if ($args.Count -gt 0 -and $args[0] -eq "proxy") {
-    $proxyRest = if ($args.Count -gt 1) { $args[1..($args.Count - 1)] } else { @() }
+    $proxyRest = if ($args.Count -gt 1) {
+        $args[1..($args.Count - 1)] 
+    } else {
+        @() 
+    }
     & (Get-ProxyScript) @proxyRest
     if (-not $?) {
         exit 1
@@ -170,25 +196,33 @@ while ($i -lt $args.Count) {
     switch ($args[$i]) {
         "--scoop-prefix" {
             $i++
-            if ($i -ge $args.Count) { Write-Error "--scoop-prefix requires a path"; exit 2 }
+            if ($i -ge $args.Count) {
+                Write-Error "--scoop-prefix requires a path"; exit 2 
+            }
             $scoopPrefix = $args[$i]
             $i++
         }
         "--proxy" {
             $i++
-            if ($i -ge $args.Count) { Write-Error "--proxy requires a URL"; exit 2 }
+            if ($i -ge $args.Count) {
+                Write-Error "--proxy requires a URL"; exit 2 
+            }
             $proxyHttp = $args[$i]
             $i++
         }
         "--socks" {
             $i++
-            if ($i -ge $args.Count) { Write-Error "--socks requires a URL"; exit 2 }
+            if ($i -ge $args.Count) {
+                Write-Error "--socks requires a URL"; exit 2 
+            }
             $proxySocks = $args[$i]
             $i++
         }
         "--no-proxy" {
             $i++
-            if ($i -ge $args.Count) { Write-Error "--no-proxy requires a list"; exit 2 }
+            if ($i -ge $args.Count) {
+                Write-Error "--no-proxy requires a list"; exit 2 
+            }
             $proxyNoProxy = $args[$i]
             $i++
         }
@@ -203,12 +237,20 @@ while ($i -lt $args.Count) {
     }
 }
 
-if ($scoopPrefix) { $env:SCOOP_DIR = $scoopPrefix }
+if ($scoopPrefix) {
+    $env:SCOOP_DIR = $scoopPrefix 
+}
 
 $proxyParameters = @{}
-if ($proxyHttp) { $proxyParameters.Http = $proxyHttp }
-if ($proxySocks) { $proxyParameters.Socks = $proxySocks }
-if ($proxyNoProxy) { $proxyParameters.NoProxy = $proxyNoProxy }
+if ($proxyHttp) {
+    $proxyParameters.Http = $proxyHttp 
+}
+if ($proxySocks) {
+    $proxyParameters.Socks = $proxySocks 
+}
+if ($proxyNoProxy) {
+    $proxyParameters.NoProxy = $proxyNoProxy 
+}
 if ($proxyClear) {
     if ($proxyParameters.Count -gt 0) {
         Write-Error "--clear-proxy cannot be combined with other proxy options"
@@ -223,7 +265,11 @@ if ($proxyParameters.Count -gt 0) {
     }
 }
 
-$command = if ($argsList.Count -gt 0) { $argsList[0] } else { "help" }
+$command = if ($argsList.Count -gt 0) {
+    $argsList[0] 
+} else {
+    "help" 
+}
 $rest = @()
 if ($argsList.Count -gt 1) {
     $rest = @($argsList[1..($argsList.Count - 1)])
@@ -278,7 +324,7 @@ switch ($command) {
         }
         $target = $rest[0]
         switch ($target) {
-            { $_ -in @("shell","build","runtimes","editor","tools","dev","fonts","ai","terminal","all") } {
+            { $_ -in @("shell", "build", "runtimes", "editor", "tools", "dev", "fonts", "ai", "terminal", "all") } {
                 Install-Group $target
             }
             default {
@@ -305,7 +351,7 @@ switch ($command) {
             }
         }
     }
-    { $_ -in @("help","-h","--help") } {
+    { $_ -in @("help", "-h", "--help") } {
         Show-Usage
     }
     default {

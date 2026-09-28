@@ -57,8 +57,7 @@ function Assert-ProxyUrl {
 
     $allowedSchemes = if ($Kind -eq "SOCKS_PROXY") {
         @("socks5", "socks5h")
-    }
-    else {
+    } else {
         @("http", "https")
     }
     try {
@@ -69,8 +68,7 @@ function Assert-ProxyUrl {
         if ([string]::IsNullOrWhiteSpace($uri.Host)) {
             throw "$Kind must contain a host"
         }
-    }
-    catch [FormatException] {
+    } catch [FormatException] {
         throw "$Kind is not a valid URL"
     }
 }
@@ -79,8 +77,8 @@ function Read-ProxyConfiguration {
     param([Parameter(Mandatory = $true)][string]$Path)
 
     $values = @{
-        Http = ""
-        Socks = ""
+        Http    = ""
+        Socks   = ""
         NoProxy = ""
     }
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
@@ -90,11 +88,9 @@ function Read-ProxyConfiguration {
     foreach ($line in Get-Content -LiteralPath $Path) {
         if ($line -match "^\s*PROXY_HTTP='(.*)'\s*$") {
             $values.Http = $Matches[1]
-        }
-        elseif ($line -match "^\s*PROXY_SOCKS='(.*)'\s*$") {
+        } elseif ($line -match "^\s*PROXY_SOCKS='(.*)'\s*$") {
             $values.Socks = $Matches[1]
-        }
-        elseif ($line -match "^\s*PROXY_NO_PROXY='(.*)'\s*$") {
+        } elseif ($line -match "^\s*PROXY_NO_PROXY='(.*)'\s*$") {
             $values.NoProxy = $Matches[1]
         }
     }
@@ -119,8 +115,7 @@ function Write-ProxyConfiguration {
             "PROXY_NO_PROXY='$NoProxy'"
         ) | Set-Content -LiteralPath $temporary -Encoding ascii
         Move-Item -LiteralPath $temporary -Destination $Path -Force
-    }
-    finally {
+    } finally {
         if (Test-Path -LiteralPath $temporary) {
             Remove-Item -LiteralPath $temporary -Force
         }
@@ -131,10 +126,10 @@ function Set-ManagedEnvironment {
     param([Parameter(Mandatory = $true)][hashtable]$Values)
 
     $entries = [ordered]@{
-        HTTP_PROXY = [string]$Values.Http
+        HTTP_PROXY  = [string]$Values.Http
         HTTPS_PROXY = [string]$Values.Http
-        ALL_PROXY = [string]$Values.Socks
-        NO_PROXY = $null
+        ALL_PROXY   = [string]$Values.Socks
+        NO_PROXY    = $null
     }
     if ($Values.Http -or $Values.Socks) {
         $entries.NO_PROXY = if ($Values.NoProxy) { $Values.NoProxy } else { "localhost,127.0.0.1,::1" }
@@ -145,8 +140,7 @@ function Set-ManagedEnvironment {
         [Environment]::SetEnvironmentVariable($entry.Key, $entry.Value, "User")
         if ([string]::IsNullOrEmpty($value)) {
             Remove-Item -Path "Env:\$($entry.Key)" -ErrorAction SilentlyContinue
-        }
-        else {
+        } else {
             Set-Item -Path "Env:\$($entry.Key)" -Value $value
         }
     }
@@ -161,8 +155,7 @@ function Update-GitProxyConfiguration {
     $proxy = if ($Values.Http) { $Values.Http } else { $Values.Socks }
     if ($proxy) {
         "[http]`n    proxy = `"$proxy`"" | Set-Content -LiteralPath $ConfigFile -Encoding ascii
-    }
-    else {
+    } else {
         "" | Set-Content -LiteralPath $ConfigFile -Encoding ascii
     }
 }
@@ -185,8 +178,7 @@ function Update-NpmProxyConfiguration {
             if ($LASTEXITCODE -ne 0) {
                 throw "npm failed to update its HTTPS proxy configuration"
             }
-        }
-        else {
+        } else {
             npm config delete proxy --location=user
             if ($LASTEXITCODE -ne 0) {
                 throw "npm failed to remove its proxy configuration"
@@ -205,7 +197,7 @@ function Update-NpmProxyConfiguration {
     $lines = @()
     if (Test-Path -LiteralPath $npmConfig -PathType Leaf) {
         $lines = @(Get-Content -LiteralPath $npmConfig |
-            Where-Object { $_ -notmatch '^\s*(proxy|https-proxy)\s*=' })
+                Where-Object { $_ -notmatch '^\s*(proxy|https-proxy)\s*=' })
     }
     if ($Values.Http) {
         $lines += @("proxy=$($Values.Http)", "https-proxy=$($Values.Http)")
@@ -245,12 +237,10 @@ if ($Clear) {
     Write-ProxyConfiguration -Path $configPath -Http "" -Socks "" -NoProxy ""
     $values = Read-ProxyConfiguration -Path $configPath
     Set-ManagedEnvironment -Values $values
-}
-elseif ($Sync) {
+} elseif ($Sync) {
     $values = Read-ProxyConfiguration -Path $configPath
     Set-ManagedEnvironment -Values $values
-}
-else {
+} else {
     Assert-ProxyUrl -Value $Http -Kind HTTP_PROXY
     Assert-ProxyUrl -Value $Socks -Kind SOCKS_PROXY
     if (-not $NoProxy) {

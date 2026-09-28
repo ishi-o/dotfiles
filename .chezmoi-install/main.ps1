@@ -49,7 +49,7 @@ $devToolCommands = @(
 
 $installDevTools = $true
 $missingDevTools = @($devToolCommands |
-    Where-Object { -not (Get-Command $_ -ErrorAction SilentlyContinue) })
+        Where-Object { -not (Get-Command $_ -ErrorAction SilentlyContinue) })
 
 if ($missingDevTools.Count -gt 0 -and
     -not (Confirm-Install "Install missing developer tools?")) {
@@ -118,8 +118,7 @@ foreach ($package in $packages) {
     Write-Host "==> Processing: $($package.BaseName)"
     try {
         & $package.FullName
-    }
-    catch {
+    } catch {
         Write-Warning "Failed to install $($package.BaseName): $($_.Exception.Message)"
         $failedPackages += $package.BaseName
     }
