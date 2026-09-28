@@ -39,42 +39,32 @@ function Get-ScoopRoot {
     Join-Path $env:USERPROFILE "scoop"
 }
 
-function Sync-ScoopVersionsBucket {
-    $versionsBucket = Join-Path (Get-ScoopRoot) "buckets\versions"
-
-    if (-not (Test-Path -LiteralPath $versionsBucket -PathType Container)) {
-        & scoop bucket add versions
-        if ($LASTEXITCODE -ne 0) {
-            throw "scoop bucket add versions failed"
-        }
-    }
-
-    $gitDirectory = Join-Path $versionsBucket ".git"
-    if (-not (Test-Path -LiteralPath $gitDirectory -PathType Container)) {
-        throw "Scoop versions bucket is not a Git repository: $versionsBucket"
-    }
-
-    git -C $versionsBucket reset --hard
-    if ($LASTEXITCODE -ne 0) {
-        throw "git reset --hard failed for the Scoop versions bucket"
-    }
-
-    git -C $versionsBucket pull --ff-only
-    if ($LASTEXITCODE -ne 0) {
-        throw "git pull failed for the Scoop versions bucket"
-    }
-}
-
 function Upgrade-Nvim {
-    Initialize-ScoopUpdateCheck
-    Sync-ScoopVersionsBucket
+    $ErrorActionPreference = "Stop"
 
-    Install-ScoopPackage -Package "versions/neovim-nightly"
+    $nvimMsi = Join-Path $env:TEMP "nvim-win64.msi"
+    $nvimDir = Join-Path $env:LOCALAPPDATA "Neovim"
 
-    & scoop update neovim-nightly
-    if ($LASTEXITCODE -ne 0) {
-        throw "scoop update neovim-nightly failed"
+    Write-Host "==> Downloading Neovim nightly..."
+    Invoke-WebRequest -Uri "https://github.com/neovim/neovim/releases/download/nightly/nvim-win64.msi" -OutFile $nvimMsi
+
+    Write-Host "==> Installing Neovim nightly to $nvimDir..."
+    $process = Start-Process msiexec -ArgumentList "/i", "`"$nvimMsi`"", "/passive", "INSTALLDIR=`"$nvimDir`"" -Wait -PassThru
+    if ($process.ExitCode -ne 0) {
+        Remove-Item $nvimMsi -Force -ErrorAction SilentlyContinue
+        throw "Neovim nightly installation failed with exit code $($process.ExitCode)"
     }
+
+    Remove-Item $nvimMsi -Force
+
+    $nvimBin = Join-Path $nvimDir "bin"
+    $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if ($currentPath -notlike "*$nvimBin*") {
+        [Environment]::SetEnvironmentVariable("Path", "$currentPath;$nvimBin", "User")
+        Write-Host "==> Added $nvimBin to user PATH."
+    }
+
+    Write-Host "==> Neovim nightly installed successfully."
 }
 
 # Node.js helpers.
