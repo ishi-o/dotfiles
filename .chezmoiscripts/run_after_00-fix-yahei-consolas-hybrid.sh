@@ -12,7 +12,7 @@ else
   Linux)
     font_dir="$HOME/.local/share/fonts"
     ;;
-  MINGW*|MSYS*|CYGWIN*)
+  MINGW* | MSYS* | CYGWIN*)
     if [ -n "${LOCALAPPDATA:-}" ] && command -v cygpath >/dev/null 2>&1; then
       font_dir="$(cygpath -u "$LOCALAPPDATA")/Microsoft/Windows/Fonts"
     else
@@ -25,7 +25,7 @@ else
   esac
 fi
 
-font_name='YaHei Consolas Hybrid 1.12 For Powerline.ttf'
+font_name='ConsolasYahei.ttf'
 font_path="$font_dir/$font_name"
 
 if [ ! -f "$font_path" ]; then
@@ -34,9 +34,9 @@ fi
 
 python_command=()
 for candidate in \
-    "$(command -v python3 || true)" \
-    /usr/bin/python3 \
-    /bin/python3; do
+  "$(command -v python3 || true)" \
+  /usr/bin/python3 \
+  /bin/python3; do
   if [ -n "$candidate" ] && "$candidate" -c 'import sys' >/dev/null 2>&1; then
     python_command=("$candidate")
     break

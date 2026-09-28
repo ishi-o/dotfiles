@@ -14,15 +14,16 @@ url = "https://github.com/ishi-o/ishio.nvim.git"
 
 {{ if $installFonts }}
 [yahei_consolas_hybrid]
-type = "file"
-url = "https://raw.githubusercontent.com/Magnetic2014/YaHei-Consolas-Hybrid-For-Powerline/master/YaHei%20Consolas%20Hybrid%201.12%20For%20Powerline.ttf"
+type = "archive"
+url = "https://github.com/ishi-o/assets/releases/download/fonts-consolas-v0.1/ConsolasYahei.ttf.xz"
 {{ if eq .chezmoi.os "darwin" }}
-targetPath = "Library/Fonts/YaHei Consolas Hybrid 1.12 For Powerline.ttf"
+targetPath = "Library/Fonts"
 {{ else if eq .chezmoi.os "linux" }}
-targetPath = ".local/share/fonts/YaHei Consolas Hybrid 1.12 For Powerline.ttf"
+targetPath = ".local/share/fonts"
 {{ else if eq .chezmoi.os "windows" }}
-targetPath = "AppData/Local/Microsoft/Windows/Fonts/YaHei Consolas Hybrid 1.12 For Powerline.ttf"
+targetPath = "AppData/Local/Microsoft/Windows/Fonts"
 {{ end }}
+include = ["ConsolasYahei.ttf"]
 
 [maple_mono_normal]
 type = "archive"
