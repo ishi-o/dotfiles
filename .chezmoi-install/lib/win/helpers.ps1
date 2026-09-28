@@ -22,9 +22,58 @@ function Install-ScoopPackage {
     )
 
     Initialize-ScoopUpdateCheck
-    & scoop install --no-update @Package
+    & scoop install -u @Package
     if ($LASTEXITCODE -ne 0) {
         throw "scoop install failed: $($Package -join ', ')"
+    }
+}
+
+function Get-ScoopRoot {
+    if ($env:SCOOP) {
+        return $env:SCOOP
+    }
+    if ($env:SCOOP_DIR) {
+        return $env:SCOOP_DIR
+    }
+
+    Join-Path $env:USERPROFILE "scoop"
+}
+
+function Sync-ScoopVersionsBucket {
+    $versionsBucket = Join-Path (Get-ScoopRoot) "buckets\versions"
+
+    if (-not (Test-Path -LiteralPath $versionsBucket -PathType Container)) {
+        & scoop bucket add versions
+        if ($LASTEXITCODE -ne 0) {
+            throw "scoop bucket add versions failed"
+        }
+    }
+
+    $gitDirectory = Join-Path $versionsBucket ".git"
+    if (-not (Test-Path -LiteralPath $gitDirectory -PathType Container)) {
+        throw "Scoop versions bucket is not a Git repository: $versionsBucket"
+    }
+
+    git -C $versionsBucket reset --hard
+    if ($LASTEXITCODE -ne 0) {
+        throw "git reset --hard failed for the Scoop versions bucket"
+    }
+
+    git -C $versionsBucket pull --ff-only
+    if ($LASTEXITCODE -ne 0) {
+        throw "git pull failed for the Scoop versions bucket"
+    }
+}
+
+function Upgrade-Nvim {
+    Initialize-ScoopUpdateCheck
+    Sync-ScoopVersionsBucket
+
+    Install-ScoopPackage -Package "versions/neovim-nightly"
+
+    & scoop update neovim-nightly
+    if ($LASTEXITCODE -ne 0) {
+        throw "scoop update neovim-nightly failed"
     }
 }
 

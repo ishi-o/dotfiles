@@ -68,6 +68,9 @@ if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
 if (-not (scoop bucket list | Where-Object { $_.Name -eq "extras" })) {
     scoop bucket add extras
 }
+if (-not (scoop bucket list | Where-Object { $_.Name -eq "versions" })) {
+    scoop bucket add versions
+}
 
 Initialize-ScoopUpdateCheck
 
