@@ -7,7 +7,7 @@ if [ -n "${ZSH_VERSION:-}" ]; then
         $fpath
     )
     autoload -Uz compinit
-    compinit
+    compinit -C
 
     if command -v buf >/dev/null 2>&1; then
         eval "$(buf completion zsh 2>/dev/null)"
@@ -26,7 +26,6 @@ if [ -n "${ZSH_VERSION:-}" ]; then
     fi
     if command -v rustup >/dev/null 2>&1; then
         eval "$(rustup completions zsh 2>/dev/null)"
-        eval "$(rustup completions zsh cargo 2>/dev/null)"
     fi
 elif [ -n "${BASH_VERSION:-}" ]; then
     if [ -f /etc/bash_completion ]; then

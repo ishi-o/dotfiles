@@ -23,8 +23,8 @@ foreach ($entry in $xdgDirectories.GetEnumerator()) {
 }
 
 $toolDirectories = [ordered]@{
-    CARGO_HOME      = Join-Path $env:USERPROFILE ".local\share\cargo"
-    RUSTUP_HOME     = Join-Path $env:USERPROFILE ".local\share\rustup"
+    # CARGO_HOME      = Join-Path $env:USERPROFILE ".local\share\cargo"
+    # RUSTUP_HOME     = Join-Path $env:USERPROFILE ".local\share\rustup"
     MISE_CONFIG_DIR = Join-Path $env:USERPROFILE ".config\mise"
     MISE_DATA_DIR   = Join-Path $env:USERPROFILE ".local\share\mise"
     MISE_CACHE_DIR  = Join-Path $env:USERPROFILE ".cache\mise"

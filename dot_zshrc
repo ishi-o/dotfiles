@@ -67,19 +67,10 @@ zplug load
 source "$XDG_CONFIG_HOME/zsh/keybinds.zsh"
 source "$XDG_CONFIG_HOME/zsh/kitty.zsh"
 
-mise_path="$(command -v mise 2>/dev/null || true)"
-if [ -z "$mise_path" ] && [ -x "$MISE_INSTALL_PATH" ]; then
-  mise_path="$MISE_INSTALL_PATH"
-fi
-if [ -n "$mise_path" ]; then
-  case "$(uname -s 2>/dev/null)" in
-    # mise activation emits Windows-style PATH entries in MSYS2. Use
-    # the Windows user PATH and mise shims instead.
-    MSYS_NT*) ;;
-    *) eval "$("$mise_path" activate zsh)" ;;
-  esac
-fi
-unset mise_path
+case ":$PATH:" in
+  *":$MISE_DATA_DIR/shims:"*) ;;
+  *) export PATH="$MISE_DATA_DIR/shims:$PATH" ;;
+esac
 
 ### START_ALIAS 
 alias vi='nvim'
@@ -87,9 +78,20 @@ alias vim='nvim'
 ### END_ALIAS
 
 ### START_NVM
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-command -v nvm >/dev/null 2>&1 && nvm use --silent default >/dev/null 2>&1
+_nvm_lazy_load() {
+  unset -f _nvm_lazy_load nvm node npm npx corepack yarn pnpm
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  command -v nvm >/dev/null 2>&1 && nvm use --silent default >/dev/null 2>&1
+}
+
+nvm()     { _nvm_lazy_load; nvm "$@"; }
+node()    { _nvm_lazy_load; node "$@"; }
+npm()     { _nvm_lazy_load; npm "$@"; }
+npx()     { _nvm_lazy_load; npx "$@"; }
+corepack() { _nvm_lazy_load; corepack "$@"; }
+yarn()    { _nvm_lazy_load; yarn "$@"; }
+pnpm()    { _nvm_lazy_load; pnpm "$@"; }
 ### END_NVM
 
 . "$XDG_CONFIG_HOME/shell/completions"
