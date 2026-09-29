@@ -36,11 +36,21 @@ Set-PSReadLineKeyHandler -Chord @(
     -Description "Saves the working directory and command history to last.pwsh-session.json."
 
 Set-PSReadLineOption -EditMode Vi
-Set-PSReadLineOption -ViModeIndicator Cursor
+function OnViModeChange {
+    if ($args[0] -eq 'Command') {
+        Write-Host -NoNewline "`e[2 q"
+    } else {
+        Write-Host -NoNewline "`e[6 q"
+    }
+}
+
+Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler $Function:OnViModeChange
+
+Write-Host -NoNewline "`e[6 q"
 
 Set-PSReadLineKeyHandler -ViMode Insert -Chord "j" -ScriptBlock {
     $key = [Console]::ReadKey($true)
-    if ($key.KeyChar -eq 'k') {
+    if ($key.KeyChar -eq 'j') {
         [Microsoft.PowerShell.PSConsoleReadLine]::ViCommandMode()
     } else {
         [Microsoft.PowerShell.PSConsoleReadLine]::Insert('j')
