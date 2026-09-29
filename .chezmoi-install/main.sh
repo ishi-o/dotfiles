@@ -99,7 +99,7 @@ if commands_missing codex claude mcp-hub codegraph &&
 fi
 
 install_utilities=true
-if commands_missing fzf fd tree rg gh xclip &&
+if commands_missing fzf fd tree rg gh sqlite3 xclip &&
   ! confirm_install "Install missing command-line utilities?"; then
   install_utilities=false
 fi
@@ -158,7 +158,7 @@ else
     57-codex | 58-claude | 59-mcp-hub | 59-codegraph)
       pkg_category=ai
       ;;
-    60-fzf | 63-fd | 64-tree | 66-ripgrep | 67-xclip | 73-gh)
+    60-fzf | 63-fd | 64-tree | 66-ripgrep | 67-xclip | 73-gh | 74-sqlite3)
       pkg_category=utilities
       ;;
     65-kubectl | 68-netcat)
