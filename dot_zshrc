@@ -78,20 +78,31 @@ alias vim='nvim'
 ### END_ALIAS
 
 ### START_NVM
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+
+_nvm_ver="$(cat "$NVM_DIR/alias/default" 2>/dev/null)"
+if [ -n "$_nvm_ver" ]; then
+  for _d in "$NVM_DIR/versions/node/v${_nvm_ver#v}"*; do
+    if [ -d "$_d/bin" ]; then
+      case ":$PATH:" in
+        *":$_d/bin:"*) ;;
+        *) export PATH="$_d/bin:$PATH" ;;
+      esac
+      break
+    fi
+  done
+fi
+unset _nvm_ver _d
+
 _nvm_lazy_load() {
-  unset -f _nvm_lazy_load nvm node npm npx corepack yarn pnpm
+  unset -f _nvm_lazy_load nvm
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-  command -v nvm >/dev/null 2>&1 && nvm use --silent default >/dev/null 2>&1
+  nvm use --silent default >/dev/null 2>&1
+  hash -r
 }
 
-nvm()     { _nvm_lazy_load; nvm "$@"; }
-node()    { _nvm_lazy_load; node "$@"; }
-npm()     { _nvm_lazy_load; npm "$@"; }
-npx()     { _nvm_lazy_load; npx "$@"; }
-corepack() { _nvm_lazy_load; corepack "$@"; }
-yarn()    { _nvm_lazy_load; yarn "$@"; }
-pnpm()    { _nvm_lazy_load; pnpm "$@"; }
+nvm() { _nvm_lazy_load; command nvm "$@"; }
 ### END_NVM
 
 . "$XDG_CONFIG_HOME/shell/completions"
