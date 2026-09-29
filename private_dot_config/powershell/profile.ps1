@@ -9,6 +9,22 @@ $PSStyle.Formatting.Debug = $PSStyle.Foreground.FromRgb(223, 105, 186)
 Set-PSReadLineOption -Colors @{ Default = $PSStyle.Foreground.FromRgb(92, 106, 114) }
 Set-PSReadLineOption -PredictionSource History
 
+$global:PwshCurrentLocation ??= $PWD.ProviderPath
+$global:PwshPreviousLocation ??= $null
+if (-not $global:PwshOriginalPrompt) {
+    $global:PwshOriginalPrompt = $function:prompt
+}
+
+function prompt {
+    $currentLocation = $PWD.ProviderPath
+    if ($currentLocation -ne $global:PwshCurrentLocation) {
+        $global:PwshPreviousLocation = $global:PwshCurrentLocation
+        $global:PwshCurrentLocation = $currentLocation
+    }
+
+    & $global:PwshOriginalPrompt
+}
+
 Add-Type -AssemblyName System.Windows.Forms
 
 function Invoke-WtAction {
@@ -176,8 +192,12 @@ Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {
     }
 
     if ($trimmed -eq '-') {
+        $previousLocation = $global:PwshPreviousLocation
         [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert('Set-Location -')
+        if ($previousLocation -and $previousLocation -ne $PWD.ProviderPath) {
+            $literalPath = "'" + $previousLocation.Replace("'", "''") + "'"
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("Set-Location -LiteralPath $literalPath")
+        }
         [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
         return
     }
