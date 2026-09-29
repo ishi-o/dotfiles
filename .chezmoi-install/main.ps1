@@ -47,7 +47,7 @@ function Test-MSYS2Available {
         try {
             $msys2Root = (scoop prefix msys2).Trim()
             return [bool]$msys2Root -and
-                (Test-Path -LiteralPath (Join-Path $msys2Root "usr\bin\pacman.exe") -PathType Leaf)
+            (Test-Path -LiteralPath (Join-Path $msys2Root "usr\bin\pacman.exe") -PathType Leaf)
         } catch {
             return $false
         }
@@ -80,49 +80,49 @@ if (-not (Test-MSVCAvailable) -and
 }
 
 $installMingw = $true
-if (Test-AnyCommandMissing @("gcc") -and
+if ((Test-AnyCommandMissing @("gcc")) -and
     -not (Confirm-Install "Install missing MinGW toolchain?")) {
     $installMingw = $false
 }
 
 $installBase = $true
-if (Test-AnyCommandMissing @("unzip", "m4", "pkg-config", "openssl", "msgfmt", "gpg") -and
+if ((Test-AnyCommandMissing @("unzip", "m4", "pkg-config", "openssl", "msgfmt", "gpg")) -and
     -not (Confirm-Install "Install missing base tools?")) {
     $installBase = $false
 }
 
 $installRuntimes = $true
-if (Test-AnyCommandMissing @("uv", "mise", "nvm", "node", "luajit", "cargo") -and
+if ((Test-AnyCommandMissing @("uv", "mise", "nvm", "node", "luajit", "cargo")) -and
     -not (Confirm-Install "Install missing language runtimes?")) {
     $installRuntimes = $false
 }
 
 $installEditor = $true
-if (Test-AnyCommandMissing @("nvim", "tree-sitter") -and
+if ((Test-AnyCommandMissing @("nvim", "tree-sitter")) -and
     -not (Confirm-Install "Install missing editor tooling?")) {
     $installEditor = $false
 }
 
 $installAi = $true
-if (Test-AnyCommandMissing @("codex", "claude", "mcp-hub", "codegraph") -and
+if ((Test-AnyCommandMissing @("codex", "claude", "mcp-hub", "codegraph")) -and
     -not (Confirm-Install "Install missing AI tools?")) {
     $installAi = $false
 }
 
 $installUtilities = $true
-if (Test-AnyCommandMissing @("fzf", "fd", "rg", "gh") -and
+if ((Test-AnyCommandMissing @("fzf", "fd", "rg", "gh")) -and
     -not (Confirm-Install "Install missing command-line utilities?")) {
     $installUtilities = $false
 }
 
 $installOperations = $true
-if (Test-AnyCommandMissing @("kubectl", "ncat") -and
+if ((Test-AnyCommandMissing @("kubectl", "ncat")) -and
     -not (Confirm-Install "Install missing operations tools?")) {
     $installOperations = $false
 }
 
 $installTerminal = $true
-if (Test-AnyCommandMissing @("wt") -and
+if ((Test-AnyCommandMissing @("wt")) -and
     -not (Confirm-Install "Install missing Windows Terminal?")) {
     $installTerminal = $false
 }
@@ -207,17 +207,39 @@ foreach ($package in $packages) {
     }
 
     $categoryEnabled = switch ($category) {
-        "msys2" { $installMsys2 }
-        "msvc" { $installMsvc }
-        "mingw" { $installMingw }
-        "base" { $installBase }
-        "runtimes" { $installRuntimes }
-        "editor" { $installEditor }
-        "ai" { $installAi }
-        "utilities" { $installUtilities }
-        "operations" { $installOperations }
-        "terminal" { $installTerminal }
-        default { throw "Unknown install category: $category" }
+        "msys2" {
+            $installMsys2 
+        }
+        "msvc" {
+            $installMsvc 
+        }
+        "mingw" {
+            $installMingw 
+        }
+        "base" {
+            $installBase 
+        }
+        "runtimes" {
+            $installRuntimes 
+        }
+        "editor" {
+            $installEditor 
+        }
+        "ai" {
+            $installAi 
+        }
+        "utilities" {
+            $installUtilities 
+        }
+        "operations" {
+            $installOperations 
+        }
+        "terminal" {
+            $installTerminal 
+        }
+        default {
+            throw "Unknown install category: $category" 
+        }
     }
 
     if (-not $categoryEnabled) {
