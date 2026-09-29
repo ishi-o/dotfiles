@@ -1,6 +1,7 @@
 {
   "$schema": "https://aka.ms/terminal-profiles-schema",
   "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+  "launchMode": "fullscreen",
   "copyOnSelect": true,
   "copyFormatting": "none",
   "theme": "system",
@@ -175,54 +176,6 @@
     {
       "keys": "ctrl+shift+d",
       "id": "User.closePane"
-    },
-    {
-      "keys": "ctrl+shift+h",
-      "id": "User.swapLeft"
-    },
-    {
-      "keys": "ctrl+shift+j",
-      "id": "User.swapDown"
-    },
-    {
-      "keys": "ctrl+shift+k",
-      "id": "User.swapUp"
-    },
-    {
-      "keys": "ctrl+shift+l",
-      "id": "User.swapRight"
-    },
-    {
-      "keys": "ctrl+h",
-      "id": "User.focusLeft"
-    },
-    {
-      "keys": "ctrl+j",
-      "id": "User.focusDown"
-    },
-    {
-      "keys": "ctrl+k",
-      "id": "User.focusUp"
-    },
-    {
-      "keys": "ctrl+l",
-      "id": "User.focusRight"
-    },
-    {
-      "keys": "alt+h",
-      "id": "User.resizeLeft"
-    },
-    {
-      "keys": "alt+j",
-      "id": "User.resizeDown"
-    },
-    {
-      "keys": "alt+k",
-      "id": "User.resizeUp"
-    },
-    {
-      "keys": "alt+l",
-      "id": "User.resizeRight"
     },
     {
       "keys": "ctrl+\\",

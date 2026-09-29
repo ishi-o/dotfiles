@@ -7,6 +7,48 @@ $PSStyle.Formatting.Warning = $PSStyle.Foreground.FromRgb(223, 160, 0)
 $PSStyle.Formatting.Verbose = $PSStyle.Foreground.FromRgb(58, 148, 197)
 $PSStyle.Formatting.Debug = $PSStyle.Foreground.FromRgb(223, 105, 186)
 Set-PSReadLineOption -Colors @{ Default = $PSStyle.Foreground.FromRgb(92, 106, 114) }
+Set-PSReadLineOption -PredictionSource History
+
+function Invoke-WtAction {
+    param([Parameter(Mandatory = $true)][string[]]$WtArgs)
+    & wt.exe @WtArgs 2>$null
+}
+
+Set-PSReadLineKeyHandler -Chord Ctrl+o -Function ClearScreen
+Set-PSReadLineKeyHandler -Chord Ctrl+y -Function AcceptSuggestion
+
+$wtPaneKeys = @{
+    "Ctrl+h"       = @("move-focus", "-d", "left")
+    "Ctrl+j"       = @("move-focus", "-d", "down")
+    "Ctrl+k"       = @("move-focus", "-d", "up")
+    "Ctrl+l"       = @("move-focus", "-d", "right")
+    "Ctrl+Shift+h" = @("swap-pane", "-d", "left")
+    "Ctrl+Shift+j" = @("swap-pane", "-d", "down")
+    "Ctrl+Shift+k" = @("swap-pane", "-d", "up")
+    "Ctrl+Shift+l" = @("swap-pane", "-d", "right")
+}
+foreach ($chord in $wtPaneKeys.Keys) {
+    $wtArgs = $wtPaneKeys[$chord]
+    Set-PSReadLineKeyHandler -Chord $chord -ScriptBlock {
+        param($key, $arg)
+        Invoke-WtAction -WtArgs $arg
+    } -Argument $wtArgs -BriefDescription "Windows Terminal pane action"
+}
+
+Add-Type -AssemblyName System.Windows.Forms
+$wtResizeKeys = @{
+    "Alt+h" = "%+{LEFT}"
+    "Alt+j" = "%+{DOWN}"
+    "Alt+k" = "%+{UP}"
+    "Alt+l" = "%+{RIGHT}"
+}
+foreach ($chord in $wtResizeKeys.Keys) {
+    $relay = $wtResizeKeys[$chord]
+    Set-PSReadLineKeyHandler -Chord $chord -ScriptBlock {
+        param($key, $arg)
+        [System.Windows.Forms.SendKeys]::SendWait($arg)
+    } -Argument $relay -BriefDescription "Windows Terminal pane resize"
+}
 
 Set-Alias -Name vi -Value nvim
 Set-Alias -Name vim -Value nvim
