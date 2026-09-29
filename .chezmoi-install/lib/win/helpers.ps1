@@ -39,6 +39,18 @@ function Get-ScoopRoot {
     Join-Path $env:USERPROFILE "scoop"
 }
 
+function Test-MSVCAvailable {
+    $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+    if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) {
+        return $false
+    }
+
+    $installationPath = & $vswhere -products * `
+        -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+        -property installationPath
+    return -not [string]::IsNullOrWhiteSpace(($installationPath | Select-Object -First 1))
+}
+
 function Upgrade-Nvim {
     $ErrorActionPreference = "Stop"
 

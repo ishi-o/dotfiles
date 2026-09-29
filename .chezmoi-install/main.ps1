@@ -55,28 +55,15 @@ function Test-MSYS2Available {
     return $false
 }
 
-function Test-MSVCAvailable {
-    $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
-    if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) {
-        return $false
-    }
-
-    $installationPath = & $vswhere -products * `
-        -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
-        -property installationPath
-    return -not [string]::IsNullOrWhiteSpace(($installationPath | Select-Object -First 1))
-}
-
 $installMsys2 = $true
 if (-not (Test-MSYS2Available) -and
     -not (Confirm-Install "Install missing MSYS2 environment?")) {
     $installMsys2 = $false
 }
 
-$installMsvc = $true
-if (-not (Test-MSVCAvailable) -and
-    -not (Confirm-Install "Install missing MSVC build tools?")) {
-    $installMsvc = $false
+$installMsvc = $false
+if (-not (Test-MSVCAvailable)) {
+    $installMsvc = Confirm-Install "Install missing MSVC build tools?"
 }
 
 $installMingw = $true
