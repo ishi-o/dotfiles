@@ -78,31 +78,47 @@ alias vim='nvim'
 ### END_ALIAS
 
 ### START_NVM
-export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
-
-_nvm_ver="$(cat "$NVM_DIR/alias/default" 2>/dev/null)"
-if [ -n "$_nvm_ver" ]; then
-  for _d in "$NVM_DIR/versions/node/v${_nvm_ver#v}"*; do
-    if [ -d "$_d/bin" ]; then
-      case ":$PATH:" in
-        *":$_d/bin:"*) ;;
-        *) export PATH="$_d/bin:$PATH" ;;
-      esac
-      break
+if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
+  if command -v npm >/dev/null 2>&1; then
+    _npm_prefix="$(npm config get prefix 2>/dev/null)"
+    if [ -n "$_npm_prefix" ]; then
+      _npm_prefix="$(cygpath -u "$_npm_prefix" 2>/dev/null)"
+      if [ -d "$_npm_prefix" ]; then
+        case ":$PATH:" in
+          *":$_npm_prefix:"*) ;;
+          *) export PATH="$_npm_prefix:$PATH" ;;
+        esac
+      fi
     fi
-  done
+    unset _npm_prefix
+  fi
+else
+  export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+
+  _nvm_ver="$(cat "$NVM_DIR/alias/default" 2>/dev/null)"
+  if [ -n "$_nvm_ver" ]; then
+    for _d in "$NVM_DIR/versions/node/v${_nvm_ver#v}"*; do
+      if [ -d "$_d/bin" ]; then
+        case ":$PATH:" in
+          *":$_d/bin:"*) ;;
+          *) export PATH="$_d/bin:$PATH" ;;
+        esac
+        break
+      fi
+    done
+  fi
+  unset _nvm_ver _d
+
+  _nvm_lazy_load() {
+    unset -f _nvm_lazy_load nvm
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+    nvm use --silent default >/dev/null 2>&1
+    hash -r
+  }
+
+  nvm() { _nvm_lazy_load; command nvm "$@"; }
 fi
-unset _nvm_ver _d
-
-_nvm_lazy_load() {
-  unset -f _nvm_lazy_load nvm
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-  nvm use --silent default >/dev/null 2>&1
-  hash -r
-}
-
-nvm() { _nvm_lazy_load; command nvm "$@"; }
 ### END_NVM
 
 . "$XDG_CONFIG_HOME/shell/completions"

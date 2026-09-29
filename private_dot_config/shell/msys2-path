@@ -14,9 +14,23 @@ MSYS_NT*)
             msys2_scoop_root="$msys2_user_profile/scoop"
         fi
 
+        if [ -n "${NVM_HOME:-}" ]; then
+            msys2_nvm_home="$(cygpath -u "$NVM_HOME")"
+        else
+            msys2_nvm_home="$msys2_scoop_root/apps/nvm/current"
+        fi
+        if [ -n "${NVM_SYMLINK:-}" ]; then
+            msys2_nvm_node="$(cygpath -u "$NVM_SYMLINK")"
+        else
+            msys2_nvm_node="$msys2_nvm_home/nodejs"
+        fi
+        export NVM_DIR="$msys2_nvm_home"
+
         for msys2_path in \
             "$msys2_scoop_root/apps/git/current/cmd" \
             "$msys2_program_files/Git/cmd" \
+            "$msys2_nvm_home" \
+            "$msys2_nvm_node" \
             "$msys2_scoop_root/shims" \
             "$msys2_scoop_root/apps/mingw/current/bin" \
             "$msys2_user_profile/.local/share/mise/shims" \
@@ -32,7 +46,7 @@ MSYS_NT*)
         done
 
         export PATH MSYS2_EXTERNAL_PATHS_DONE=1
-        unset msys2_user_profile msys2_local_apps msys2_program_files msys2_scoop_root msys2_path
+        unset msys2_user_profile msys2_local_apps msys2_program_files msys2_scoop_root msys2_nvm_home msys2_nvm_node msys2_path
     fi
     ;;
 esac
