@@ -9,36 +9,6 @@ $PSStyle.Formatting.Debug = $PSStyle.Foreground.FromRgb(223, 105, 186)
 Set-PSReadLineOption -Colors @{ Default = $PSStyle.Foreground.FromRgb(92, 106, 114) }
 Set-PSReadLineOption -PredictionSource History
 
-$commandNotFoundPathHandler = {
-    param([System.Management.Automation.Language.CommandAst]$CommandAst)
-
-    if ($CommandAst.CommandElements.Count -ne 1) {
-        return
-    }
-
-    $commandName = $CommandAst.GetCommandName()
-    if ([string]::IsNullOrWhiteSpace($commandName) -or
-        (Get-Command -Name $commandName -ErrorAction SilentlyContinue)) {
-        return
-    }
-
-    $path = $commandName
-    if (-not (Test-Path -LiteralPath $path -PathType Container)) {
-        return
-    }
-
-    $resolvedPath = (Resolve-Path -LiteralPath $path).ProviderPath
-    $literalPath = "'" + $resolvedPath.Replace("'", "''") + "'"
-    $commandExtent = $CommandAst.CommandElements[0].Extent
-    [Microsoft.PowerShell.PSConsoleReadLine]::Replace(
-        $commandExtent.StartOffset,
-        $commandExtent.EndOffset - $commandExtent.StartOffset,
-        "Set-Location -LiteralPath $literalPath"
-    )
-}
-Set-PSReadLineOption -CommandValidationHandler $commandNotFoundPathHandler
-Set-PSReadLineKeyHandler -Chord Enter -Function ValidateAndAcceptLine
-
 Add-Type -AssemblyName System.Windows.Forms
 
 function Invoke-WtAction {
@@ -47,6 +17,7 @@ function Invoke-WtAction {
 }
 
 Set-PSReadLineOption -EditMode Vi
+Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
 function OnViModeChange {
     if ($args[0] -eq 'Command') {
@@ -69,6 +40,72 @@ function Save-PwshSession {
         history          = $history
     } | ConvertTo-Json | Set-Content -Path $sessionFile -Encoding UTF8
     Write-Host "Saved PowerShell session to $sessionFile"
+}
+
+function Get-PwshHistoryFilePaths {
+    $historyPath = (Get-PSReadLineOption).HistorySavePath
+    if (-not (Test-Path -LiteralPath $historyPath -PathType Leaf)) {
+        return @()
+    }
+
+    $lines = @(Get-Content -LiteralPath $historyPath -Tail 1000)
+    if ($lines.Count -eq 0) {
+        return @()
+    }
+    [array]::Reverse($lines)
+
+    $paths = foreach ($line in $lines) {
+        $tokens = $null
+        $errors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseInput(
+            $line,
+            [ref]$tokens,
+            [ref]$errors
+        )
+        $ast.FindAll({
+            param($node)
+            $node -is [System.Management.Automation.Language.StringConstantExpressionAst]
+        }, $true) | ForEach-Object { $_.Value }
+    }
+
+    @(
+        $paths |
+            Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } |
+            Select-Object -Unique
+    )
+}
+
+function Invoke-PwshHistoryFilePicker {
+    if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
+        return
+    }
+
+    $paths = @(Get-PwshHistoryFilePaths)
+    if ($paths.Count -eq 0) {
+        return
+    }
+
+    $selected = $paths | & fzf `
+        "--prompt=History files> " `
+        "--height=40%" `
+        "--layout=reverse" `
+        "--info=inline"
+    if ([string]::IsNullOrWhiteSpace($selected)) {
+        return
+    }
+
+    $quoted = "'" + $selected.Replace("'", "''") + "'"
+    $line = $null
+    $cursor = $null
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+
+    if ($line.Length -gt 0 -and
+        $cursor -gt 0 -and
+        -not [char]::IsWhiteSpace($line[$cursor - 1])) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert(" $quoted")
+    } else {
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($quoted)
+    }
 }
 
 $wtPaneKeys = @{
@@ -103,6 +140,9 @@ foreach ($chord in $wtResizeKeys.Keys) {
 
 Set-PSReadLineKeyHandler -Chord Ctrl+o -Function ClearScreen
 Set-PSReadLineKeyHandler -Chord Ctrl+y -Function AcceptSuggestion
+Set-PSReadLineKeyHandler -Chord Ctrl+t -ScriptBlock {
+    Invoke-PwshHistoryFilePicker
+}
 Set-PSReadLineKeyHandler -Chord @(
     "Ctrl+Shift+S"
     "Ctrl+b,Ctrl+s"
@@ -120,6 +160,57 @@ Set-PSReadLineKeyHandler -ViMode Insert -Chord "j" -ScriptBlock {
         [Microsoft.PowerShell.PSConsoleReadLine]::Insert('j')
         [Microsoft.PowerShell.PSConsoleReadLine]::Insert($key.KeyChar)
     }
+}
+
+Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {
+    param($key, $arg)
+
+    $line = $null
+    $cursor = $null
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+
+    $trimmed = $line.Trim()
+    if ([string]::IsNullOrWhiteSpace($trimmed)) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+        return
+    }
+
+    if ($trimmed -eq '-') {
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert('Set-Location -')
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+        return
+    }
+
+    if ($trimmed -match '\s') {
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+        return
+    }
+
+    if (Get-Command -Name $trimmed -ErrorAction SilentlyContinue) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+        return
+    }
+
+    $path = $trimmed.TrimEnd('\', '/')
+    if ([string]::IsNullOrWhiteSpace($path)) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+        return
+    }
+    if ($path.Length -eq 2 -and $path[1] -eq ':') {
+        $path += '\'
+    }
+
+    if (-not (Test-Path -LiteralPath $path -PathType Container)) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+        return
+    }
+
+    $resolvedPath = (Resolve-Path -LiteralPath $path).ProviderPath
+    $literalPath = "'" + $resolvedPath.Replace("'", "''") + "'"
+    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("Set-Location -LiteralPath $literalPath")
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
 }
 
 Set-Alias -Name vi -Value nvim
@@ -196,3 +287,15 @@ function Expand-UniversalArchive {
     }
 }
 Set-Alias -Name x -Value Expand-UniversalArchive
+
+if (Get-Module -ListAvailable PSFzf) {
+    try {
+        Import-Module PSFzf -ErrorAction Stop
+        Set-PSReadLineKeyHandler -Key Tab -ScriptBlock {
+            Invoke-FzfTabCompletion
+        }
+        Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
+    } catch {
+        Write-Warning "Failed to initialize PSFzf: $($_.Exception.Message)"
+    }
+}

@@ -97,7 +97,8 @@ if ((Test-AnyCommandMissing @("codex", "claude", "mcp-hub", "codegraph")) -and
 }
 
 $installUtilities = $true
-if ((Test-AnyCommandMissing @("7z", "fzf", "fd", "rg", "gh", "sqlite3", "zoxide")) -and
+if (((Test-AnyCommandMissing @("7z", "fzf", "fd", "rg", "gh", "sqlite3", "zoxide")) -or
+    -not (Get-Module -ListAvailable PSFzf)) -and
     -not (Confirm-Install "Install missing command-line utilities?")) {
     $installUtilities = $false
 }
@@ -165,6 +166,7 @@ $packageCategories = @{
     "74-7zip" = "utilities"
     "75-zoxide" = "utilities"
     "76-sqlite3" = "utilities"
+    "77-psfzf" = "utilities"
 }
 
 $packages = Get-ChildItem -LiteralPath (Join-Path $scriptDir "packages\win") -Filter "*.ps1" | Sort-Object Name
