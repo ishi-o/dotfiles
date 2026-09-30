@@ -19,10 +19,11 @@ MSYS_NT*)
         else
             msys2_nvm_home="$msys2_scoop_root/apps/nvm/current"
         fi
-        if [ -n "${NVM_SYMLINK:-}" ]; then
-            msys2_nvm_node="$(cygpath -u "$NVM_SYMLINK")"
-        else
-            if [ -d "$msys2_nvm_home/.nodejs" ]; then
+        msys2_nvm_node="$msys2_scoop_root/persist/nvm/.nodejs"
+        if [ ! -d "$msys2_nvm_node" ]; then
+            if [ -n "${NVM_SYMLINK:-}" ]; then
+                msys2_nvm_node="$(cygpath -u "$NVM_SYMLINK")"
+            elif [ -d "$msys2_nvm_home/.nodejs" ]; then
                 msys2_nvm_node="$msys2_nvm_home/.nodejs"
             else
                 msys2_nvm_node="$msys2_nvm_home/nodejs"

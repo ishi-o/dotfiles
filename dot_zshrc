@@ -79,7 +79,10 @@ alias vim='nvim'
 
 ### START_NVM
 if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
-  _npm_prefix="${NVM_SYMLINK:-}"
+  _npm_prefix="$HOME/scoop/persist/nvm/.nodejs"
+  if [ ! -d "$_npm_prefix" ]; then
+    _npm_prefix="${NVM_SYMLINK:-}"
+  fi
   if [ -z "$_npm_prefix" ] && command -v npm >/dev/null 2>&1; then
     _npm_prefix="$(npm config get prefix 2>/dev/null)"
   fi
