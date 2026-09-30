@@ -114,3 +114,10 @@ Kitty uses XWayland; other Wayland environments keep their native path.
 `~/.config/env` is a tracked private-permission file with placeholders for
 machine-specific variables. Add local secrets there, but do not commit real
 credentials to the source repository.
+
+On Windows, PowerShell sources `~/.config/env.local.ps1` for private
+machine-specific variables. For example:
+
+```powershell
+$env:CONTEXT7_API_KEY = "..."
+```

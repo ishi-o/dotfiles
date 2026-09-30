@@ -79,19 +79,20 @@ alias vim='nvim'
 
 ### START_NVM
 if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
-  if command -v npm >/dev/null 2>&1; then
+  _npm_prefix="${NVM_SYMLINK:-}"
+  if [ -z "$_npm_prefix" ] && command -v npm >/dev/null 2>&1; then
     _npm_prefix="$(npm config get prefix 2>/dev/null)"
-    if [ -n "$_npm_prefix" ]; then
-      _npm_prefix="$(cygpath -u "$_npm_prefix" 2>/dev/null)"
-      if [ -d "$_npm_prefix" ]; then
-        case ":$PATH:" in
-          *":$_npm_prefix:"*) ;;
-          *) export PATH="$_npm_prefix:$PATH" ;;
-        esac
-      fi
-    fi
-    unset _npm_prefix
   fi
+  if [ -n "$_npm_prefix" ]; then
+    _npm_prefix="$(cygpath -u "$_npm_prefix" 2>/dev/null)"
+    if [ -d "$_npm_prefix" ]; then
+      case ":$PATH:" in
+        *":$_npm_prefix:"*) ;;
+        *) export PATH="$_npm_prefix:$PATH" ;;
+      esac
+    fi
+  fi
+  unset _npm_prefix
 else
   export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 

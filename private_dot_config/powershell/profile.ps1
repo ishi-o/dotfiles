@@ -1,3 +1,8 @@
+$privateEnvironment = Join-Path $env:USERPROFILE ".config\env.local.ps1"
+if (Test-Path -LiteralPath $privateEnvironment -PathType Leaf) {
+    . $privateEnvironment
+}
+
 $PSStyle.FileInfo.Directory = $PSStyle.Foreground.FromRgb(141, 161, 1)
 $PSStyle.FileInfo.Executable = $PSStyle.Foreground.FromRgb(248, 85, 82)
 $PSStyle.FileInfo.SymbolicLink = $PSStyle.Foreground.FromRgb(53, 167, 124)
