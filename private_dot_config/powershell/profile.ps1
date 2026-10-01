@@ -13,6 +13,7 @@ $PSStyle.Formatting.Verbose = $PSStyle.Foreground.FromRgb(58, 148, 197)
 $PSStyle.Formatting.Debug = $PSStyle.Foreground.FromRgb(223, 105, 186)
 Set-PSReadLineOption -Colors @{ Default = $PSStyle.Foreground.FromRgb(92, 106, 114) }
 Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -EditMode Vi
 
 $global:PwshCurrentLocation ??= $PWD.ProviderPath
 $global:PwshPreviousLocation ??= $null
@@ -26,7 +27,6 @@ function prompt {
         $global:PwshPreviousLocation = $global:PwshCurrentLocation
         $global:PwshCurrentLocation = $currentLocation
     }
-
     & $global:PwshOriginalPrompt
 }
 
@@ -36,9 +36,6 @@ function Invoke-WtAction {
     param([Parameter(Mandatory = $true)][string[]]$WtArgs)
     & wt.exe -w 0 @WtArgs 2>$null
 }
-
-Set-PSReadLineOption -EditMode Vi
-Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
 function OnViModeChange {
     if ($args[0] -eq 'Command') {
@@ -68,13 +65,11 @@ function Get-PwshHistoryFilePaths {
     if (-not (Test-Path -LiteralPath $historyPath -PathType Leaf)) {
         return @()
     }
-
     $lines = @(Get-Content -LiteralPath $historyPath -Tail 1000)
     if ($lines.Count -eq 0) {
         return @()
     }
     [array]::Reverse($lines)
-
     $paths = foreach ($line in $lines) {
         $tokens = $null
         $errors = $null
@@ -84,11 +79,10 @@ function Get-PwshHistoryFilePaths {
             [ref]$errors
         )
         $ast.FindAll({
-            param($node)
-            $node -is [System.Management.Automation.Language.StringConstantExpressionAst]
-        }, $true) | ForEach-Object { $_.Value }
+                param($node)
+                $node -is [System.Management.Automation.Language.StringConstantExpressionAst]
+            }, $true) | ForEach-Object { $_.Value }
     }
-
     @(
         $paths |
             Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } |
@@ -100,12 +94,10 @@ function Invoke-PwshHistoryFilePicker {
     if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
         return
     }
-
     $paths = @(Get-PwshHistoryFilePaths)
     if ($paths.Count -eq 0) {
         return
     }
-
     $selected = $paths | & fzf `
         "--prompt=History files> " `
         "--height=40%" `
@@ -114,12 +106,10 @@ function Invoke-PwshHistoryFilePicker {
     if ([string]::IsNullOrWhiteSpace($selected)) {
         return
     }
-
     $quoted = "'" + $selected.Replace("'", "''") + "'"
     $line = $null
     $cursor = $null
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-
     if ($line.Length -gt 0 -and
         $cursor -gt 0 -and
         -not [char]::IsWhiteSpace($line[$cursor - 1])) {
@@ -185,17 +175,14 @@ Set-PSReadLineKeyHandler -ViMode Insert -Chord "j" -ScriptBlock {
 
 Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {
     param($key, $arg)
-
     $line = $null
     $cursor = $null
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-
     $trimmed = $line.Trim()
     if ([string]::IsNullOrWhiteSpace($trimmed)) {
         [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
         return
     }
-
     if ($trimmed -eq '-') {
         $previousLocation = $global:PwshPreviousLocation
         [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
@@ -206,17 +193,14 @@ Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {
         [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
         return
     }
-
     if ($trimmed -match '\s') {
         [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
         return
     }
-
     if (Get-Command -Name $trimmed -ErrorAction SilentlyContinue) {
         [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
         return
     }
-
     $path = $trimmed.TrimEnd('\', '/')
     if ([string]::IsNullOrWhiteSpace($path)) {
         [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
@@ -225,12 +209,10 @@ Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {
     if ($path.Length -eq 2 -and $path[1] -eq ':') {
         $path += '\'
     }
-
     if (-not (Test-Path -LiteralPath $path -PathType Container)) {
         [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
         return
     }
-
     $resolvedPath = (Resolve-Path -LiteralPath $path).ProviderPath
     $literalPath = "'" + $resolvedPath.Replace("'", "''") + "'"
     [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
@@ -246,6 +228,22 @@ if (Get-Command zoxide -ErrorAction SilentlyContinue) {
     Invoke-Expression (& { (zoxide init powershell | Out-String) })
 }
 
+if (Get-Command uv -ErrorAction SilentlyContinue) {
+    (& uv generate-shell-completion powershell) | Out-String | Invoke-Expression
+}
+
+if (Get-Command mise -ErrorAction SilentlyContinue) {
+    mise completion powershell | Out-String | Invoke-Expression
+}
+
+if (Get-Command gh -ErrorAction SilentlyContinue) {
+    Invoke-Expression -Command $(gh completion -s powershell | Out-String)
+}
+
+if (Get-Command kubectl -ErrorAction SilentlyContinue) {
+    kubectl completion powershell | Out-String | Invoke-Expression
+}
+
 function Expand-UniversalArchive {
     [CmdletBinding()]
     param(
@@ -255,7 +253,6 @@ function Expand-UniversalArchive {
         [Parameter(Position = 1)]
         [string]$DestinationPath
     )
-
     $resolvedPath = (Resolve-Path -LiteralPath $Path -ErrorAction Stop).ProviderPath
     $item = Get-Item -LiteralPath $resolvedPath -ErrorAction Stop
     if (-not $item.PSIsContainer -and $item -isnot [System.IO.FileInfo]) {
@@ -264,7 +261,6 @@ function Expand-UniversalArchive {
     if ($item.PSIsContainer) {
         throw "Archive path is a directory: $resolvedPath"
     }
-
     $archiveName = [System.IO.Path]::GetFileName($resolvedPath)
     $archiveStem = [System.IO.Path]::GetFileNameWithoutExtension($archiveName)
     $compoundExtensions = @(
@@ -277,7 +273,6 @@ function Expand-UniversalArchive {
             break
         }
     }
-
     if (-not $PSBoundParameters.ContainsKey("DestinationPath")) {
         $DestinationPath = Join-Path (Split-Path -Parent $resolvedPath) $archiveStem
     }
@@ -286,12 +281,10 @@ function Expand-UniversalArchive {
         throw "Destination already exists: $DestinationPath"
     }
     New-Item -ItemType Directory -Path $DestinationPath -ErrorAction Stop | Out-Null
-
     if ($archiveName.EndsWith(".zip", [System.StringComparison]::OrdinalIgnoreCase)) {
         Expand-Archive -LiteralPath $resolvedPath -DestinationPath $DestinationPath -ErrorAction Stop
         return
     }
-
     $tarPattern = "\.(tar|tar\.bz2|tbz2|tar\.gz|tgz|tar\.lz|tar\.lzma|tar\.xz|txz|tar\.zst|tzst)$"
     if ($archiveName -match $tarPattern) {
         & tar.exe -xf $resolvedPath -C $DestinationPath
@@ -300,12 +293,10 @@ function Expand-UniversalArchive {
         }
         return
     }
-
     $sevenZip = Get-Command 7z -ErrorAction SilentlyContinue
     if (-not $sevenZip) {
         throw "Install 7-Zip to extract this archive format: $archiveName"
     }
-
     & $sevenZip.Source x "-o$DestinationPath" -- $resolvedPath
     if ($LASTEXITCODE -ne 0) {
         throw "7-Zip failed with exit code $LASTEXITCODE"
