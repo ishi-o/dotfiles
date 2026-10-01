@@ -38,6 +38,7 @@ MSYS_NT*)
             "$msys2_nvm_node" \
             "$msys2_scoop_root/shims" \
             "$msys2_scoop_root/apps/mingw/current/bin" \
+            "$msys2_scoop_root/apps/rustup-msvc/current/.cargo/bin" \
             "$msys2_user_profile/.local/share/mise/shims" \
             "$msys2_local_apps/Neovim/bin" \
             "$msys2_local_apps/Microsoft/WindowsApps" \
