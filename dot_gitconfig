@@ -1,9 +1,8 @@
 [user]
-	name = Ishio
+	name = Ishian
 	email = ishio.liu@outlook.com
 [core]
 	editor = nvim
-	; pager = delta
 [include]
 	path = ~/.config/proxy/gitconfig
 [url "git@github.com:"]
@@ -37,13 +36,5 @@
 	tool = nvimdiff
 [difftool]
 	prompt = false
-; [interactive]
-; 	diffFilter = delta --color-only
-; [delta]
-; 	navigate = true
 [merge]
 	conflictStyle = zdiff3
-; [remote "origin"]
-; 	fetch = +refs/heads/*:refs/remotes/origin/*
-; [remote "upstream"]
-; 	fetch = +refs/heads/*:refs/remotes/upstream/*

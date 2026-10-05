@@ -38,7 +38,7 @@ winget install Git.Git
 Bootstrap:
 
 ```sh
-chezmoi init ishi-o
+chezmoi init ishianecho
 ```
 
 ## Commands

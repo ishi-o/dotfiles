@@ -7,15 +7,15 @@
 [".config/nvim"]
 type = "git-repo"
 {{ if $useSSH }}
-url = "git@github.com:ishi-o/ishio.nvim.git"
+url = "git@github.com:ishianecho/ishian.nvim.git"
 {{ else }}
-url = "https://github.com/ishi-o/ishio.nvim.git"
+url = "https://github.com/ishianecho/ishian.nvim.git"
 {{ end }}
 
 {{ if $installFonts }}
 [fonts]
 type = "archive"
-url = "https://github.com/ishi-o/assets/releases/download/fonts-v1.0/fonts.tar.xz"
+url = "https://github.com/ishianecho/assets/releases/download/fonts-v1.0/fonts.tar.xz"
 {{ if eq .chezmoi.os "darwin" }}
 targetPath = "Library/Fonts"
 {{ else if eq .chezmoi.os "linux" }}
