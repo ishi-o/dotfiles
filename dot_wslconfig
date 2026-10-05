@@ -1,2 +1,3 @@
 [wsl2]
 memory=10GB
+networkingMode=mirrored

@@ -13,108 +13,33 @@ if ($u -notlike "*$bin*") {
 . (Join-Path $scriptDir "lib\win\env.ps1")
 . (Join-Path $scriptDir "lib\win\helpers.ps1")
 
-function Confirm-Install {
-    param([Parameter(Mandatory = $true)][string]$Prompt)
+function Get-InstallOption {
+    param(
+        [Parameter(Mandatory = $true)][string]$Name,
+        [bool]$Default = $true
+    )
 
-    if (-not [Environment]::UserInteractive) {
-        return $true
+    $value = [Environment]::GetEnvironmentVariable($Name)
+    if ([string]::IsNullOrWhiteSpace($value)) {
+        return $Default
     }
-
-    $answer = Read-Host "$Prompt [Y/n]"
-    if ([string]::IsNullOrWhiteSpace($answer)) {
-        return $true
-    }
-
-    return $answer -notmatch '^(?i:n(o)?)$'
+    return $value.Trim() -match '^(?i:1|on|t|true|y|yes)$'
 }
 
-function Test-AnyCommandMissing {
-    param([Parameter(Mandatory = $true)][string[]]$Commands)
-
-    foreach ($command in $Commands) {
-        if (-not (Get-Command $command -ErrorAction SilentlyContinue)) {
-            return $true
-        }
-    }
-    return $false
-}
-
-function Test-MSYS2Available {
-    if (Get-Command pacman -ErrorAction SilentlyContinue) {
-        return $true
-    }
-    if (Get-Command scoop -ErrorAction SilentlyContinue) {
-        try {
-            $msys2Root = (scoop prefix msys2).Trim()
-            return [bool]$msys2Root -and
-            (Test-Path -LiteralPath (Join-Path $msys2Root "usr\bin\pacman.exe") -PathType Leaf)
-        } catch {
-            return $false
-        }
-    }
-    return $false
-}
-
-$installMsys2 = $true
-if (-not (Test-MSYS2Available) -and
-    -not (Confirm-Install "Install missing MSYS2 environment?")) {
-    $installMsys2 = $false
-}
-
-$installMsvc = $false
-if (-not (Test-MSVCAvailable)) {
-    $installMsvc = Confirm-Install "Install missing MSVC build tools?"
-}
-
-$installMingw = $true
-if ((Test-AnyCommandMissing @("gcc")) -and
-    -not (Confirm-Install "Install missing MinGW toolchain?")) {
-    $installMingw = $false
-}
-
-$installBase = $true
-if ((Test-AnyCommandMissing @("unzip", "m4", "pkg-config", "openssl", "msgfmt", "gpg")) -and
-    -not (Confirm-Install "Install missing base tools?")) {
-    $installBase = $false
-}
-
-$installRuntimes = $true
-if ((Test-AnyCommandMissing @("uv", "mise", "nvm", "node", "luajit", "cargo")) -and
-    -not (Confirm-Install "Install missing language runtimes?")) {
-    $installRuntimes = $false
-}
-
-$installEditor = $true
-if ((Test-AnyCommandMissing @("nvim", "tree-sitter")) -and
-    -not (Confirm-Install "Install missing editor tooling?")) {
-    $installEditor = $false
-}
-
-$installAi = $true
-if ((Test-AnyCommandMissing @("codex", "claude", "mcp-hub", "codegraph")) -and
-    -not (Confirm-Install "Install missing AI tools?")) {
-    $installAi = $false
-}
-
-$installUtilities = $true
-if (((Test-AnyCommandMissing @("7z", "fzf", "fd", "rg", "gh", "sqlite3", "zoxide")) -or
-    -not (Get-Module -ListAvailable PSFzf) -or
-    -not (Get-Module -ListAvailable posh-git)) -and
-    -not (Confirm-Install "Install missing command-line utilities?")) {
-    $installUtilities = $false
-}
-
-$installOperations = $true
-if ((Test-AnyCommandMissing @("kubectl", "ncat")) -and
-    -not (Confirm-Install "Install missing operations tools?")) {
-    $installOperations = $false
-}
-
-$installTerminal = $true
-if ((Test-AnyCommandMissing @("wt")) -and
-    -not (Confirm-Install "Install missing Windows Terminal?")) {
-    $installTerminal = $false
-}
+$installShell = Get-InstallOption -Name "DOTS_INSTALL_SHELL"
+$installMsvc = Get-InstallOption -Name "DOTS_INSTALL_BUILD"
+$installMingw = Get-InstallOption -Name "DOTS_INSTALL_BUILD"
+$installBuild = Get-InstallOption -Name "DOTS_INSTALL_BUILD"
+$installRuntimes = Get-InstallOption -Name "DOTS_INSTALL_RUNTIMES"
+$installEditor = Get-InstallOption -Name "DOTS_INSTALL_EDITOR"
+$installAi = Get-InstallOption -Name "DOTS_INSTALL_AI"
+$installUtilities = Get-InstallOption -Name "DOTS_INSTALL_UTILITIES"
+$installOperations = Get-InstallOption -Name "DOTS_INSTALL_OPERATIONS"
+$installTerminal = Get-InstallOption -Name "DOTS_INSTALL_TERMINAL"
+$installMsys2 = $installShell -or
+    $installBuild -or
+    $installUtilities -or
+    $installTerminal
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
     if ($env:SCOOP_DIR) {
@@ -133,70 +58,63 @@ Initialize-ScoopUpdateCheck
 
 $msys2Packages = @()
 if ($installMsys2) {
-    $msys2Packages = Get-MSYS2GroupPackages -Group "all" -IncludeDevTools
-}
-
-$packageCategories = @{
-    "01-msys2" = "msys2"
-    "02-msvc" = "msvc"
-    "03-mingw" = "mingw"
-    "04-uv" = "runtimes"
-    "05-mise" = "runtimes"
-    "06-unzip" = "base"
-    "10-m4" = "base"
-    "13-pkg-config" = "base"
-    "20-openssl" = "base"
-    "40-gettext" = "base"
-    "48-gpg" = "base"
-    "50-nvim" = "editor"
-    "56-nvm" = "runtimes"
-    "57-codex" = "ai"
-    "58-claude" = "ai"
-    "59-mcp-hub" = "ai"
-    "59-codegraph" = "ai"
-    "60-fzf" = "utilities"
-    "62-luajit" = "runtimes"
-    "63-fd" = "utilities"
-    "65-kubectl" = "operations"
-    "66-ripgrep" = "utilities"
-    "68-netcat" = "operations"
-    "69-windows-terminal" = "terminal"
-    "70-rust" = "runtimes"
-    "72-tree-sitter" = "editor"
-    "73-gh" = "utilities"
-    "74-7zip" = "utilities"
-    "75-zoxide" = "utilities"
-    "76-sqlite3" = "utilities"
-    "77-psfzf" = "utilities"
-    "78-msys2-ai" = "ai"
-    "79-posh-git" = "utilities"
+    $msys2Groups = @()
+    if ($installShell) {
+        $msys2Groups += "shell"
+    }
+    if ($installBuild) {
+        $msys2Groups += "build"
+    }
+    if ($installUtilities) {
+        $msys2Groups += "tools"
+    }
+    if ($installTerminal) {
+        $msys2Groups += "terminal"
+    }
+    foreach ($group in $msys2Groups) {
+        $msys2Packages += Get-MSYS2GroupPackages -Group $group
+    }
+    $msys2Packages = @($msys2Packages | Select-Object -Unique)
 }
 
 $packages = Get-ChildItem -LiteralPath (Join-Path $scriptDir "packages\win") -Filter "*.ps1" | Sort-Object Name
 $failedPackages = @()
 
-$msys2Installer = $packages | Where-Object { $_.BaseName -eq "01-msys2" } |
+$msys2Installer = $packages | Where-Object { $_.BaseName -eq "00-msys2" } |
     Select-Object -First 1
 if (-not $msys2Installer) {
     throw "MSYS2 installer not found"
 }
 
 Write-Host "==> Processing: MSYS2 ($($msys2Packages -join ', '))"
+$msys2Name = "00-msys2"
 if ($msys2Packages.Count -gt 0) {
     try {
         & $msys2Installer.FullName -Packages $msys2Packages
     } catch {
-        Write-Warning "Failed to install 01-msys2: $($_.Exception.Message)"
-        $failedPackages += "01-msys2"
+        Write-Warning "Failed to install $msys2Name`: $($_.Exception.Message)"
+        $failedPackages += $msys2Name
     }
 }
 
 foreach ($package in $packages) {
-    if ($package.BaseName -eq "01-msys2") {
+    if ($package.BaseName -eq "00-msys2") {
         continue
     }
 
-    $category = $packageCategories[$package.BaseName]
+    $category = switch -Regex ($package.BaseName) {
+        "^00-" { "msys2" }
+        "^10-" { "msvc" }
+        "^11-" { "mingw" }
+        "^(1[2-9]|2[0-9])-" { "build" }
+        "^3[0-9]-" { "runtimes" }
+        "^4[0-9]-" { "editor" }
+        "^5[0-9]-" { "ai" }
+        "^6[0-9]-" { "utilities" }
+        "^7[0-9]-" { "operations" }
+        "^8[0-9]-" { "terminal" }
+        default { "" }
+    }
     if (-not $category) {
         throw "No install category configured for package: $($package.BaseName)"
     }
@@ -211,8 +129,8 @@ foreach ($package in $packages) {
         "mingw" {
             $installMingw 
         }
-        "base" {
-            $installBase 
+        "build" {
+            $installBuild
         }
         "runtimes" {
             $installRuntimes 

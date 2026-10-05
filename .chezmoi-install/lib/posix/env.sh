@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Environment detection and configuration
 
+system_type="${DOTS_SYSTEM_TYPE:-unknown}"
+system_release="${DOTS_SYSTEM_RELEASE:-unknown}"
 kernel="$(uname | tr '[:upper:]' '[:lower:]')"
 os="$kernel"
 case "$kernel" in
@@ -91,10 +93,22 @@ export is_wsl
 
 # Detect available package manager
 pkg_manager=""
-if command -v apt-get >/dev/null 2>&1; then
+case "$system_release" in
+arch | manjaro | endeavouros | garuda | artix | cachyos)
+  if command -v pacman >/dev/null 2>&1; then
+    pkg_manager="pacman"
+  fi
+  ;;
+esac
+if [ -z "$pkg_manager" ] && command -v apt-get >/dev/null 2>&1; then
   pkg_manager="apt"
 fi
+if [ -z "$pkg_manager" ] && command -v pacman >/dev/null 2>&1; then
+  pkg_manager="pacman"
+fi
 export pkg_manager
+export system_type
+export system_release
 
 # Check if sudo is available (needed for package manager)
 has_sudo=false

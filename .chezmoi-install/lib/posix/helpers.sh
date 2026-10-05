@@ -78,11 +78,50 @@ install_via_apt() {
   sudo apt-get update -qq && sudo apt-get install -y -qq "$@"
 }
 
+pacman_package_name() {
+  case "$1" in
+  build-essential) echo "base-devel" ;;
+  pkg-config) echo "pkgconf" ;;
+  libssl-dev) echo "openssl" ;;
+  libevent-dev) echo "libevent" ;;
+  libncurses-dev) echo "ncurses" ;;
+  libutf8proc-dev) echo "utf8proc" ;;
+  libgpg-error-dev) echo "libgpg-error" ;;
+  libgcrypt20-dev) echo "libgcrypt" ;;
+  libassuan-dev) echo "libassuan" ;;
+  libksba-dev) echo "libksba" ;;
+  libnpth0-dev) echo "npth" ;;
+  fd-find) echo "fd" ;;
+  netcat-openbsd) echo "openbsd-netcat" ;;
+  sqlite3) echo "sqlite" ;;
+  *) echo "$1" ;;
+  esac
+}
+
+install_via_pacman() {
+  if [ "$pkg_manager" != "pacman" ] || [ "$has_sudo" != "true" ]; then
+    return 1
+  fi
+
+  local package
+  local packages=()
+  for package in "$@"; do
+    packages+=("$(pacman_package_name "$package")")
+  done
+
+  echo "Installing via pacman: ${packages[*]}"
+  sudo pacman -Sy --needed --noconfirm "${packages[@]}"
+}
+
 # Try to install via package manager, return 0 if successful
 # Usage: try_package_manager <package_names...>
 try_package_manager() {
   if [ "$pkg_manager" = "apt" ] && [ "$has_sudo" = "true" ]; then
     install_via_apt "$@"
+    return $?
+  fi
+  if [ "$pkg_manager" = "pacman" ] && [ "$has_sudo" = "true" ]; then
+    install_via_pacman "$@"
     return $?
   fi
   return 1

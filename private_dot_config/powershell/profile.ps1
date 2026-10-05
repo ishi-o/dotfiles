@@ -370,7 +370,7 @@ $dotsCompleter = {
     }
 
     $targets = @(
-        "shell", "build", "runtimes", "editor", "tools", "dev", "ai", "terminal", "all",
+        "shell", "build", "runtimes", "editor", "tools", "dev", "operations", "ai", "terminal", "all",
         "codex", "claude", "mcp-hub", "codegraph", "msys2-ai", "posh-git"
     )
     $targets |

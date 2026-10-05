@@ -13,3 +13,38 @@ encryption = "age"
   command = "pwsh"
   args = ["-NoLogo"]
 {{- end }}
+
+{{ $systemType := .chezmoi.os -}}
+{{- $systemRelease := "" -}}
+{{- if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
+{{-   $systemRelease = .chezmoi.osRelease.id -}}
+{{- end -}}
+{{- $installShell := promptBoolOnce . "installShell" "Install shell packages" true -}}
+{{- $installBuild := promptBoolOnce . "installBuild" "Install build packages" true -}}
+{{- $installRuntimes := promptBoolOnce . "installRuntimes" "Install runtime packages" true -}}
+{{- $installEditor := promptBoolOnce . "installEditor" "Install editor packages" true -}}
+{{- $installAi := promptBoolOnce . "installAi" "Install AI packages" true -}}
+{{- $installUtilities := promptBoolOnce . "installUtilities" "Install utility packages" true -}}
+{{- $installOperations := promptBoolOnce . "installOperations" "Install operation packages" true -}}
+{{- $installTerminal := promptBoolOnce . "installTerminal" "Install terminal packages" true -}}
+{{- $installInput := false -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if hasKey .chezmoi.kernel "osrelease" -}}
+{{-     if contains "microsoft" (.chezmoi.kernel.osrelease | lower) -}}
+{{-       $installInput = promptBoolOnce . "installInput" "Install input packages" true -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+
+[data]
+systemType = {{ $systemType | quote }}
+systemRelease = {{ $systemRelease | quote }}
+installShell = {{ $installShell }}
+installBuild = {{ $installBuild }}
+installRuntimes = {{ $installRuntimes }}
+installEditor = {{ $installEditor }}
+installAi = {{ $installAi }}
+installUtilities = {{ $installUtilities }}
+installOperations = {{ $installOperations }}
+installTerminal = {{ $installTerminal }}
+installInput = {{ $installInput }}

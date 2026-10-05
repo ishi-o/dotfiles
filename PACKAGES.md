@@ -1,76 +1,83 @@
 # Package installers
 
-This file is intentionally ignored by chezmoi. It documents the installer
-inventory and the supported installation targets.
+## Features
 
-Installers are split by platform:
+- POSIX installers: `.chezmoi-install/packages/posix/*.sh`
+- Windows installers: `.chezmoi-install/packages/win/*.ps1`
+- Platform selection with `.chezmoi.os`
+- Linux release selection with `.chezmoi.osRelease.id`
+- POSIX package managers: `apt` and `pacman`
+- Persisted package-group choices with `promptBoolOnce`
 
-- POSIX: `.chezmoi-install/packages/posix/*.sh`
-- Windows: `.chezmoi-install/packages/win/*.ps1`
+## Numbering
+
+| Range | Group |
+| ----- | ----- |
+| `00` | Shell or platform bootstrap |
+| `10-29` | Build and base libraries |
+| `30-39` | Language runtimes |
+| `40-49` | Editor tooling |
+| `50-59` | AI tools |
+| `60-69` | Command-line utilities |
+| `70-79` | Operations tools |
+| `80-89` | Terminal applications |
+| `90-99` | Input support |
 
 ## Windows
 
-Windows packages are installed with Scoop, which defaults to
-`%USERPROFILE%\scoop`. The host AI tools (`codex`, `claude`, `mcp-hub`, and
-`codegraph`) are installed globally with npm through nvm. The `ai` group also
-installs the same bundle inside MSYS2 with UCRT64 Node.js, so tools invoked
-from an MSYS2 shell use MSYS2-compatible path handling. To install Scoop
-somewhere else, pass `--scoop-prefix` to any `Dots` command:
+- Packages install through Scoop.
+- Default Scoop root: `%USERPROFILE%\scoop`
+- Custom Scoop root:
 
 ```powershell
 Dots apply --scoop-prefix D:/Scoop
 ```
 
-or set `SCOOP_DIR` when running the full installer directly:
+or:
 
 ```powershell
 $env:SCOOP_DIR = "D:\Scoop"
 .\main.ps1
 ```
 
-The installer assigns `SCOOP_DIR` to `SCOOP`, persists it to the user
-environment, and then runs the official Scoop installer, which honors the
-variable. All packages installed afterwards land under the chosen directory.
-uv data, tools, and the generated `python`/`python3` executables use Scoop's
-persisted uv directories. MSYS2 converts the same directories for the Windows
-uv executable while exposing their POSIX paths.
+- `00-msys2.ps1` handles MSYS2 packages in one `pacman --needed` transaction.
+- AI tools install for both Windows NVM Node.js and MSYS2 UCRT64 Node.js.
+- uv, Python, tools, NVM, npm, Cargo, and Rustup use Scoop persisted paths.
+- Codex and Claude configuration homes stay under `~/.config`.
 
-Zsh is installed inside MSYS2. During MSYS2 installation, `nsswitch.conf` is
-patched so that the MSYS2 home directory resolves to the Windows user
-profile, allowing the shell to read the configuration files managed by
-chezmoi directly.
+## Groups
 
-All Windows MSYS2 packages are handled by the central
-`01-msys2.ps1` installer. It accepts the requested package names and installs
-them in a single `pacman --needed` transaction. Targeted commands such as
-`Dots install tmux` route through the same installer.
-
-## Install groups
-
-| Group           | Packages                                                                                                                                                                                                                                                                                                     |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `shell`         | POSIX `zsh`; Windows `msys2` + `zsh`                                                                                                                                                                                                                                                                         |
-| `build`         | POSIX `build-essential`, `unzip`, `m4`, `autoconf`, `automake`, `pkg-config`, `openssl`, `libevent`, `ncurses`, `utf8proc`, `gettext`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry`, `gpg`; Windows installs the available MSYS2 subset in one `pacman` transaction |
-| `runtimes`      | `uv`, `mise`, `nvm`, `luajit`; POSIX `rust`; Windows `rustup-gnu` and separate `mingw`                                                                                                                                                                                                                       |
-| `editor`        | `nvim`                                                                                                                                                                                                                                                                                                       |
-| `tools` / `dev` | Common `7-Zip`, `fzf`, `PSFzf`, `posh-git`, `fd`, `kubectl`, `ripgrep`, `netcat` (`nc`/`ncat`), `tree-sitter` (Cargo), `gh`, `sqlite3`, `zoxide`; `tree` through MSYS2 on Windows                                                                                                                             |
-| `ai`            | Host npm tools (`codex`, `claude`, `mcp-hub`, `codegraph`) plus the same MSYS2 bundle via UCRT64 Node.js                                                                                                                       |
-| `terminal`      | POSIX `tmux`, `kitty`; Windows `tmux` through MSYS2 and Windows Terminal                                                                                                                                                                                                                                     |
-| `input`         | POSIX `fcitx5` and Chinese addons on WSL                                                                                                                                                                                                                                                                     |
+| Group | Packages |
+| ----- | -------- |
+| `shell` | POSIX `zsh`; Windows MSYS2 + `zsh` |
+| `build` | Compilers, MSVC/MinGW on Windows, build tools, and base libraries |
+| `runtimes` | `uv`, `mise`, `nvm`, `luajit`, `rust` |
+| `editor` | `nvim`, `tree-sitter` |
+| `tools` / `dev` | `7-Zip`, `fzf`, `PSFzf`, `posh-git`, `fd`, `ripgrep`, `gh`, `sqlite3`, `zoxide`; Windows `tree` through MSYS2 |
+| `operations` | `kubectl`, `netcat` |
+| `ai` | `codex`, `claude`, `mcp-hub`, `codegraph`; Windows additionally installs the MSYS2 bundle |
+| `terminal` | POSIX `tmux`, `kitty`; Windows MSYS2 `tmux` and Windows Terminal |
+| `input` | WSL `fcitx5` and Chinese addons |
 
 ## Targeted installation
 
-Use `dots` (POSIX) or `Dots` (Windows) to install a group or an individual
-package:
-
 ```sh
-./dots install shell
-./dots install build
-./dots install ai
-./dots install codegraph
+dots install shell
+dots install build
+dots install ai
+dots install codegraph
 ```
 
-The same commands work as `Dots install <target>` on Windows.
+```powershell
+Dots install shell
+Dots install build
+Dots install ai
+Dots install codegraph
+```
 
-During a full install, missing components in each prompt group are confirmed
-interactively. Pressing Enter accepts the default answer.
+## Notes
+
+- Package-group prompts default to `true`.
+- Use `--promptDefaults` for noninteractive initialization.
+- WSL uses mirrored networking.
+- Restart WSL after `.wslconfig` changes.

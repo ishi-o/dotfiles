@@ -1,3 +1,4 @@
+{{ if ne .chezmoi.os "windows" -}}
 #!/usr/bin/env bash
 
 # Keep the upstream package installer as a single chezmoi run-once script.
@@ -5,4 +6,21 @@
 # and shared installation helpers are preserved.
 set -euo pipefail
 
+{{- $systemType := .chezmoi.os -}}
+{{- $systemRelease := "" -}}
+{{- if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
+{{-   $systemRelease = .chezmoi.osRelease.id -}}
+{{- end }}
+export DOTS_SYSTEM_TYPE='{{ $systemType }}'
+export DOTS_SYSTEM_RELEASE='{{ $systemRelease }}'
+export DOTS_INSTALL_SHELL='{{ if hasKey . "installShell" }}{{ .installShell }}{{ else }}true{{ end }}'
+export DOTS_INSTALL_BUILD='{{ if hasKey . "installBuild" }}{{ .installBuild }}{{ else }}true{{ end }}'
+export DOTS_INSTALL_RUNTIMES='{{ if hasKey . "installRuntimes" }}{{ .installRuntimes }}{{ else }}true{{ end }}'
+export DOTS_INSTALL_EDITOR='{{ if hasKey . "installEditor" }}{{ .installEditor }}{{ else }}true{{ end }}'
+export DOTS_INSTALL_AI='{{ if hasKey . "installAi" }}{{ .installAi }}{{ else }}true{{ end }}'
+export DOTS_INSTALL_UTILITIES='{{ if hasKey . "installUtilities" }}{{ .installUtilities }}{{ else }}true{{ end }}'
+export DOTS_INSTALL_OPERATIONS='{{ if hasKey . "installOperations" }}{{ .installOperations }}{{ else }}true{{ end }}'
+export DOTS_INSTALL_TERMINAL='{{ if hasKey . "installTerminal" }}{{ .installTerminal }}{{ else }}true{{ end }}'
+export DOTS_INSTALL_INPUT='{{ if hasKey . "installInput" }}{{ .installInput }}{{ else }}false{{ end }}'
 exec "{{ .chezmoi.sourceDir }}/.chezmoi-install/main.sh" "$@"
+{{- end }}

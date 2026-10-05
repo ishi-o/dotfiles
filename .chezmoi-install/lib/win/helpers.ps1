@@ -197,7 +197,7 @@ function Test-MSYS2Package {
 function Get-MSYS2GroupPackages {
     param(
         [Parameter(Mandatory = $true)]
-        [ValidateSet("shell", "build", "tools", "dev", "editor", "runtimes", "ai", "terminal", "all")]
+        [ValidateSet("shell", "build", "tools", "dev", "editor", "runtimes", "ai", "operations", "terminal", "all")]
         [string]$Group,
         [switch]$IncludeDevTools
     )
@@ -234,6 +234,9 @@ function Get-MSYS2GroupPackages {
             @()
         }
         "ai" {
+            @()
+        }
+        "operations" {
             @()
         }
         "terminal" {

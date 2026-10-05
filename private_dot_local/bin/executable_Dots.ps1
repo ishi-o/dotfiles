@@ -26,7 +26,7 @@ Options (accepted by non-proxy commands):
   --clear-proxy          Clear the proxy before running the command
 
 Install groups:
-  shell, build, runtimes, editor, tools, ai, terminal, all
+  shell, build, runtimes, editor, tools, operations, ai, terminal, all
 
 Examples:
   Dots init
@@ -101,7 +101,7 @@ function Invoke-MSYS2Installer {
         [string[]]$Packages
     )
 
-    $installer = Join-Path (Get-SourceDir) ".chezmoi-install\packages\win\01-msys2.ps1"
+    $installer = Join-Path (Get-SourceDir) ".chezmoi-install\packages\win\00-msys2.ps1"
     if (-not (Test-Path -LiteralPath $installer -PathType Leaf)) {
         throw "MSYS2 installer not found"
     }
@@ -112,41 +112,32 @@ function Invoke-MSYS2Installer {
 function Install-Group {
     param([string]$Group)
 
+    if ($Group -eq "all") {
+        Invoke-Installer (Join-Path (Get-SourceDir) ".chezmoi-install\main.ps1")
+        return
+    }
+
     $dir = Join-Path (Get-SourceDir) ".chezmoi-install\packages\win"
     . (Join-Path $dir "..\..\lib\win\helpers.ps1")
     $msys2Packages = @()
-    $packages = switch ($Group) {
-        "shell" {
-            @() 
-        }
-        "build" {
-            @("02-msvc", "03-mingw", "06-unzip", "10-m4", "13-pkg-config", "20-openssl", "40-gettext", "48-gpg") 
-        }
-        "runtimes" {
-            @("04-uv", "05-mise", "56-nvm", "62-luajit", "70-rust", "74-mingw") 
-        }
-        "editor" {
-            @("50-nvim") 
-        }
-        "tools" {
-            @("60-fzf", "63-fd", "65-kubectl", "66-ripgrep", "68-netcat", "72-tree-sitter", "73-gh", "74-7zip", "75-zoxide", "76-sqlite3", "77-psfzf", "79-posh-git")
-        }
-        "dev" {
-            @("60-fzf", "63-fd", "65-kubectl", "66-ripgrep", "68-netcat", "72-tree-sitter", "73-gh", "74-7zip", "75-zoxide", "76-sqlite3", "77-psfzf", "79-posh-git")
-        }
-        "ai" {
-            @("57-codex", "58-claude", "59-mcp-hub", "59-codegraph", "78-msys2-ai")
-        }
-        "terminal" {
-            @("69-windows-terminal") 
-        }
-        "all" {
-            Invoke-Installer (Join-Path (Get-SourceDir) ".chezmoi-install\main.ps1"); return 
-        }
-        default {
-            Write-Error "Unknown install group: $Group"; Show-Usage; exit 2 
-        }
+    $prefixPatterns = @{
+        "shell"      = "(?!x)x"
+        "build"      = "^(1[0-9]|2[0-9])-"
+        "runtimes"   = "^3[0-9]-"
+        "editor"     = "^4[0-9]-"
+        "ai"         = "^5[0-9]-"
+        "tools"      = "^6[0-9]-"
+        "dev"        = "^6[0-9]-"
+        "operations" = "^7[0-9]-"
+        "terminal"   = "^8[0-9]-"
     }
+    if (-not $prefixPatterns.ContainsKey($Group)) {
+        throw "Unknown install group: $Group"
+    }
+
+    $packages = Get-ChildItem -LiteralPath $dir -Filter "*.ps1" -File |
+        Where-Object { $_.Name -match $prefixPatterns[$Group] } |
+        Sort-Object Name
 
     $msys2Packages = Get-MSYS2GroupPackages -Group $Group
 
@@ -156,14 +147,8 @@ function Install-Group {
     }
 
     foreach ($pkg in $packages) {
-        $installer = Get-ChildItem -LiteralPath $dir -Filter "${pkg}.ps1" -File |
-            Select-Object -First 1 -ExpandProperty FullName
-        if (-not $installer) {
-            Write-Error "Installer not found for package: $pkg"
-            exit 1
-        }
-        Write-Host "==> Installing $pkg"
-        Invoke-Installer $installer
+        Write-Host "==> Installing $($pkg.BaseName)"
+        Invoke-Installer $pkg.FullName
     }
 }
 
@@ -320,7 +305,7 @@ switch ($command) {
         }
         $target = $rest[0]
         switch ($target) {
-            { $_ -in @("shell", "build", "runtimes", "editor", "tools", "dev", "ai", "terminal", "all") } {
+            { $_ -in @("shell", "build", "runtimes", "editor", "tools", "dev", "operations", "ai", "terminal", "all") } {
                 Install-Group $target
             }
             default {
