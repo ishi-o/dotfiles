@@ -3,6 +3,58 @@ if (Test-Path -LiteralPath $privateEnvironment -PathType Leaf) {
     . $privateEnvironment
 }
 
+if (-not ('WtInput' -as [type])) {
+    Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+
+public static class WtInput
+{
+    [DllImport("user32.dll")]
+    private static extern void keybd_event(
+        byte virtualKey,
+        byte scanCode,
+        uint flags,
+        UIntPtr extraInfo
+    );
+
+    public static void SendShiftedKey(int virtualKey)
+    {
+        keybd_event(0x10, 0, 0, UIntPtr.Zero);
+        keybd_event((byte)virtualKey, 0, 0, UIntPtr.Zero);
+        keybd_event((byte)virtualKey, 0, 2, UIntPtr.Zero);
+        keybd_event(0x10, 0, 2, UIntPtr.Zero);
+    }
+}
+'@
+}
+
+$scoopRoot = if ($env:SCOOP) {
+    $env:SCOOP
+} elseif ($env:SCOOP_DIR) {
+    $env:SCOOP_DIR
+} else {
+    Join-Path $HOME "scoop"
+}
+$env:NVM_HOME = Join-Path $scoopRoot "apps\nvm\current"
+$env:NVM_SYMLINK = Join-Path $scoopRoot "persist\nvm\.nodejs"
+$env:CARGO_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.cargo"
+$env:RUSTUP_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.rustup"
+$env:NPM_CONFIG_CACHE = Join-Path $scoopRoot "persist\nvm\npm-cache"
+$env:UV_CACHE_DIR = Join-Path $scoopRoot "persist\uv\cache"
+$env:UV_PYTHON_BIN_DIR = Join-Path $scoopRoot "persist\uv\python\shims"
+$env:UV_PYTHON_INSTALL_DIR = Join-Path $scoopRoot "persist\uv\python\versions"
+$env:UV_TOOL_BIN_DIR = Join-Path $scoopRoot "persist\uv\tools\shims"
+$env:UV_TOOL_DIR = Join-Path $scoopRoot "persist\uv\tools\versions"
+$env:Path = @(
+    $env:NVM_HOME,
+    $env:NVM_SYMLINK,
+    (Join-Path $env:CARGO_HOME "bin"),
+    $env:UV_PYTHON_BIN_DIR,
+    $env:UV_TOOL_BIN_DIR,
+    $env:Path
+) -join [IO.Path]::PathSeparator
+
 $PSStyle.FileInfo.Directory = $PSStyle.Foreground.FromRgb(141, 161, 1)
 $PSStyle.FileInfo.Executable = $PSStyle.Foreground.FromRgb(248, 85, 82)
 $PSStyle.FileInfo.SymbolicLink = $PSStyle.Foreground.FromRgb(53, 167, 124)
@@ -27,13 +79,23 @@ function prompt {
         $global:PwshPreviousLocation = $global:PwshCurrentLocation
         $global:PwshCurrentLocation = $currentLocation
     }
+    Write-Host -NoNewline "`e]9;9;$currentLocation`e\"
     & $global:PwshOriginalPrompt
 }
 
-Add-Type -AssemblyName System.Windows.Forms
-
 function Invoke-WtAction {
     param([Parameter(Mandatory = $true)][string[]]$WtArgs)
+    if ($WtArgs[0] -eq "resize-pane") {
+        $virtualKey = switch ($WtArgs[2]) {
+            "left" { 37 }
+            "down" { 40 }
+            "up" { 38 }
+            "right" { 39 }
+            default { throw "Invalid resize direction: $($WtArgs[2])" }
+        }
+        [WtInput]::SendShiftedKey($virtualKey)
+        return
+    }
     & wt.exe -w 0 @WtArgs 2>$null
 }
 
@@ -119,38 +181,34 @@ function Invoke-PwshHistoryFilePicker {
     }
 }
 
-$wtPaneKeys = @{
-    "Ctrl+h"       = @("move-focus", "-d", "left")
-    "Ctrl+j"       = @("move-focus", "-d", "down")
-    "Ctrl+k"       = @("move-focus", "-d", "up")
-    "Ctrl+l"       = @("move-focus", "-d", "right")
-    "Ctrl+Shift+h" = @("swap-pane", "-d", "left")
-    "Ctrl+Shift+j" = @("swap-pane", "-d", "down")
-    "Ctrl+Shift+k" = @("swap-pane", "-d", "up")
-    "Ctrl+Shift+l" = @("swap-pane", "-d", "right")
+foreach ($viMode in @("Insert", "Command")) {
+    Set-PSReadLineKeyHandler -ViMode $viMode -Chord Ctrl+o -Function ClearScreen
 }
-foreach ($chord in $wtPaneKeys.Keys) {
-    $wtArgs = $wtPaneKeys[$chord]
-    Set-PSReadLineKeyHandler -Chord $chord -ScriptBlock {
-        Invoke-WtAction -WtArgs $wtArgs
-    }.GetNewClosure() -BriefDescription "Windows Terminal pane action"
-}
-
-$wtResizeKeys = @{
-    "Alt+h" = "%+{LEFT}"
-    "Alt+j" = "%+{DOWN}"
-    "Alt+k" = "%+{UP}"
-    "Alt+l" = "%+{RIGHT}"
-}
-foreach ($chord in $wtResizeKeys.Keys) {
-    $relay = $wtResizeKeys[$chord]
-    Set-PSReadLineKeyHandler -Chord $chord -ScriptBlock {
-        [System.Windows.Forms.SendKeys]::SendWait($relay)
-    }.GetNewClosure() -BriefDescription "Windows Terminal pane resize"
-}
-
-Set-PSReadLineKeyHandler -Chord Ctrl+o -Function ClearScreen
 Set-PSReadLineKeyHandler -Chord Ctrl+y -Function AcceptSuggestion
+
+$wtPaneKeys = @{
+    "Ctrl+h"       = @("move-focus", "left")
+    "Ctrl+j"       = @("move-focus", "down")
+    "Ctrl+k"       = @("move-focus", "up")
+    "Ctrl+l"       = @("move-focus", "right")
+    "Ctrl+Shift+h" = @("swap-pane", "left")
+    "Ctrl+Shift+j" = @("swap-pane", "down")
+    "Ctrl+Shift+k" = @("swap-pane", "up")
+    "Ctrl+Shift+l" = @("swap-pane", "right")
+    "Alt+h"        = @("resize-pane", "-d", "left")
+    "Alt+j"        = @("resize-pane", "-d", "down")
+    "Alt+k"        = @("resize-pane", "-d", "up")
+    "Alt+l"        = @("resize-pane", "-d", "right")
+}
+foreach ($entry in $wtPaneKeys.GetEnumerator()) {
+    $wtArgs = $entry.Value
+    foreach ($viMode in @("Insert", "Command")) {
+        Set-PSReadLineKeyHandler -ViMode $viMode -Chord $entry.Key -ScriptBlock {
+            Invoke-WtAction -WtArgs $wtArgs
+        }.GetNewClosure() -BriefDescription "Windows Terminal pane action"
+    }
+}
+
 Set-PSReadLineKeyHandler -Chord Ctrl+t -ScriptBlock {
     Invoke-PwshHistoryFilePicker
 }
@@ -164,13 +222,38 @@ Set-PSReadLineKeyHandler -Chord @(
     -Description "Saves the working directory and command history to last.pwsh-session.json."
 
 Set-PSReadLineKeyHandler -ViMode Insert -Chord "j" -ScriptBlock {
-    $key = [Console]::ReadKey($true)
-    if ($key.KeyChar -eq 'j') {
-        [Microsoft.PowerShell.PSConsoleReadLine]::ViCommandMode()
-    } else {
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert('j')
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($key.KeyChar)
+    $watch = [System.Diagnostics.Stopwatch]::StartNew()
+    while ($watch.ElapsedMilliseconds -lt 1000) {
+        if ([Console]::KeyAvailable) {
+            $nextKey = [Console]::ReadKey($true)
+            if ($nextKey.KeyChar -eq "j" -and
+                (($nextKey.Modifiers -band [ConsoleModifiers]::Control) -eq 0)) {
+                [Microsoft.PowerShell.PSConsoleReadLine]::ViCommandMode()
+                return
+            }
+
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("j")
+            if ($nextKey.Key -eq [ConsoleKey]::Backspace -and
+                (($nextKey.Modifiers -band [ConsoleModifiers]::Control) -eq 0)) {
+                [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
+                return
+            }
+            if ($nextKey.Key -eq [ConsoleKey]::C -and
+                (($nextKey.Modifiers -band [ConsoleModifiers]::Control) -ne 0)) {
+                [Microsoft.PowerShell.PSConsoleReadLine]::CopyOrCancelLine()
+                return
+            }
+            if ((($nextKey.Modifiers -band [ConsoleModifiers]::Control) -eq 0) -and
+                -not [char]::IsControl($nextKey.KeyChar)) {
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($nextKey.KeyChar)
+            }
+            return
+        }
+
+        [System.Threading.Thread]::Sleep(10)
     }
+
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("j")
 }
 
 Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {
@@ -220,6 +303,84 @@ Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
 }
 
+$zoxideCompleter = {
+    param($wordToComplete, $commandAst, $cursorPosition)
+
+    $keywords = @()
+    $elements = @($commandAst.CommandElements)
+    for ($i = 1; $i -lt $elements.Count - 1; $i++) {
+        $keywords += $elements[$i].ToString()
+    }
+    if ($wordToComplete) {
+        $keywords += $wordToComplete
+    }
+
+    $zoxideMatches = @(& zoxide query --list -- @keywords 2>$null)
+    foreach ($zoxideMatch in $zoxideMatches | Select-Object -First 50) {
+        [System.Management.Automation.CompletionResult]::new(
+            $zoxideMatch,
+            $zoxideMatch,
+            "ParameterValue",
+            $zoxideMatch
+        )
+    }
+}
+Register-ArgumentCompleter -Native -CommandName z,zi -ScriptBlock $zoxideCompleter
+
+$scoopCompleter = {
+    param($wordToComplete)
+
+    $commands = @(
+        "alias", "bucket", "cache", "cat", "checkup", "cleanup", "config", "create",
+        "depends", "download", "export", "help", "hold", "home", "import", "info",
+        "install", "list", "prefix", "reset", "search", "shim", "status", "unhold",
+        "uninstall", "update", "virustotal", "which"
+    )
+    $commands |
+        Where-Object { $_.StartsWith($wordToComplete, [StringComparison]::OrdinalIgnoreCase) } |
+        ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, "ParameterValue", "scoop $_")
+        }
+}
+Register-ArgumentCompleter -Native -CommandName scoop -ScriptBlock $scoopCompleter
+
+$nvmCompleter = {
+    param($wordToComplete)
+
+    $commands = @(
+        "arch", "current", "debug", "install", "list", "list-available", "on", "off",
+        "proxy", "root", "uninstall", "use", "version"
+    )
+    $commands |
+        Where-Object { $_.StartsWith($wordToComplete, [StringComparison]::OrdinalIgnoreCase) } |
+        ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, "ParameterValue", "nvm $_")
+        }
+}
+Register-ArgumentCompleter -Native -CommandName nvm -ScriptBlock $nvmCompleter
+
+$dotsCompleter = {
+    param($wordToComplete, $commandAst)
+
+    if ($commandAst.CommandElements.Count -ne 3) {
+        return
+    }
+    if ($commandAst.CommandElements[1].ToString() -ne "install") {
+        return
+    }
+
+    $targets = @(
+        "shell", "build", "runtimes", "editor", "tools", "dev", "ai", "terminal", "all",
+        "codex", "claude", "mcp-hub", "codegraph", "msys2-ai", "posh-git"
+    )
+    $targets |
+        Where-Object { $_.StartsWith($wordToComplete, [StringComparison]::OrdinalIgnoreCase) } |
+        ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, "ParameterValue", "Dots install $_")
+        }
+}
+Register-ArgumentCompleter -Native -CommandName Dots,dots -ScriptBlock $dotsCompleter
+
 Set-Alias -Name vi -Value nvim
 Set-Alias -Name vim -Value nvim
 Set-Alias -Name g -Value git
@@ -242,6 +403,33 @@ if (Get-Command gh -ErrorAction SilentlyContinue) {
 
 if (Get-Command kubectl -ErrorAction SilentlyContinue) {
     kubectl completion powershell | Out-String | Invoke-Expression
+}
+
+if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
+    chezmoi completion powershell | Out-String | Invoke-Expression
+}
+
+if (Get-Command codex -ErrorAction SilentlyContinue) {
+    codex completion powershell | Out-String | Invoke-Expression
+}
+
+if (Get-Module -ListAvailable posh-git) {
+    $promptBeforePoshGit = $function:prompt
+    Import-Module posh-git
+    if ($promptBeforePoshGit) {
+        Set-Item -Path function:global:prompt -Value $promptBeforePoshGit
+    }
+    if (Get-Command Expand-GitCommand -ErrorAction SilentlyContinue) {
+        Register-ArgumentCompleter -Native -CommandName g -ScriptBlock {
+            param($wordToComplete, $commandAst, $cursorPosition)
+
+            $padLength = $cursorPosition - $commandAst.Extent.StartOffset
+            $textToComplete = $commandAst.ToString().
+                PadRight($padLength, ' ').
+                Substring(0, $padLength) -replace '^g(\s|$)', 'git$1'
+            Expand-GitCommand $textToComplete
+        }
+    }
 }
 
 function Expand-UniversalArchive {

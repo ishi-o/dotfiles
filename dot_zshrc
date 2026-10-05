@@ -1,6 +1,19 @@
 ### START_ZPLUG
 . "$HOME/.config/shell/msys2-path"
 
+if [[ -n "${WT_SESSION:-}" ]]; then
+  __wt_report_cwd() {
+    local wt_cwd="$PWD"
+    if command -v cygpath >/dev/null 2>&1; then
+      wt_cwd="$(cygpath -w "$PWD")"
+    fi
+    printf '\e]9;9;"%s"\e\\' "$wt_cwd"
+  }
+  if (( ! ${precmd_functions[(Ie)__wt_report_cwd]} )); then
+    precmd_functions+=(__wt_report_cwd)
+  fi
+fi
+
 if [ ! -f "$USR_HOME/zplug/init.zsh" ]; then
   if command -v git >/dev/null 2>&1; then
     mkdir -p "$(dirname "$USR_HOME/zplug")"

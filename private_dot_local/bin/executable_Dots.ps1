@@ -129,13 +129,13 @@ function Install-Group {
             @("50-nvim") 
         }
         "tools" {
-            @("60-fzf", "63-fd", "65-kubectl", "66-ripgrep", "68-netcat", "72-tree-sitter", "73-gh", "74-7zip", "75-zoxide", "76-sqlite3", "77-psfzf")
+            @("60-fzf", "63-fd", "65-kubectl", "66-ripgrep", "68-netcat", "72-tree-sitter", "73-gh", "74-7zip", "75-zoxide", "76-sqlite3", "77-psfzf", "79-posh-git")
         }
         "dev" {
-            @("60-fzf", "63-fd", "65-kubectl", "66-ripgrep", "68-netcat", "72-tree-sitter", "73-gh", "74-7zip", "75-zoxide", "76-sqlite3", "77-psfzf")
+            @("60-fzf", "63-fd", "65-kubectl", "66-ripgrep", "68-netcat", "72-tree-sitter", "73-gh", "74-7zip", "75-zoxide", "76-sqlite3", "77-psfzf", "79-posh-git")
         }
         "ai" {
-            @("57-codex", "58-claude", "59-mcp-hub", "59-codegraph") 
+            @("57-codex", "58-claude", "59-mcp-hub", "59-codegraph", "78-msys2-ai")
         }
         "terminal" {
             @("69-windows-terminal") 

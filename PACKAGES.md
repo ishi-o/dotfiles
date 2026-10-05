@@ -11,8 +11,10 @@ Installers are split by platform:
 ## Windows
 
 Windows packages are installed with Scoop, which defaults to
-`%USERPROFILE%\scoop`. AI tools (`codex`, `claude`, `mcp-hub`, and
-`codegraph`) are installed globally with npm through nvm. To install Scoop
+`%USERPROFILE%\scoop`. The host AI tools (`codex`, `claude`, `mcp-hub`, and
+`codegraph`) are installed globally with npm through nvm. The `ai` group also
+installs the same bundle inside MSYS2 with UCRT64 Node.js, so tools invoked
+from an MSYS2 shell use MSYS2-compatible path handling. To install Scoop
 somewhere else, pass `--scoop-prefix` to any `Dots` command:
 
 ```powershell
@@ -29,6 +31,9 @@ $env:SCOOP_DIR = "D:\Scoop"
 The installer assigns `SCOOP_DIR` to `SCOOP`, persists it to the user
 environment, and then runs the official Scoop installer, which honors the
 variable. All packages installed afterwards land under the chosen directory.
+uv data, tools, and the generated `python`/`python3` executables use Scoop's
+persisted uv directories. MSYS2 converts the same directories for the Windows
+uv executable while exposing their POSIX paths.
 
 Zsh is installed inside MSYS2. During MSYS2 installation, `nsswitch.conf` is
 patched so that the MSYS2 home directory resolves to the Windows user
@@ -48,8 +53,8 @@ them in a single `pacman --needed` transaction. Targeted commands such as
 | `build`         | POSIX `build-essential`, `unzip`, `m4`, `autoconf`, `automake`, `pkg-config`, `openssl`, `libevent`, `ncurses`, `utf8proc`, `gettext`, `libgpg-error`, `libgcrypt`, `libassuan`, `libksba`, `libnpth`, `texinfo`, `pinentry`, `gpg`; Windows installs the available MSYS2 subset in one `pacman` transaction |
 | `runtimes`      | `uv`, `mise`, `nvm`, `luajit`; POSIX `rust`; Windows `rustup-gnu` and separate `mingw`                                                                                                                                                                                                                       |
 | `editor`        | `nvim`                                                                                                                                                                                                                                                                                                       |
-| `tools` / `dev` | Common `7-Zip`, `fzf`, `PSFzf`, `fd`, `kubectl`, `ripgrep`, `netcat` (`nc`/`ncat`), `tree-sitter` (Cargo), `gh`, `sqlite3`, `zoxide`; `tree` through MSYS2 on Windows                                                                                                                             |
-| `ai`            | `codex`, `claude`, `mcp-hub`, `codegraph` (npm)                                                                                                                                                                                                                                                              |
+| `tools` / `dev` | Common `7-Zip`, `fzf`, `PSFzf`, `posh-git`, `fd`, `kubectl`, `ripgrep`, `netcat` (`nc`/`ncat`), `tree-sitter` (Cargo), `gh`, `sqlite3`, `zoxide`; `tree` through MSYS2 on Windows                                                                                                                             |
+| `ai`            | Host npm tools (`codex`, `claude`, `mcp-hub`, `codegraph`) plus the same MSYS2 bundle via UCRT64 Node.js                                                                                                                       |
 | `terminal`      | POSIX `tmux`, `kitty`; Windows `tmux` through MSYS2 and Windows Terminal                                                                                                                                                                                                                                     |
 | `input`         | POSIX `fcitx5` and Chinese addons on WSL                                                                                                                                                                                                                                                                     |
 

@@ -1,5 +1,13 @@
 $ErrorActionPreference = "Stop"
 
+$scoopRoot = if ($env:SCOOP) {
+    $env:SCOOP
+} elseif ($env:SCOOP_DIR) {
+    $env:SCOOP_DIR
+} else {
+    Join-Path $env:USERPROFILE "scoop"
+}
+
 function Set-UserEnvironmentVariable {
     param(
         [Parameter(Mandatory = $true)][string]$Name,
@@ -23,6 +31,8 @@ foreach ($entry in $xdgDirectories.GetEnumerator()) {
 }
 
 $toolDirectories = [ordered]@{
+    EDITOR           = "nvim"
+    VISUAL           = "nvim"
     MISE_CONFIG_DIR = Join-Path $env:USERPROFILE ".config\mise"
     MISE_DATA_DIR   = Join-Path $env:USERPROFILE ".local\share\mise"
     MISE_CACHE_DIR  = Join-Path $env:USERPROFILE ".cache\mise"
@@ -32,7 +42,16 @@ $toolDirectories = [ordered]@{
     GH_CONFIG_DIR     = Join-Path $env:USERPROFILE ".config\gh"
     GOPATH            = Join-Path $env:USERPROFILE ".local\share\go"
     GOCACHE           = Join-Path $env:USERPROFILE ".cache\go-build"
-    UV_CACHE_DIR    = Join-Path $env:USERPROFILE ".cache\uv"
+    UV_CACHE_DIR      = Join-Path $scoopRoot "persist\uv\cache"
+    UV_PYTHON_BIN_DIR = Join-Path $scoopRoot "persist\uv\python\shims"
+    UV_PYTHON_INSTALL_DIR = Join-Path $scoopRoot "persist\uv\python\versions"
+    UV_TOOL_BIN_DIR   = Join-Path $scoopRoot "persist\uv\tools\shims"
+    UV_TOOL_DIR       = Join-Path $scoopRoot "persist\uv\tools\versions"
+    NVM_HOME          = Join-Path $scoopRoot "apps\nvm\current"
+    NVM_SYMLINK       = Join-Path $scoopRoot "persist\nvm\.nodejs"
+    CARGO_HOME        = Join-Path $scoopRoot "persist\rustup-msvc\.cargo"
+    RUSTUP_HOME       = Join-Path $scoopRoot "persist\rustup-msvc\.rustup"
+    NPM_CONFIG_CACHE  = Join-Path $scoopRoot "persist\nvm\npm-cache"
 }
 
 foreach ($entry in $toolDirectories.GetEnumerator()) {
@@ -40,12 +59,11 @@ foreach ($entry in $toolDirectories.GetEnumerator()) {
     Set-UserEnvironmentVariable -Name $entry.Key -Value $entry.Value
 }
 
+$env:Path = "$($toolDirectories["UV_PYTHON_BIN_DIR"]);$($toolDirectories["UV_TOOL_BIN_DIR"]);$env:Path"
+
 $npmConfig = Join-Path $env:USERPROFILE ".config\npm\npmrc"
-$npmCache = Join-Path $env:USERPROFILE ".cache\npm"
 New-Item -ItemType Directory -Path (Split-Path -Parent $npmConfig) -Force | Out-Null
-New-Item -ItemType Directory -Path $npmCache -Force | Out-Null
 Set-UserEnvironmentVariable -Name "NPM_CONFIG_USERCONFIG" -Value $npmConfig
-Set-UserEnvironmentVariable -Name "NPM_CONFIG_CACHE" -Value $npmCache
 
 $proxyConfig = Join-Path $env:XDG_CONFIG_HOME "proxy\config"
 if (Test-Path -LiteralPath $proxyConfig -PathType Leaf) {

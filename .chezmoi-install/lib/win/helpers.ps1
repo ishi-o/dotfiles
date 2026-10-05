@@ -39,6 +39,28 @@ function Get-ScoopRoot {
     Join-Path $env:USERPROFILE "scoop"
 }
 
+function Initialize-ScoopToolPaths {
+    $scoopRoot = Get-ScoopRoot
+    $env:NVM_HOME = Join-Path $scoopRoot "apps\nvm\current"
+    $env:NVM_SYMLINK = Join-Path $scoopRoot "persist\nvm\.nodejs"
+    $env:CARGO_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.cargo"
+    $env:RUSTUP_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.rustup"
+    $env:NPM_CONFIG_CACHE = Join-Path $scoopRoot "persist\nvm\npm-cache"
+
+    [Environment]::SetEnvironmentVariable("NVM_HOME", $env:NVM_HOME, "User")
+    [Environment]::SetEnvironmentVariable("NVM_SYMLINK", $env:NVM_SYMLINK, "User")
+    [Environment]::SetEnvironmentVariable("CARGO_HOME", $env:CARGO_HOME, "User")
+    [Environment]::SetEnvironmentVariable("RUSTUP_HOME", $env:RUSTUP_HOME, "User")
+    [Environment]::SetEnvironmentVariable("NPM_CONFIG_CACHE", $env:NPM_CONFIG_CACHE, "User")
+
+    $env:Path = @(
+        $env:NVM_HOME,
+        $env:NVM_SYMLINK,
+        (Join-Path $env:CARGO_HOME "bin"),
+        $env:Path
+    ) -join [IO.Path]::PathSeparator
+}
+
 function Test-MSVCAvailable {
     $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
     if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) {
@@ -102,13 +124,13 @@ function Upgrade-Nvim {
 function Initialize-Nvm {
     param([switch]$InstallNode)
 
+    Initialize-ScoopToolPaths
     $nvmHome = (scoop prefix nvm).Trim()
     if (-not $nvmHome -or -not (Test-Path -LiteralPath $nvmHome -PathType Container)) {
         throw "NVM home not found"
     }
 
     $env:NVM_HOME = $nvmHome
-    $env:NVM_SYMLINK = Join-Path $nvmHome "nodejs"
     [Environment]::SetEnvironmentVariable("NVM_HOME", $env:NVM_HOME, "User")
     [Environment]::SetEnvironmentVariable("NVM_SYMLINK", $env:NVM_SYMLINK, "User")
     $env:Path = "$env:NVM_HOME;$env:NVM_SYMLINK;$env:Path"
@@ -175,7 +197,7 @@ function Test-MSYS2Package {
 function Get-MSYS2GroupPackages {
     param(
         [Parameter(Mandatory = $true)]
-        [ValidateSet("shell", "build", "tools", "dev", "terminal", "all")]
+        [ValidateSet("shell", "build", "tools", "dev", "editor", "runtimes", "ai", "terminal", "all")]
         [string]$Group,
         [switch]$IncludeDevTools
     )
@@ -204,6 +226,15 @@ function Get-MSYS2GroupPackages {
         }
         "dev" {
             @("tree") 
+        }
+        "editor" {
+            @()
+        }
+        "runtimes" {
+            @()
+        }
+        "ai" {
+            @()
         }
         "terminal" {
             @("tmux") 
@@ -269,6 +300,45 @@ function Install-MSYS2Packages {
         & $pacman -Sy --needed --noconfirm @Packages
         if ($LASTEXITCODE -ne 0) {
             throw "MSYS2 package installation failed: $($Packages -join ', ')"
+        }
+    } finally {
+        if ($null -eq $previousMSystem) {
+            Remove-Item Env:\MSYSTEM -ErrorAction SilentlyContinue
+        } else {
+            $env:MSYSTEM = $previousMSystem
+        }
+    }
+}
+
+function Install-MSYS2NpmPackages {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]$Packages
+    )
+
+    foreach ($package in $Packages) {
+        if ($package -notmatch '^[A-Za-z0-9@][A-Za-z0-9+_.-]*(/[A-Za-z0-9+_.-]+)?$') {
+            throw "Invalid npm package name: $package"
+        }
+    }
+
+    $msys2Root = (scoop prefix msys2).Trim()
+    if (-not $msys2Root -or -not (Test-Path -LiteralPath $msys2Root -PathType Container)) {
+        throw "MSYS2 root not found"
+    }
+
+    $bash = Join-Path $msys2Root "usr\bin\bash.exe"
+    if (-not (Test-Path -LiteralPath $bash -PathType Leaf)) {
+        throw "MSYS2 bash not found at $bash"
+    }
+
+    $previousMSystem = $env:MSYSTEM
+    $env:MSYSTEM = "UCRT64"
+    try {
+        & $bash -lc 'npm install -g "$@"' npm @Packages
+        if ($LASTEXITCODE -ne 0) {
+            throw "MSYS2 npm installation failed: $($Packages -join ', ')"
         }
     } finally {
         if ($null -eq $previousMSystem) {

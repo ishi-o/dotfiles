@@ -20,7 +20,7 @@ install_codegraph() {
   fi
 
   echo "Installing codegraph ${pkg_version} via npm..."
-  npm install -g codegraph || return 1
+  npm install -g @colbymchenry/codegraph || return 1
 }
 
 install_codegraph

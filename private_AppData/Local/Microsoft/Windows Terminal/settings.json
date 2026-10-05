@@ -186,6 +186,14 @@
       "id": "User.splitHorizontal"
     },
     {
+      "keys": "ctrl+shift+minus",
+      "id": "Terminal.DecreaseFontSize"
+    },
+    {
+      "keys": "ctrl+shift+plus",
+      "id": "Terminal.IncreaseFontSize"
+    },
+    {
       "keys": "ctrl+shift+z",
       "id": "User.togglePaneZoom"
     }

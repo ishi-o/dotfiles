@@ -46,10 +46,15 @@ install_uv() {
     fi
   done
 
-  # Create python3 shim that delegates to uv.
-  # This makes `python3` respect `uv python pin --global <version>`.
-  # Without the shim, `uv python pin` only affects `uv run`, not bare `python3`.
+  local python_shim="$HOME/.local/bin/python"
   local python3_shim="$HOME/.local/bin/python3"
+  if [ ! -e "$python_shim" ]; then
+    cat > "$python_shim" << 'SHIM'
+#!/bin/sh
+exec uv run --no-project python "$@"
+SHIM
+    chmod +x "$python_shim"
+  fi
   if [ ! -e "$python3_shim" ]; then
     cat > "$python3_shim" << 'SHIM'
 #!/bin/sh
