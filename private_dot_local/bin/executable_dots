@@ -112,7 +112,7 @@ install_group() {
 
   case "$group" in
   shell)
-    prefixes=(00)
+    prefixes=(0?)
     ;;
   build)
     prefixes=(1? 2?)

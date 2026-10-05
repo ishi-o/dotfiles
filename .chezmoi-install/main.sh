@@ -87,7 +87,7 @@ else
     pkg_basename=$(basename "$pkg_file" .sh)
     pkg_category=""
     case "$pkg_basename" in
-    00-*)
+    0[0-9]-*)
       pkg_category=shell
       ;;
     1[0-9]-* | 2[0-9]-*)

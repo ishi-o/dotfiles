@@ -26,6 +26,16 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
 </details>
 
 <details>
+<summary>Arch Linux / pacman</summary>
+
+```sh
+sudo pacman -Sy --needed git
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+```
+
+</details>
+
+<details>
 <summary>Windows</summary>
 
 ```powershell

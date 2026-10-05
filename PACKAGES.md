@@ -13,7 +13,7 @@
 
 | Range | Group |
 | ----- | ----- |
-| `00` | Shell or platform bootstrap |
+| `00-09` | Shell and platform bootstrap |
 | `10-29` | Build and base libraries |
 | `30-39` | Language runtimes |
 | `40-49` | Editor tooling |
@@ -49,7 +49,7 @@ $env:SCOOP_DIR = "D:\Scoop"
 
 | Group | Packages |
 | ----- | -------- |
-| `shell` | POSIX `zsh`; Windows MSYS2 + `zsh` |
+| `shell` | POSIX `vim`, `zsh`; Windows MSYS2 + `zsh` |
 | `build` | Compilers, MSVC/MinGW on Windows, build tools, and base libraries |
 | `runtimes` | `uv`, `mise`, `nvm`, `luajit`, `rust` |
 | `editor` | `nvim`, `tree-sitter` |
