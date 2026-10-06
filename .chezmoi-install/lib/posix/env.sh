@@ -42,6 +42,7 @@ export MISE_INSTALL_PATH
 # Keep tool configuration and mutable package data out of $HOME.
 export CODEX_HOME="${CODEX_HOME:-$XDG_CONFIG_HOME/codex}"
 export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$XDG_CONFIG_HOME/claude}"
+export CC_SWITCH_CONFIG_DIR="${CC_SWITCH_CONFIG_DIR:-$XDG_CONFIG_HOME/cc-switch}"
 export GH_CONFIG_DIR="${GH_CONFIG_DIR:-$XDG_CONFIG_HOME/gh}"
 export NVM_DIR="${NVM_DIR:-$XDG_DATA_HOME/nvm}"
 export GOPATH="${GOPATH:-$XDG_DATA_HOME/go}"

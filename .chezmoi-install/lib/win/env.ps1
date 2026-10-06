@@ -39,6 +39,7 @@ $toolDirectories = [ordered]@{
     MISE_STATE_DIR  = Join-Path $env:USERPROFILE ".local\state\mise"
     CODEX_HOME      = Join-Path $env:USERPROFILE ".config\codex"
     CLAUDE_CONFIG_DIR = Join-Path $env:USERPROFILE ".config\claude"
+    CC_SWITCH_CONFIG_DIR = Join-Path $env:USERPROFILE ".config\cc-switch"
     GH_CONFIG_DIR     = Join-Path $env:USERPROFILE ".config\gh"
     GOPATH            = Join-Path $env:USERPROFILE ".local\share\go"
     GOCACHE           = Join-Path $env:USERPROFILE ".cache\go-build"

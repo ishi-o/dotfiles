@@ -1,0 +1,8 @@
+approvals_reviewer = "user"
+
+[tui]
+vim_mode_default = true
+screen_reader_detection_done = true
+
+[plugins."superpowers@openai-curated"]
+enabled = true

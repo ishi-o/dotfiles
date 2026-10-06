@@ -24,6 +24,9 @@ scoop/
 .config/fcitx5
 {{- end }}
 
+.config/claude/settings.json
+.config/codex/config.toml
+
 {{- if ne .chezmoi.os "darwin" }}
 .local/bin/notify
 {{- end }}

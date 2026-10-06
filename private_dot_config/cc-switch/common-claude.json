@@ -70,9 +70,13 @@
   "syntaxHighlightingDisabled": false,
   "effortLevel": "medium",
   "skipDangerousModePermissionPrompt": true,
-  "theme": "auto",
+  "theme": "light",
   "teammateMode": "in-process",
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "editorMode": "vim",
+  "vimInsertModeRemaps": {
+    "jj": "<Esc>"
+  }
 }

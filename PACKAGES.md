@@ -55,7 +55,7 @@ $env:SCOOP_DIR = "D:\Scoop"
 | `editor` | `nvim`, `tree-sitter` |
 | `tools` / `dev` | `7-Zip`, `fzf`, `PSFzf`, `posh-git`, `fd`, `ripgrep`, `gh`, `sqlite3`, `zoxide`; Windows `tree` through MSYS2 |
 | `operations` | `kubectl`, `netcat` |
-| `ai` | `codex`, `claude`, `mcp-hub`, `codegraph`; Windows additionally installs the MSYS2 bundle |
+| `ai` | `cc-switch`, `codex`, `claude`, `codegraph`; Windows additionally installs the MSYS2 bundle |
 | `terminal` | POSIX `tmux`, `kitty`; Windows MSYS2 `tmux` and Windows Terminal |
 | `input` | WSL `fcitx5` and Chinese addons |
 

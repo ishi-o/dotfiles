@@ -1,6 +1,6 @@
-$privateEnvironment = Join-Path $env:USERPROFILE ".config\env.local.ps1"
-if (Test-Path -LiteralPath $privateEnvironment -PathType Leaf) {
-    . $privateEnvironment
+$dotfilesEnvironment = Join-Path $env:USERPROFILE ".config\env.ps1"
+if (Test-Path -LiteralPath $dotfilesEnvironment -PathType Leaf) {
+    . $dotfilesEnvironment
 }
 
 if (-not ('WtInput' -as [type])) {
@@ -371,7 +371,7 @@ $dotsCompleter = {
 
     $targets = @(
         "shell", "build", "runtimes", "editor", "tools", "dev", "operations", "ai", "terminal", "all",
-        "codex", "claude", "mcp-hub", "codegraph", "msys2-ai", "posh-git"
+        "codex", "claude", "codegraph", "cc-switch", "msys2-ai", "posh-git"
     )
     $targets |
         Where-Object { $_.StartsWith($wordToComplete, [StringComparison]::OrdinalIgnoreCase) } |

@@ -68,7 +68,7 @@ MSYS_NT*|MINGW*_NT*)
             *":/ucrt64/bin:"*) ;;
             *) PATH="$PATH:/ucrt64/bin" ;;
         esac
-        for msys2_ai_command in codex claude mcp-hub codegraph; do
+        for msys2_ai_command in codex claude codegraph; do
             if [ -x "/ucrt64/bin/$msys2_ai_command" ]; then
                 eval "${msys2_ai_command}() {
                     /ucrt64/bin/${msys2_ai_command} \"\$@\"

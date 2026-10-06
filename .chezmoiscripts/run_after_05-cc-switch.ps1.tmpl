@@ -1,0 +1,128 @@
+{{ if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = "Stop"
+
+$env:CC_SWITCH_CONFIG_DIR = if ($env:CC_SWITCH_CONFIG_DIR) {
+    $env:CC_SWITCH_CONFIG_DIR
+} else {
+    Join-Path $HOME ".config\cc-switch"
+}
+
+$dotfilesEnvironment = Join-Path $HOME ".config\env.ps1"
+if (Test-Path -LiteralPath $dotfilesEnvironment -PathType Leaf) {
+    . $dotfilesEnvironment
+}
+
+function Expand-EnvironmentTemplate {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    $text = [System.IO.File]::ReadAllText($Path)
+    while ($text -match '\$\{([A-Za-z_][A-Za-z0-9_]*)\}') {
+        $name = $Matches[1]
+        $value = [System.Environment]::GetEnvironmentVariable($name)
+        if ([string]::IsNullOrEmpty($value)) {
+            throw "run_after_05-cc-switch: environment variable '$name' referenced in $Path is not set."
+        }
+        $text = $text.Replace('${' + $name + '}', $value)
+    }
+    $text
+}
+
+function Get-CCSwitchCurrentProvider {
+    param([Parameter(Mandatory = $true)][string]$App)
+
+    $output = (cc-switch --app $App provider current 2>$null) -join "`n"
+    if ($LASTEXITCODE -eq 0 -and $output -match "ID:\s*(\S+)") {
+        return $Matches[1]
+    }
+    return "zai"
+}
+
+function Install-CCSwitchProviders {
+    param(
+        [Parameter(Mandatory = $true)][string]$App,
+        [Parameter(Mandatory = $true)][string]$SeedPath
+    )
+
+    $existing = @(cc-switch --app $App provider list 2>$null)
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+
+    $providers = Expand-EnvironmentTemplate -Path $SeedPath | ConvertFrom-Json
+    foreach ($provider in $providers.PSObject.Properties) {
+        if ($existing -match "\b$([regex]::Escape($provider.Name))\b") {
+            continue
+        }
+
+        $temporaryPath = Join-Path $env:TEMP "cc-switch-$App-$($provider.Name).json"
+        $provider.Value |
+            ConvertTo-Json -Depth 30 |
+            Set-Content -LiteralPath $temporaryPath -Encoding utf8NoBOM
+        cc-switch --app $App provider add `
+            --id $provider.Name `
+            --name $provider.Name `
+            --config-file $temporaryPath `
+            --common-config
+        if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+        }
+        Remove-Item -LiteralPath $temporaryPath -Force
+    }
+}
+
+function Install-CCSwitchMcp {
+    $payload = Expand-EnvironmentTemplate -Path (Join-Path $env:CC_SWITCH_CONFIG_DIR "mcp.json")
+    $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($payload))
+    cc-switch deeplink "ccswitch://v1/import?resource=mcp&apps=claude,codex&config=$encoded"
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+
+    foreach ($id in ($payload | ConvertFrom-Json).mcpServers.PSObject.Properties.Name) {
+        cc-switch mcp enable $id --apps claude,codex
+        if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+        }
+    }
+}
+
+if (-not (Get-Command cc-switch -ErrorAction SilentlyContinue)) {
+    exit 0
+}
+
+$claudeProvider = Get-CCSwitchCurrentProvider -App claude
+$codexProvider = Get-CCSwitchCurrentProvider -App codex
+if ($claudeProvider -eq "default") {
+    $claudeProvider = "zai"
+}
+if ($codexProvider -eq "default") {
+    $codexProvider = "zai"
+}
+
+cc-switch --app claude config common set --file (Join-Path $env:CC_SWITCH_CONFIG_DIR "common-claude.json")
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+cc-switch --app codex config common set --file (Join-Path $env:CC_SWITCH_CONFIG_DIR "common-codex.toml")
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
+Install-CCSwitchProviders -App claude -SeedPath (Join-Path $env:CC_SWITCH_CONFIG_DIR "claude.json")
+Install-CCSwitchProviders -App codex -SeedPath (Join-Path $env:CC_SWITCH_CONFIG_DIR "codex.json")
+
+cc-switch --app claude provider switch $claudeProvider
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+cc-switch --app codex provider switch $codexProvider
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
+Install-CCSwitchMcp
+cc-switch mcp sync
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+{{- end }}

@@ -29,9 +29,13 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
 <summary>Arch Linux / pacman</summary>
 
 ```sh
-sudo pacman -Sy --needed git
+su -c "pacman -Sy --needed sudo curl git"
+su -c "usermod -aG wheel $USER"
+su -c "printf '%wheel ALL=(ALL:ALL) ALL\n' > /etc/sudoers.d/wheel && chmod 440 /etc/sudoers.d/wheel && visudo -cf /etc/sudoers.d/wheel"
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
 ```
+
+Log out and back in after adding the user to `wheel`.
 
 </details>
 

@@ -5,7 +5,6 @@ $ErrorActionPreference = "Stop"
 $packages = @(
     "@openai/codex",
     "@anthropic-ai/claude-code",
-    "mcp-hub",
     "@colbymchenry/codegraph"
 )
 
