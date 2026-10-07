@@ -1,0 +1,33 @@
+{{- $masonBin := joinPath .chezmoi.homeDir ".local/share/nvim/mason/bin" -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $masonBin = joinPath .chezmoi.homeDir "AppData/Local/nvim-data/mason/bin" -}}
+{{- end -}}
+ls_specific_settings:
+  bash:
+    ls_path: "{{ $masonBin }}/bash-language-server"
+  cpp:
+    ls_path: "{{ $masonBin }}/clangd"
+  go:
+    ls_path: "{{ $masonBin }}/gopls"
+  groovy:
+    ls_path: "{{ $masonBin }}/groovy-language-server"
+  java:
+    ls_path: "{{ $masonBin }}/jdtls"
+  json:
+    ls_path: "{{ $masonBin }}/vscode-json-language-server"
+  latex:
+    ls_path: "{{ $masonBin }}/texlab"
+  lua:
+    ls_path: "{{ $masonBin }}/lua-language-server"
+  markdown:
+    ls_path: "{{ $masonBin }}/marksman"
+  rust:
+    ls_path: "{{ $masonBin }}/rust-analyzer"
+  toml:
+    ls_path: "{{ $masonBin }}/taplo"
+  typescript:
+    ls_path: "{{ $masonBin }}/typescript-language-server"
+  vue:
+    ls_path: "{{ $masonBin }}/vue-language-server"
+  yaml:
+    ls_path: "{{ $masonBin }}/yaml-language-server"

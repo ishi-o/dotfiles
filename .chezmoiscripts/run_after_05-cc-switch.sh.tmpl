@@ -91,42 +91,23 @@ install_providers() {
   done < <(jq -r 'keys[]' "$seed")
 }
 
-install_mcp() {
-  local seed="$CC_SWITCH_CONFIG_DIR/mcp.json" id server_json payload encoded
-  payload='{"mcpServers":{}}'
-  while IFS= read -r id; do
-    server_json="$(jq --arg id "$id" '.mcpServers[$id]' "$seed")"
-    if ! server_json="$(expand_env "$server_json")"; then
-      echo "run_after_05-cc-switch: mcp server '$id' skipped" >&2
-      continue
-    fi
-    payload="$(jq --arg id "$id" --argjson server "$server_json" '.mcpServers[$id] = $server' <<<"$payload")"
-  done < <(jq -r '.mcpServers | keys[]' "$seed")
+context7_command="{{ if eq .chezmoi.os "windows" }}cmd{{ else }}npx{{ end }}"
+context7_args='{{ if eq .chezmoi.os "windows" }}"/c", "npx", {{ end }}"-y", "@upstash/context7-mcp"'
 
-  if [ "$(printf '%s' "$payload" | jq -r '.mcpServers | length')" -eq 0 ]; then
-    return 0
+set_codex_common() {
+  local base="$CC_SWITCH_CONFIG_DIR/common-codex.toml" tmp
+  if [ -z "${CONTEXT7_API_KEY:-}" ]; then
+    echo "run_after_05-cc-switch: CONTEXT7_API_KEY is not set, skipping context7 for codex" >&2
+    cc-switch --app codex config common set --file "$base"
+    return
   fi
-
-  encoded="$(printf '%s' "$payload" | base64 | tr -d '\n')"
-  cc-switch deeplink "ccswitch://v1/import?resource=mcp&apps=claude,codex&config=$encoded"
-
-  while IFS= read -r id; do
-    cc-switch mcp enable "$id" --apps claude,codex
-  done < <(printf '%s' "$payload" | jq -r '.mcpServers | keys[]')
-}
-
-sync_claude_mcp() {
-  local config_dir="${CLAUDE_CONFIG_DIR:-}" live="$HOME/.claude.json" target tmp
-  if [ -z "$config_dir" ] || [ "$config_dir" = "$HOME" ] || [ ! -f "$live" ]; then
-    return 0
-  fi
-  target="$config_dir/.claude.json"
   tmp="$(mktemp)"
-  if [ -f "$target" ]; then
-    jq -s '.[0].mcpServers = .[1].mcpServers | .[0]' "$target" "$live" >"$tmp" && mv "$tmp" "$target"
-  else
-    jq '{mcpServers: .mcpServers}' "$live" >"$tmp" && mv "$tmp" "$target"
-  fi
+  {
+    cat "$base"
+    printf '\n[mcp_servers.context7]\ncommand = "%s"\nargs = [%s]\n\n[mcp_servers.context7.env]\nCONTEXT7_API_KEY = "%s"\n' \
+      "$context7_command" "$context7_args" "$CONTEXT7_API_KEY"
+  } >"$tmp"
+  cc-switch --app codex config common set --file "$tmp"
   rm -f "$tmp"
 }
 
@@ -138,7 +119,7 @@ claude_provider="$(current_provider claude)"
 codex_provider="$(current_provider codex)"
 
 cc-switch --app claude config common set --file "$CC_SWITCH_CONFIG_DIR/common-claude.json"
-cc-switch --app codex config common set --file "$CC_SWITCH_CONFIG_DIR/common-codex.toml"
+set_codex_common
 
 install_providers claude "$CC_SWITCH_CONFIG_DIR/claude.json"
 install_providers codex "$CC_SWITCH_CONFIG_DIR/codex.json"
@@ -149,8 +130,4 @@ fi
 if [ -n "$codex_provider" ]; then
   switch_provider codex "$codex_provider"
 fi
-
-install_mcp
-cc-switch mcp sync
-sync_claude_mcp
 {{- end }}

@@ -1,0 +1,36 @@
+{{ if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = "Stop"
+
+if (-not (Get-Command github-mcp-server -ErrorAction SilentlyContinue)) {
+    return
+}
+
+$dotfilesEnvironment = Join-Path $HOME ".config\env.ps1"
+if (Test-Path -LiteralPath $dotfilesEnvironment -PathType Leaf) {
+    . $dotfilesEnvironment
+}
+
+$configDir = if ($env:CLAUDE_CONFIG_DIR) {
+    $env:CLAUDE_CONFIG_DIR
+} else {
+    Join-Path $HOME ".config\claude"
+}
+$config = Join-Path $configDir ".claude.json"
+if (-not (Test-Path -LiteralPath $config -PathType Leaf)) {
+    return
+}
+
+$json = Get-Content -LiteralPath $config -Raw | ConvertFrom-Json
+if (-not $json.PSObject.Properties["mcpServers"]) {
+    $json | Add-Member -NotePropertyName mcpServers -NotePropertyValue ([pscustomobject]@{})
+}
+$json.mcpServers | Add-Member -NotePropertyName github -NotePropertyValue ([pscustomobject]@{
+    command = "github-mcp-server"
+    args = @("stdio")
+}) -Force
+$json.mcpServers | Add-Member -NotePropertyName serena -NotePropertyValue ([pscustomobject]@{
+    command = "serena"
+    args = @("start-mcp-server", "--context=claude-code", "--project-from-cwd")
+}) -Force
+$json | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $config -Encoding utf8NoBOM
+{{- end }}

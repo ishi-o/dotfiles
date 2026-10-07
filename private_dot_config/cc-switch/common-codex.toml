@@ -1,5 +1,14 @@
 approvals_reviewer = "user"
 
+[mcp_servers.github]
+command = "github-mcp-server"
+args = ["stdio"]
+
+[mcp_servers.serena]
+command = "serena"
+args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
+startup_timeout_sec = 15
+
 [tui]
 vim_mode_default = true
 screen_reader_detection_done = true

@@ -1,0 +1,28 @@
+{{ if ne .chezmoi.os "windows" -}}
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if ! command -v github-mcp-server >/dev/null 2>&1; then
+  exit 0
+fi
+
+if [ -r "$HOME/.config/env" ]; then
+  . "$HOME/.config/env"
+fi
+
+config="${CLAUDE_CONFIG_DIR:-$HOME/.config/claude}/.claude.json"
+if [ ! -f "$config" ]; then
+  exit 0
+fi
+
+tmp="$(mktemp)"
+if jq \
+  '.mcpServers.github = {command: "github-mcp-server", args: ["stdio"]} |
+   .mcpServers.serena = {command: "serena", args: ["start-mcp-server", "--context=claude-code", "--project-from-cwd"]}' \
+  "$config" >"$tmp"; then
+  mv "$tmp" "$config"
+else
+  rm -f "$tmp"
+fi
+{{- end }}
