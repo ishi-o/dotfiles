@@ -1,4 +1,3 @@
-### START_ZPLUG
 . "$HOME/.config/shell/msys2-path"
 
 if [[ -n "${WT_SESSION:-}" ]]; then
@@ -28,10 +27,7 @@ else
   source "$ZPLUG_HOME/init.zsh"
 fi
 
-## START_OHMYZSH
 ZSH_THEME="gozilla"
-# ZSH_THEME="simple"
-# ZSH_THEME="gnzh"
 zplug "ohmyzsh/ohmyzsh", use:"oh-my-zsh.sh", defer:0
 
 zplug "plugins/git",       from:oh-my-zsh, defer:1
@@ -39,31 +35,19 @@ zplug "plugins/z",         from:oh-my-zsh, defer:1
 zplug "plugins/sudo",      from:oh-my-zsh, defer:1
 zplug "plugins/extract",   from:oh-my-zsh, defer:1
 zplug "plugins/fzf",       from:oh-my-zsh, defer:1
-# for gradle wrapper completions
 zplug "plugins/gradle",    from:oh-my-zsh, ignore:"gradle.plugin.zsh", defer:1
 
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 zplug "plugins/vi-mode",   from:oh-my-zsh, defer:2
-## END_OHMYZSH
 
-## START_SYNTAX_HIGHLIGHT
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
-## END_SYNTAX_HIGHLIGHT
 
-## START_AUTOSUGGESTION
 zplug "zsh-users/zsh-autosuggestions", defer:2
-## END_AUTOSUGGESTION
 
-## START_COMPLETIONS
 zplug "zsh-users/zsh-completions", defer:2
 zplug "Aloxaf/fzf-tab", defer:2
-## END_COMPLETIONS
 
-## START_ZSHVIMODE
-# ZVM_VI_INSERT_ESCAPE_BINDKEY=jj
-# zplug "jeffreytse/zsh-vi-mode", defer:2
-## END_ZSHVIMODE
 
 if ! zplug check; then
     printf "Install? [y/N]: "
@@ -72,9 +56,7 @@ if ! zplug check; then
     fi
 fi
 zplug load
-### END_ZPLUG
 
-# User configuration
 
 [ -f "$XDG_CONFIG_HOME/fzf/fzf.zsh" ] && source "$XDG_CONFIG_HOME/fzf/fzf.zsh"
 source "$XDG_CONFIG_HOME/zsh/keybinds.zsh"
@@ -85,12 +67,9 @@ case ":$PATH:" in
   *) export PATH="$MISE_DATA_DIR/shims:$PATH" ;;
 esac
 
-### START_ALIAS 
 alias vi='nvim'
 alias vim='nvim'
-### END_ALIAS
 
-### START_NVM
 if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
   _npm_prefix="$HOME/scoop/persist/nvm/.nodejs"
   if [ ! -d "$_npm_prefix" ]; then
@@ -136,7 +115,6 @@ else
 
   nvm() { _nvm_lazy_load; command nvm "$@"; }
 fi
-### END_NVM
 
 . "$XDG_CONFIG_HOME/shell/completions"
 compdef _gradle gradlew ./gradlew

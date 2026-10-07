@@ -13,18 +13,43 @@ if (Test-Path -LiteralPath $dotfilesEnvironment -PathType Leaf) {
 }
 
 function Expand-EnvironmentTemplate {
-    param([Parameter(Mandatory = $true)][string]$Path)
+    param([Parameter(Mandatory = $true)][string]$Content)
 
-    $text = [System.IO.File]::ReadAllText($Path)
+    $text = $Content
     while ($text -match '\$\{([A-Za-z_][A-Za-z0-9_]*)\}') {
         $name = $Matches[1]
         $value = [System.Environment]::GetEnvironmentVariable($name)
         if ([string]::IsNullOrEmpty($value)) {
-            throw "run_after_05-cc-switch: environment variable '$name' referenced in $Path is not set."
+            Write-Host "run_after_05-cc-switch: environment variable '$name' is not set, skipping"
+            return $null
         }
         $text = $text.Replace('${' + $name + '}', $value)
     }
     $text
+}
+
+function Get-CCSwitchDefaultProvider {
+    param([Parameter(Mandatory = $true)][string]$App)
+
+    if ($App -eq "codex") {
+        return "codex-official"
+    }
+    return "claude-official"
+}
+
+function Test-CCSwitchProvider {
+    param(
+        [Parameter(Mandatory = $true)][string]$App,
+        [Parameter(Mandatory = $true)][string]$Id
+    )
+
+    $output = (cc-switch --app $App provider list 2>$null) -join "`n"
+    if ($output -and $output -match "\b$([regex]::Escape($Id))\b") {
+        return $true
+    }
+    Start-Sleep -Seconds 1
+    $output = (cc-switch --app $App provider list 2>$null) -join "`n"
+    return [bool]($output -and $output -match "\b$([regex]::Escape($Id))\b")
 }
 
 function Get-CCSwitchCurrentProvider {
@@ -32,9 +57,36 @@ function Get-CCSwitchCurrentProvider {
 
     $output = (cc-switch --app $App provider current 2>$null) -join "`n"
     if ($LASTEXITCODE -eq 0 -and $output -match "ID:\s*(\S+)") {
-        return $Matches[1]
+        $current = $Matches[1]
+    } else {
+        $current = ""
     }
-    return "zai"
+    if ($current -eq "" -or $current -eq "default") {
+        return ""
+    }
+    return $current
+}
+
+function Switch-CCSwitchProvider {
+    param(
+        [Parameter(Mandatory = $true)][string]$App,
+        [Parameter(Mandatory = $true)][string]$Provider
+    )
+
+    if (-not (Test-CCSwitchProvider -App $App -Id $Provider)) {
+        $fallback = Get-CCSwitchDefaultProvider -App $App
+        if (Test-CCSwitchProvider -App $App -Id $fallback) {
+            Write-Host "run_after_05-cc-switch: provider '$Provider' not available for $App, using '$fallback'"
+            $Provider = $fallback
+        } else {
+            Write-Host "run_after_05-cc-switch: provider list unavailable for $App, leaving current provider unchanged"
+            return
+        }
+    }
+    cc-switch --app $App provider switch $Provider
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "run_after_05-cc-switch: failed to switch $App provider, continuing"
+    }
 }
 
 function Install-CCSwitchProviders {
@@ -43,21 +95,20 @@ function Install-CCSwitchProviders {
         [Parameter(Mandatory = $true)][string]$SeedPath
     )
 
-    $existing = @(cc-switch --app $App provider list 2>$null)
-    if ($LASTEXITCODE -ne 0) {
-        exit $LASTEXITCODE
-    }
+    $seed = Get-Content -LiteralPath $SeedPath -Raw | ConvertFrom-Json
+    foreach ($provider in $seed.PSObject.Properties) {
+        if (Test-CCSwitchProvider -App $App -Id $provider.Name) {
+            continue
+        }
 
-    $providers = Expand-EnvironmentTemplate -Path $SeedPath | ConvertFrom-Json
-    foreach ($provider in $providers.PSObject.Properties) {
-        if ($existing -match "\b$([regex]::Escape($provider.Name))\b") {
+        $expanded = Expand-EnvironmentTemplate -Content ($provider.Value | ConvertTo-Json -Depth 30)
+        if ($null -eq $expanded) {
+            Write-Host "run_after_05-cc-switch: provider '$($provider.Name)' for $App skipped"
             continue
         }
 
         $temporaryPath = Join-Path $env:TEMP "cc-switch-$App-$($provider.Name).json"
-        $provider.Value |
-            ConvertTo-Json -Depth 30 |
-            Set-Content -LiteralPath $temporaryPath -Encoding utf8NoBOM
+        Set-Content -LiteralPath $temporaryPath -Value $expanded -Encoding utf8NoBOM
         cc-switch --app $App provider add `
             --id $provider.Name `
             --name $provider.Name `
@@ -71,14 +122,29 @@ function Install-CCSwitchProviders {
 }
 
 function Install-CCSwitchMcp {
-    $payload = Expand-EnvironmentTemplate -Path (Join-Path $env:CC_SWITCH_CONFIG_DIR "mcp.json")
-    $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($payload))
+    $seedPath = Join-Path $env:CC_SWITCH_CONFIG_DIR "mcp.json"
+    $servers = (Get-Content -LiteralPath $seedPath -Raw | ConvertFrom-Json).mcpServers
+    $payload = [ordered]@{}
+    foreach ($server in $servers.PSObject.Properties) {
+        $expanded = Expand-EnvironmentTemplate -Content ($server.Value | ConvertTo-Json -Depth 30)
+        if ($null -eq $expanded) {
+            Write-Host "run_after_05-cc-switch: mcp server '$($server.Name)' skipped"
+            continue
+        }
+        $payload[$server.Name] = ($expanded | ConvertFrom-Json)
+    }
+
+    if ($payload.Count -eq 0) {
+        return
+    }
+
+    $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes((@{ mcpServers = $payload } | ConvertTo-Json -Depth 30)))
     cc-switch deeplink "ccswitch://v1/import?resource=mcp&apps=claude,codex&config=$encoded"
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
     }
 
-    foreach ($id in ($payload | ConvertFrom-Json).mcpServers.PSObject.Properties.Name) {
+    foreach ($id in $payload.Keys) {
         cc-switch mcp enable $id --apps claude,codex
         if ($LASTEXITCODE -ne 0) {
             exit $LASTEXITCODE
@@ -92,12 +158,6 @@ if (-not (Get-Command cc-switch -ErrorAction SilentlyContinue)) {
 
 $claudeProvider = Get-CCSwitchCurrentProvider -App claude
 $codexProvider = Get-CCSwitchCurrentProvider -App codex
-if ($claudeProvider -eq "default") {
-    $claudeProvider = "zai"
-}
-if ($codexProvider -eq "default") {
-    $codexProvider = "zai"
-}
 
 cc-switch --app claude config common set --file (Join-Path $env:CC_SWITCH_CONFIG_DIR "common-claude.json")
 if ($LASTEXITCODE -ne 0) {
@@ -111,13 +171,31 @@ if ($LASTEXITCODE -ne 0) {
 Install-CCSwitchProviders -App claude -SeedPath (Join-Path $env:CC_SWITCH_CONFIG_DIR "claude.json")
 Install-CCSwitchProviders -App codex -SeedPath (Join-Path $env:CC_SWITCH_CONFIG_DIR "codex.json")
 
-cc-switch --app claude provider switch $claudeProvider
-if ($LASTEXITCODE -ne 0) {
-    exit $LASTEXITCODE
+if ($claudeProvider) {
+    Switch-CCSwitchProvider -App claude -Provider $claudeProvider
 }
-cc-switch --app codex provider switch $codexProvider
-if ($LASTEXITCODE -ne 0) {
-    exit $LASTEXITCODE
+if ($codexProvider) {
+    Switch-CCSwitchProvider -App codex -Provider $codexProvider
+}
+
+function Sync-ClaudeMcp {
+    $configDir = $env:CLAUDE_CONFIG_DIR
+    if (-not $configDir -or $configDir -eq $HOME) {
+        return
+    }
+    $live = Join-Path $HOME ".claude.json"
+    if (-not (Test-Path -LiteralPath $live -PathType Leaf)) {
+        return
+    }
+    $liveJson = Get-Content -LiteralPath $live -Raw | ConvertFrom-Json
+    $target = Join-Path $configDir ".claude.json"
+    if (Test-Path -LiteralPath $target -PathType Leaf) {
+        $targetJson = Get-Content -LiteralPath $target -Raw | ConvertFrom-Json
+        $targetJson | Add-Member -NotePropertyName mcpServers -NotePropertyValue $liveJson.mcpServers -Force
+        $targetJson | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $target -Encoding utf8NoBOM
+    } else {
+        $liveJson | Select-Object mcpServers | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $target -Encoding utf8NoBOM
+    }
 }
 
 Install-CCSwitchMcp
@@ -125,4 +203,5 @@ cc-switch mcp sync
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
+Sync-ClaudeMcp
 {{- end }}

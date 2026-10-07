@@ -9,7 +9,7 @@
   "volcengine-agent-plan": {
     "env": {
       "ANTHROPIC_BASE_URL": "https://ark.cn-beijing.volces.com/api/plan/v3",
-      "ANTHROPIC_AUTH_TOKEN": "${ARK_API_KEY}",
+      "ANTHROPIC_AUTH_TOKEN": "${ARK_AGENT_API_KEY}",
       "ANTHROPIC_MODEL": "glm-5.3"
     }
   },

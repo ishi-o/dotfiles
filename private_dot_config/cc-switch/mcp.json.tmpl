@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "{{ if eq .chezmoi.os "windows" }}cmd{{ else }}npx{{ end }}",
+      "args": [{{ if eq .chezmoi.os "windows" }}"/c", "npx", {{ end }}"-y", "@upstash/context7-mcp"],
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
+    },
+    "filesystem": {
+      "command": "{{ if eq .chezmoi.os "windows" }}cmd{{ else }}npx{{ end }}",
+      "args": [{{ if eq .chezmoi.os "windows" }}"/c", "npx", {{ end }}"-y", "@modelcontextprotocol/server-filesystem", "."]
+    }
+  }
+}

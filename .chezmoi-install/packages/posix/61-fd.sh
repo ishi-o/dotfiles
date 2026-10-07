@@ -8,16 +8,13 @@ install_fd() {
     return 0
   fi
 
-  # Try package manager first (apt calls it fd-find)
   if try_package_manager fd-find; then
-    # Create symlink from fd-find to fd if needed
     if check_installed fdfind && ! check_installed fd; then
       ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
     fi
     return 0
   fi
 
-  # Fall back to downloading pre-built binary
   echo "Installing fd ${pkg_version}..."
 
   local darwin_target="apple-darwin"
@@ -41,7 +38,7 @@ install_fd() {
   if [ "$os" = "windows" ]; then
     download_binary "$pkg_name" "$pkg_version" "$url" "fd.exe" "$HOME/.local/bin/fd.exe"
   else
-    curl -sL "$url" | tar -zxf - --strip-components=1 -C "$HOME/.local/bin" "${archive_name}/fd" || return 1
+    curl_download "$url" | tar -zxf - --strip-components=1 -C "$HOME/.local/bin" "${archive_name}/fd" || return 1
     chmod +x "$HOME/.local/bin/fd" || return 1
   fi
 }

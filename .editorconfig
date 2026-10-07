@@ -1,0 +1,20 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+[*.{sh,bash,zsh}]
+indent_style = space
+indent_size = 2
+tab_width = 2
+binary_next_line = false
+switch_case_indent = true
+space_redirects = true
+keep_padding = true
+
+[*.ps1]
+indent_style = space
+indent_size = 4
+tab_width = 4

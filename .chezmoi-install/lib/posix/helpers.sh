@@ -1,32 +1,30 @@
 #!/usr/bin/env bash
-# Helper functions for package installation
 
-# Check if a command is installed
 check_installed() {
   local cmd="$1"
   command -v "$cmd" >/dev/null 2>&1
 }
 
-# Check if a library exists
 check_library() {
   local lib_pattern="$1"
 
-  # Check filesystem locations
-  # shellcheck disable=SC2086
   if ls "$USR_HOME"/lib/${lib_pattern}* >/dev/null 2>&1 ||
-     ls "$USR_HOME"/lib64/${lib_pattern}* >/dev/null 2>&1 ||
-     ls /usr/lib/${lib_pattern}* >/dev/null 2>&1 ||
-     ls /usr/lib64/${lib_pattern}* >/dev/null 2>&1 ||
-     ls /usr/local/lib/${lib_pattern}* >/dev/null 2>&1 ||
-     ls /usr/local/lib64/${lib_pattern}* >/dev/null 2>&1; then
+    ls "$USR_HOME"/lib64/${lib_pattern}* >/dev/null 2>&1 ||
+    ls /usr/lib/${lib_pattern}* >/dev/null 2>&1 ||
+    ls /usr/lib64/${lib_pattern}* >/dev/null 2>&1 ||
+    ls /usr/local/lib/${lib_pattern}* >/dev/null 2>&1 ||
+    ls /usr/local/lib64/${lib_pattern}* >/dev/null 2>&1; then
     return 0
   fi
 
-  # Check via package manager
   if [ "$pkg_manager" = "apt" ]; then
-    # Check if any package matching the library pattern is installed
-    # dpkg -l output format: "ii" prefix means installed
     if dpkg -l "*${lib_pattern}*" 2>/dev/null | grep -q "^ii"; then
+      return 0
+    fi
+  fi
+
+  if [ "$pkg_manager" = "dnf" ]; then
+    if rpm -qa "*${lib_pattern}*" 2>/dev/null | grep -q .; then
       return 0
     fi
   fi
@@ -34,32 +32,33 @@ check_library() {
   return 1
 }
 
-# Check if a pkg-config file exists
 check_pkgconfig() {
   local pc_name="$1"
 
-  # Check filesystem locations
   if ls "$USR_HOME/lib/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
-     ls "$USR_HOME/lib64/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
-     ls /usr/lib/pkgconfig/${pc_name}.pc >/dev/null 2>&1 ||
-     ls /usr/lib64/pkgconfig/${pc_name}.pc >/dev/null 2>&1 ||
-     ls /usr/local/lib/pkgconfig/${pc_name}.pc >/dev/null 2>&1 ||
-     ls /usr/local/lib64/pkgconfig/${pc_name}.pc >/dev/null 2>&1 ||
-     ls /usr/share/pkgconfig/${pc_name}.pc >/dev/null 2>&1; then
+    ls "$USR_HOME/lib64/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
+    ls "/usr/lib/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
+    ls "/usr/lib64/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
+    ls "/usr/local/lib/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
+    ls "/usr/local/lib64/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
+    ls "/usr/share/pkgconfig/${pc_name}.pc" >/dev/null 2>&1; then
     return 0
   fi
 
-  # Also try using pkg-config itself if available
   if command -v pkg-config >/dev/null 2>&1; then
     if pkg-config --exists "$pc_name" 2>/dev/null; then
       return 0
     fi
   fi
 
-  # Check via package manager
   if [ "$pkg_manager" = "apt" ]; then
-    # Check if any package matching the pkgconfig pattern is installed
     if dpkg -l "*${pc_name}*" 2>/dev/null | grep -q "^ii"; then
+      return 0
+    fi
+  fi
+
+  if [ "$pkg_manager" = "dnf" ]; then
+    if rpm -qa "*${pc_name}*" 2>/dev/null | grep -q .; then
       return 0
     fi
   fi
@@ -67,15 +66,22 @@ check_pkgconfig() {
   return 1
 }
 
-# Install package via apt
-# Usage: install_via_apt <package_name> [package_name2...]
+curl_download() {
+  curl -fL --progress-bar "$@"
+}
+
+apt_update_done=false
 install_via_apt() {
   if [ "$pkg_manager" != "apt" ] || [ "$has_sudo" != "true" ]; then
     return 1
   fi
 
   echo "Installing via apt: $*"
-  sudo apt-get update -qq && sudo apt-get install -y -qq "$@"
+  if [ "$apt_update_done" != "true" ]; then
+    sudo apt-get update || return 1
+    apt_update_done=true
+  fi
+  sudo apt-get install -y "$@"
 }
 
 pacman_package_name() {
@@ -94,10 +100,12 @@ pacman_package_name() {
   fd-find) echo "fd" ;;
   netcat-openbsd) echo "openbsd-netcat" ;;
   sqlite3) echo "sqlite" ;;
+  openssh-client) echo "openssh" ;;
   *) echo "$1" ;;
   esac
 }
 
+pacman_sync_done=false
 install_via_pacman() {
   if [ "$pkg_manager" != "pacman" ] || [ "$has_sudo" != "true" ]; then
     return 1
@@ -109,15 +117,59 @@ install_via_pacman() {
     packages+=("$(pacman_package_name "$package")")
   done
 
+  local sync_flags=()
+  if [ "$pacman_sync_done" != "true" ]; then
+    sync_flags=(-y)
+    pacman_sync_done=true
+  fi
+
   echo "Installing via pacman: ${packages[*]}"
-  sudo pacman -Sy --needed --noconfirm "${packages[@]}"
+  sudo pacman -S "${sync_flags[@]}" --needed --noconfirm "${packages[@]}"
 }
 
-# Try to install via package manager, return 0 if successful
-# Usage: try_package_manager <package_names...>
+dnf_package_name() {
+  case "$1" in
+  build-essential) echo "@development-tools" ;;
+  pkg-config) echo "pkgconf-pkg-config" ;;
+  libssl-dev) echo "openssl-devel" ;;
+  libevent-dev) echo "libevent-devel" ;;
+  libncurses-dev) echo "ncurses-devel" ;;
+  libutf8proc-dev) echo "utf8proc-devel" ;;
+  libgpg-error-dev) echo "libgpg-error-devel" ;;
+  libgcrypt20-dev) echo "libgcrypt-devel" ;;
+  libassuan-dev) echo "libassuan-devel" ;;
+  libksba-dev) echo "libksba-devel" ;;
+  libnpth0-dev) echo "npth-devel" ;;
+  netcat-openbsd) echo "nmap-ncat" ;;
+  sqlite3) echo "sqlite" ;;
+  openssh-client) echo "openssh-clients" ;;
+  gnupg) echo "gnupg2" ;;
+  *) echo "$1" ;;
+  esac
+}
+
+install_via_dnf() {
+  if [ "$pkg_manager" != "dnf" ] || [ "$has_sudo" != "true" ]; then
+    return 1
+  fi
+
+  local package
+  local packages=()
+  for package in "$@"; do
+    packages+=("$(dnf_package_name "$package")")
+  done
+
+  echo "Installing via dnf: ${packages[*]}"
+  sudo dnf install -y "${packages[@]}"
+}
+
 try_package_manager() {
   if [ "$pkg_manager" = "apt" ] && [ "$has_sudo" = "true" ]; then
     install_via_apt "$@"
+    return $?
+  fi
+  if [ "$pkg_manager" = "dnf" ] && [ "$has_sudo" = "true" ]; then
+    install_via_dnf "$@"
     return $?
   fi
   if [ "$pkg_manager" = "pacman" ] && [ "$has_sudo" = "true" ]; then
@@ -127,48 +179,59 @@ try_package_manager() {
   return 1
 }
 
-# Download and extract archive
-# Usage: download_extract <url> <dest_dir> [tar_flags...]
 download_extract() {
   local url="$1"
   local dest_dir="$2"
   shift 2
   local tar_flags=("$@")
 
-  local archive
-  archive="/tmp/$(basename "$url").tmp.$$"
+  mkdir -p "$dest_dir" || return 1
 
-  curl -sL "$url" -o "$archive" || return 1
-
-  # Determine extraction flags based on file extension
   local base_archive
   base_archive="$(basename "$url")"
 
-  if [[ "$base_archive" == *.tar.gz ]] || [[ "$base_archive" == *.tgz ]]; then
-    tar -zxf "$archive" ${tar_flags[@]+"${tar_flags[@]}"} -C "$dest_dir" || return 1
-  elif [[ "$base_archive" == *.tar.xz ]] || [[ "$base_archive" == *.txz ]]; then
-    tar -Jxf "$archive" ${tar_flags[@]+"${tar_flags[@]}"} -C "$dest_dir" || return 1
-  elif [[ "$base_archive" == *.tar.bz2 ]] || [[ "$base_archive" == *.tbz ]]; then
-    tar -jxf "$archive" ${tar_flags[@]+"${tar_flags[@]}"} -C "$dest_dir" || return 1
-  elif [[ "$base_archive" == *.zip ]]; then
+  local extract_flag
+  case "$base_archive" in
+  *.tar.gz | *.tgz) extract_flag="-z" ;;
+  *.tar.xz | *.txz) extract_flag="-J" ;;
+  *.tar.bz2 | *.tbz) extract_flag="-j" ;;
+  *.tar) extract_flag="" ;;
+  esac
+
+  if [ -n "${extract_flag-}" ]; then
+    (
+      set -o pipefail
+      curl_download "$url" |
+        tar -x ${extract_flag} -f - ${tar_flags[@]+"${tar_flags[@]}"} -C "$dest_dir"
+    ) || return 1
+    return 0
+  fi
+
+  if [[ "$base_archive" == *.zip ]]; then
+    local archive="/tmp/${base_archive}.tmp.$$"
+    curl_download -o "$archive" "$url" || return 1
     if command -v unzip >/dev/null 2>&1; then
-      unzip -q "$archive" -d "$dest_dir" || return 1
+      unzip -q "$archive" -d "$dest_dir" || {
+        rm -f "$archive"
+        return 1
+      }
     else
       local windows_archive windows_dest
       windows_archive="$(cygpath -w "$archive")"
       windows_dest="$(cygpath -w "$dest_dir")"
-      powershell.exe -NoProfile -Command "Expand-Archive -LiteralPath '$windows_archive' -DestinationPath '$windows_dest' -Force" || return 1
+      powershell.exe -NoProfile -Command "Expand-Archive -LiteralPath '$windows_archive' -DestinationPath '$windows_dest' -Force" || {
+        rm -f "$archive"
+        return 1
+      }
     fi
-  else
-    echo "Unsupported archive format: $base_archive" >&2
-    return 1
+    rm -f "$archive"
+    return 0
   fi
 
-  rm -f "$archive"
+  echo "Unsupported archive format: $base_archive" >&2
+  return 1
 }
 
-# Install a GNU autotools-based package
-# Usage: install_gnu_tool <name> <version> <url> [configure_args...]
 install_gnu_tool() {
   local name="$1"
   local version="$2"
@@ -180,13 +243,10 @@ install_gnu_tool() {
 
   echo "Installing ${name} ${version}..."
 
-  # Download and extract
   download_extract "$url" "$USR_HOME/src" || return 1
 
-  # Build and install
   cd "$src_dir" || return 1
 
-  # Parse CFLAGS, LDFLAGS, and PKG_CONFIG_PATH from configure_args
   local env_vars=()
   local config_flags=()
 
@@ -198,13 +258,11 @@ install_gnu_tool() {
     fi
   done
 
-  # Run configure with environment variables and flags
   env ${env_vars[@]+"${env_vars[@]}"} ./configure --prefix="$USR_HOME" ${config_flags[@]+"${config_flags[@]}"} &&
     make &&
     make install
 }
 
-# Install a library (similar to install_gnu_tool but with PKG_CONFIG_PATH setup)
 install_library() {
   local name="$1"
   local version="$2"
@@ -212,14 +270,11 @@ install_library() {
   shift 3
   local configure_args=("$@")
 
-  # Add PKG_CONFIG_PATH to environment
   export PKG_CONFIG_PATH="$USR_HOME/lib/pkgconfig:$USR_HOME/lib64/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
 
   install_gnu_tool "$name" "$version" "$url" ${configure_args[@]+"${configure_args[@]}"}
 }
 
-# Download and install a pre-built binary
-# Usage: download_binary <name> <version> <url> <binary_path_in_archive> <install_path>
 download_binary() {
   local name="$1"
   local version="$2"
@@ -234,7 +289,6 @@ download_binary() {
 
   download_extract "$url" "$temp_dir" || return 1
 
-  # Find and copy the binary
   local binary_file
   binary_file=$(find "$temp_dir" -name "$(basename "$binary_path")" -type f | head -1)
 
@@ -256,8 +310,6 @@ download_binary() {
   rm -rf "$temp_dir"
 }
 
-# Run a custom installation function with common setup
-# Usage: install_custom <name> <version> <install_function>
 install_custom() {
   local name="$1"
   local version="$2"

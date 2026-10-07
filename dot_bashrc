@@ -31,15 +31,11 @@ fi
 if [ -n "$mise_path" ]; then
 	case "$(uname -s 2>/dev/null)" in
 		MSYS_NT*) ;;
-		# mise activation emits Windows-style PATH entries in MSYS2. Use
-		# the Windows user PATH and mise shims instead.
 		*) eval "$("$mise_path" activate bash)" ;;
 	esac
 fi
 unset mise_path
 
-# Ensure a working D-Bus session bus.
-# WSLg may leave a stale socket; detect and restart if needed.
 if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.freedesktop.DBus --print-reply /org/freedesktop/DBus org.freedesktop.DBus.ListNames >/dev/null 2>&1; then
 	unset DBUS_SESSION_BUS_ADDRESS
 	wslg_bus="/mnt/wslg/run/user/$(id -u)/bus"
@@ -54,8 +50,6 @@ if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.fr
 	fi
 fi
 
-# Optional graphical/input-method integration.
-# On WSL, require WSLg so headless WSL does not start fcitx5.
 fcitx5_enabled=false
 fcitx5_is_wsl=false
 case "$(uname -r 2>/dev/null)" in
@@ -72,14 +66,11 @@ fi
 
 if [ "$fcitx5_enabled" = true ]; then
 	if [ "$fcitx5_is_wsl" = true ] && [ -d /mnt/wslg ]; then
-		# WSLg's Weston does not start a Wayland input-method service by default.
-		# Use Fcitx's toolkit/X11-compatible frontends instead.
 		export GTK_IM_MODULE=fcitx
 		export QT_IM_MODULE=fcitx
 		export SDL_IM_MODULE=fcitx
 		export XMODIFIERS=@im=fcitx
 	elif [ -z "${WAYLAND_DISPLAY:-}" ] && [ -n "${DISPLAY:-}" ]; then
-		# X11/XWayland applications use XIM or the toolkit modules.
 		export XMODIFIERS=@im=fcitx
 
 	fi

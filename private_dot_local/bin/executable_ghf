@@ -250,7 +250,6 @@ ghf() {
   esac
 }
 
-# Only run main when executed directly (not when sourced)
 (
   [[ -n $ZSH_VERSION && $ZSH_EVAL_CONTEXT =~ :file$ ]] ||
   [[ -n $BASH_VERSION ]] && (return 0 2>/dev/null)

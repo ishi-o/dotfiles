@@ -6,7 +6,7 @@
 - Windows installers: `.chezmoi-install/packages/win/*.ps1`
 - Platform selection with `.chezmoi.os`
 - Linux release selection with `.chezmoi.osRelease.id`
-- POSIX package managers: `apt` and `pacman`
+- POSIX package managers: `apt`, `dnf`, and `pacman`
 - Persisted package-group choices with `promptBoolOnce`
 
 ## Numbering
@@ -53,8 +53,8 @@ $env:SCOOP_DIR = "D:\Scoop"
 | `build` | Compilers, MSVC/MinGW on Windows, build tools, and base libraries |
 | `runtimes` | `uv`, `mise`, `nvm`, `luajit`, `rust` |
 | `editor` | `nvim`, `tree-sitter` |
-| `tools` / `dev` | `7-Zip`, `fzf`, `PSFzf`, `posh-git`, `fd`, `ripgrep`, `gh`, `sqlite3`, `zoxide`; Windows `tree` through MSYS2 |
-| `operations` | `kubectl`, `netcat` |
+| `tools` / `dev` | `7-Zip`, `fzf`, `PSFzf`, `posh-git`, `fd`, `ripgrep`, `gh`, `sqlite3`, `zoxide`, `jq`, `yq`; Windows `tree` and `less` through MSYS2 |
+| `operations` | `kubectl`, `netcat`, `openssh` |
 | `ai` | `cc-switch`, `codex`, `claude`, `codegraph`; Windows additionally installs the MSYS2 bundle |
 | `terminal` | POSIX `tmux`, `kitty`; Windows MSYS2 `tmux` and Windows Terminal |
 | `input` | WSL `fcitx5` and Chinese addons |

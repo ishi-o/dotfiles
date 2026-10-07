@@ -3,7 +3,7 @@
 set -euo pipefail
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: set-proxy [options] [HTTP_PROXY [SOCKS_PROXY]]
 
 Options:
@@ -34,12 +34,12 @@ validate_url() {
 
   case "$value" in
     '') return 0 ;;
-    http://*|https://*|socks5://*|socks5h://*) ;;
+    http://* | https://* | socks5://* | socks5h://*) ;;
     *) die "$name must use http://, https://, socks5://, or socks5h://" ;;
   esac
 
   case "$value" in
-    *[[:space:]]*|*'"'*|*"'"*|*\\*)
+    *[[:space:]]* | *'"'* | *"'"* | *\\*)
       die "$name must not contain whitespace, quotes, or backslashes"
       ;;
   esac
@@ -67,7 +67,7 @@ write_config() {
     printf "PROXY_HTTP='%s'\\n" "$http"
     printf "PROXY_SOCKS='%s'\\n" "$socks"
     printf "PROXY_NO_PROXY='%s'\\n" "$no_proxy"
-  } >"$temporary"
+  } > "$temporary"
   chmod 600 "$temporary"
   mv "$temporary" "$config_file"
   trap - EXIT
@@ -108,9 +108,9 @@ sync_git() {
   [ -n "$proxy" ] || proxy="$PROXY_SOCKS"
 
   if [ -n "$proxy" ]; then
-    printf '[http]\n    proxy = "%s"\n' "$proxy" >"$config_dir/gitconfig"
+    printf '[http]\n    proxy = "%s"\n' "$proxy" > "$config_dir/gitconfig"
   else
-    : >"$config_dir/gitconfig"
+    : > "$config_dir/gitconfig"
   fi
   chmod 600 "$config_dir/gitconfig"
 }
@@ -120,7 +120,7 @@ sync_npm() {
   npm_config="${NPM_CONFIG_USERCONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/npm/npmrc}"
   export NPM_CONFIG_USERCONFIG="$npm_config"
 
-  if command -v npm >/dev/null 2>&1; then
+  if command -v npm > /dev/null 2>&1; then
     if [ -n "$PROXY_HTTP" ]; then
       npm config set proxy "$PROXY_HTTP" --location=user
       npm config set https-proxy "$PROXY_HTTP" --location=user
@@ -135,10 +135,10 @@ sync_npm() {
   mkdir -p "$(dirname "$npm_config")"
   temporary="$(mktemp "$(dirname "$npm_config")/.npmrc.XXXXXX")"
   if [ -e "$npm_config" ]; then
-    awk '!/^[[:space:]]*(proxy|https-proxy)[[:space:]]*=/' "$npm_config" >"$temporary"
+    awk '!/^[[:space:]]*(proxy|https-proxy)[[:space:]]*=/' "$npm_config" > "$temporary"
   fi
   if [ -n "$PROXY_HTTP" ]; then
-    printf 'proxy=%s\nhttps-proxy=%s\n' "$PROXY_HTTP" "$PROXY_HTTP" >>"$temporary"
+    printf 'proxy=%s\nhttps-proxy=%s\n' "$PROXY_HTTP" "$PROXY_HTTP" >> "$temporary"
   elif [ ! -e "$npm_config" ]; then
     rm -f "$temporary"
     return 0
@@ -152,7 +152,7 @@ sync_consumers() {
   sync_npm
   printf 'Proxy configuration: %s\n' "$config_file"
   printf 'Updated: Git'
-  if command -v npm >/dev/null 2>&1; then
+  if command -v npm > /dev/null 2>&1; then
     printf ', npm'
   fi
   printf '\n'
@@ -166,7 +166,7 @@ action_count=0
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
-    --http|--socks|--no-proxy)
+    --http | --socks | --no-proxy)
       [ "$#" -ge 2 ] || die "$1 requires a value"
       case "$1" in
         --http) http="$2" ;;
@@ -175,11 +175,29 @@ while [ "$#" -gt 0 ]; do
       esac
       shift 2
       ;;
-    --clear) mode=clear; action_count=$((action_count + 1)); shift ;;
-    --show) mode=show; action_count=$((action_count + 1)); shift ;;
-    --sync) mode=sync; action_count=$((action_count + 1)); shift ;;
-    -h|--help) usage; exit 0 ;;
-    --*) usage >&2; exit 2 ;;
+    --clear)
+      mode=clear
+      action_count=$((action_count + 1))
+      shift
+      ;;
+    --show)
+      mode=show
+      action_count=$((action_count + 1))
+      shift
+      ;;
+    --sync)
+      mode=sync
+      action_count=$((action_count + 1))
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    --*)
+      usage >&2
+      exit 2
+      ;;
     *)
       if [ -z "$http" ]; then
         http="$1"

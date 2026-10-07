@@ -10,9 +10,6 @@ if ($u -notlike "*$bin*") {
     Write-Host "==> Added $bin to user PATH"
 }
 
-. (Join-Path $scriptDir "lib\win\env.ps1")
-. (Join-Path $scriptDir "lib\win\helpers.ps1")
-
 function Get-InstallOption {
     param(
         [Parameter(Mandatory = $true)][string]$Name,
@@ -42,6 +39,11 @@ $installMsys2 = $installShell -or
     $installTerminal
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+    $defaultScoopDir = Join-Path $env:USERPROFILE "scoop"
+    if (Test-Path -LiteralPath $defaultScoopDir -PathType Container) {
+        Remove-Item -LiteralPath $defaultScoopDir -Recurse -Force
+        Write-Host "==> Removed stale $defaultScoopDir"
+    }
     if ($env:SCOOP_DIR) {
         $env:SCOOP = $env:SCOOP_DIR
         [Environment]::SetEnvironmentVariable("SCOOP", $env:SCOOP_DIR, "User")
@@ -53,6 +55,9 @@ if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
 if (-not (scoop bucket list | Where-Object { $_.Name -eq "extras" })) {
     scoop bucket add extras
 }
+
+. (Join-Path $scriptDir "lib\win\env.ps1")
+. (Join-Path $scriptDir "lib\win\helpers.ps1")
 
 Initialize-ScoopUpdateCheck
 

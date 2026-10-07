@@ -9,41 +9,40 @@ install_ripgrep() {
     return 0
   fi
 
-  # Try the system package manager first.
   if try_package_manager ripgrep; then
     return 0
   fi
 
   case "$os" in
-  darwin|linux|windows)
-    ;;
-  *)
-    echo "Unsupported operating system for ripgrep: $os"
-    return 0
-    ;;
+    darwin | linux | windows)
+      ;;
+    *)
+      echo "Unsupported operating system for ripgrep: $os"
+      return 0
+      ;;
   esac
 
   local target
   case "$os:$arch" in
-  darwin:amd64)
-    target="x86_64-apple-darwin"
-    ;;
-  darwin:arm64)
-    target="aarch64-apple-darwin"
-    ;;
-  linux:amd64)
-    target="x86_64-unknown-linux-musl"
-    ;;
-  linux:arm64|linux:aarch64)
-    target="aarch64-unknown-linux-musl"
-    ;;
-  windows:amd64|windows:x86_64)
-    target="x86_64-pc-windows-msvc"
-    ;;
-  *)
-    echo "Unsupported architecture for ripgrep: $os/$arch"
-    return 1
-    ;;
+    darwin:amd64)
+      target="x86_64-apple-darwin"
+      ;;
+    darwin:arm64)
+      target="aarch64-apple-darwin"
+      ;;
+    linux:amd64)
+      target="x86_64-unknown-linux-musl"
+      ;;
+    linux:arm64 | linux:aarch64)
+      target="aarch64-unknown-linux-musl"
+      ;;
+    windows:amd64 | windows:x86_64)
+      target="x86_64-pc-windows-msvc"
+      ;;
+    *)
+      echo "Unsupported architecture for ripgrep: $os/$arch"
+      return 1
+      ;;
   esac
 
   local version="${pkg_version#v}"

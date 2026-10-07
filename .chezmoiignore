@@ -6,6 +6,9 @@ dots
 Dots.cmd
 set-proxy
 Set-Proxy.cmd
+.editorconfig
+.shellcheckrc
+PSScriptAnalyzerSettings.psd1
 
 {{ if eq .chezmoi.os "windows" }}
 **/*.sh

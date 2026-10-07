@@ -15,4 +15,7 @@ description: Create a git commit
 
 Based on the above changes, create a single git commit.
 
+- The commit message is a summary only, with an empty body.
+- The summary must follow the conventional commit spec, e.g. `feat(module): add xxx`.
+
 Stage and create the commit using a single message. Do not push or create a pull request unless the user separately requests it.

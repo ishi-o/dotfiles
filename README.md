@@ -17,25 +17,53 @@ brew install chezmoi git
 </details>
 
 <details>
-<summary>Linux / macOS</summary>
+<summary>macOS (no homebrew)</summary>
 
 ```sh
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
 ```
 
 </details>
 
 <details>
-<summary>Arch Linux / pacman</summary>
+<summary>Arch Linux</summary>
 
 ```sh
-su -c "pacman -Sy --needed sudo curl git"
-su -c "usermod -aG wheel $USER"
-su -c "printf '%wheel ALL=(ALL:ALL) ALL\n' > /etc/sudoers.d/wheel && chmod 440 /etc/sudoers.d/wheel && visudo -cf /etc/sudoers.d/wheel"
+pacman -Sy --needed sudo curl git
+useradd -m -G wheel -s /bin/bash <user>
+passwd <user>
+printf '%%wheel ALL=(ALL:ALL) ALL\n' > /etc/sudoers.d/wheel && chmod 440 /etc/sudoers.d/wheel && visudo -cf /etc/sudoers.d/wheel
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
 ```
 
-Log out and back in after adding the user to `wheel`.
+</details>
+
+<details>
+<summary>Fedora / RHEL / AlmaLinux</summary>
+
+```sh
+dnf install -y curl git
+useradd -m -G wheel -s /bin/bash <user>
+passwd <user>
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+</details>
+
+<details>
+<summary>Debian / Ubuntu</summary>
+
+```sh
+apt-get update
+apt-get install -y curl git
+useradd -m -G sudo -s /bin/bash <user>
+passwd <user>
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
+```
 
 </details>
 

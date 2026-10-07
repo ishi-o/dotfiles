@@ -22,7 +22,7 @@ install_kubectl() {
 
   local temp="${target}.tmp.$$"
 
-  curl -L "https://dl.k8s.io/release/${stable_version}/bin/${os}/${arch}/${binary}" -o "$temp" || return 1
+  curl_download -o "$temp" "https://dl.k8s.io/release/${stable_version}/bin/${os}/${arch}/${binary}" || return 1
   chmod +x "$temp" || return 1
   mv "$temp" "$target" || return 1
 }

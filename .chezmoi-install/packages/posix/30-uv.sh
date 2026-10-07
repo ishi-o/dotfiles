@@ -25,7 +25,7 @@ install_uv() {
     }
     rm -rf "$temp_dir"
   else
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    curl_download https://astral.sh/uv/install.sh | sh
   fi
 
   if ! check_installed uv; then
@@ -33,11 +33,6 @@ install_uv() {
     return 0
   fi
 
-  # Install Python versions via uv.
-  # uv python install creates python3.X executables in ~/.local/bin.
-  # - 3.14: default python3 for general use
-  # - 3.13: needed by Mason packages that require python<3.14
-  #   (e.g. nginx-language-server: Requires-Python >=3.9,<3.14)
   local py_versions=("3.14" "3.13")
   for ver in "${py_versions[@]}"; do
     if ! check_installed "python${ver}"; then
@@ -50,14 +45,12 @@ install_uv() {
   local python3_shim="$HOME/.local/bin/python3"
   if [ ! -e "$python_shim" ]; then
     cat > "$python_shim" << 'SHIM'
-#!/bin/sh
 exec uv run --no-project python "$@"
 SHIM
     chmod +x "$python_shim"
   fi
   if [ ! -e "$python3_shim" ]; then
     cat > "$python3_shim" << 'SHIM'
-#!/bin/sh
 exec uv run --no-project python3 "$@"
 SHIM
     chmod +x "$python3_shim"

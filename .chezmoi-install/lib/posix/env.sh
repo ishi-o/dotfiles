@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Environment detection and configuration
 
 system_type="${DOTS_SYSTEM_TYPE:-unknown}"
 system_release="${DOTS_SYSTEM_RELEASE:-unknown}"
 kernel="$(uname | tr '[:upper:]' '[:lower:]')"
 os="$kernel"
 case "$kernel" in
-  mingw*|msys*|cygwin*)
+  mingw* | msys* | cygwin*)
     os="windows"
     if [ -n "${USERPROFILE:-}" ]; then
       HOME="$(cygpath -u "$USERPROFILE")"
@@ -16,16 +15,13 @@ case "$kernel" in
 esac
 export os
 
-# User-local installation directory
 export USR_HOME="${USR_HOME:-$HOME/usr/local}"
 
-# XDG-style configuration and data locations.
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
-# mise configuration, tool data, cache, and state follow XDG conventions.
 export MISE_CONFIG_DIR="${MISE_CONFIG_DIR:-$XDG_CONFIG_HOME/mise}"
 export MISE_DATA_DIR="${MISE_DATA_DIR:-$XDG_DATA_HOME/mise}"
 export MISE_CACHE_DIR="${MISE_CACHE_DIR:-$XDG_CACHE_HOME/mise}"
@@ -39,7 +35,6 @@ if [ "${MISE_INSTALL_PATH:-}" = "" ]; then
 fi
 export MISE_INSTALL_PATH
 
-# Keep tool configuration and mutable package data out of $HOME.
 export CODEX_HOME="${CODEX_HOME:-$XDG_CONFIG_HOME/codex}"
 export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$XDG_CONFIG_HOME/claude}"
 export CC_SWITCH_CONFIG_DIR="${CC_SWITCH_CONFIG_DIR:-$XDG_CONFIG_HOME/cc-switch}"
@@ -79,49 +74,46 @@ if [ -r "$proxy_config" ]; then
   unset proxy_config PROXY_HTTP PROXY_SOCKS PROXY_NO_PROXY
 fi
 
-# Detect architecture and normalize to common names
 arch="$(uname -m)"
 [ "$arch" = "x86_64" ] && arch=amd64
 export arch
 
-# Detect Windows Subsystem for Linux.
 is_wsl=false
-case "$(uname -r 2>/dev/null)" in
-  *microsoft*|*Microsoft*|*WSL*) is_wsl=true ;;
+case "$(uname -r 2> /dev/null)" in
+  *microsoft* | *Microsoft* | *WSL*) is_wsl=true ;;
 esac
 [ -n "${WSL_DISTRO_NAME:-}" ] && is_wsl=true
 export is_wsl
 
-# Detect available package manager
 pkg_manager=""
 case "$system_release" in
-arch | manjaro | endeavouros | garuda | artix | cachyos)
-  if command -v pacman >/dev/null 2>&1; then
-    pkg_manager="pacman"
-  fi
-  ;;
+  arch | manjaro | endeavouros | garuda | artix | cachyos)
+    if command -v pacman > /dev/null 2>&1; then
+      pkg_manager="pacman"
+    fi
+    ;;
 esac
-if [ -z "$pkg_manager" ] && command -v apt-get >/dev/null 2>&1; then
+if [ -z "$pkg_manager" ] && command -v apt-get > /dev/null 2>&1; then
   pkg_manager="apt"
 fi
-if [ -z "$pkg_manager" ] && command -v pacman >/dev/null 2>&1; then
+if [ -z "$pkg_manager" ] && command -v dnf > /dev/null 2>&1; then
+  pkg_manager="dnf"
+fi
+if [ -z "$pkg_manager" ] && command -v pacman > /dev/null 2>&1; then
   pkg_manager="pacman"
 fi
 export pkg_manager
 export system_type
 export system_release
 
-# Check if sudo is available (needed for package manager)
 has_sudo=false
-if [ "$pkg_manager" != "" ] && command -v sudo >/dev/null 2>&1; then
+if [ "$pkg_manager" != "" ] && command -v sudo > /dev/null 2>&1; then
   has_sudo=true
 fi
 export has_sudo
 
-# Add user bin to PATH
 export PATH="$USR_HOME/mise/bin:$USR_HOME/bin:$USR_HOME/nvim/bin:$HOME/.local/bin:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
 
-# Ensure required directories exist
 mkdir -p "$USR_HOME/src" || exit 1
 mkdir -p "$HOME/.local/bin" || exit 1
 mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" \

@@ -5,7 +5,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Usage: dots <command> [args]
 
 Commands:
@@ -40,7 +40,13 @@ EOF
 }
 
 run_installer() {
-  bash "$1"
+  local init_script
+  init_script="$(source_dir)/.chezmoi-install/packages/posix/00-init.sh"
+  if [ -f "$init_script" ]; then
+    bash -c 'source "$1"; source "$2"' bash "$init_script" "$1"
+  else
+    bash "$1"
+  fi
 }
 
 source_dir() {
@@ -72,7 +78,6 @@ proxy_script_path() {
 load_proxy_environment() {
   local proxy_config="${XDG_CONFIG_HOME:-$HOME/.config}/proxy/config"
   [ -r "$proxy_config" ] || return 0
-  # shellcheck disable=SC1090
   . "$proxy_config"
   PROXY_HTTP="${PROXY_HTTP:-}"
   PROXY_SOCKS="${PROXY_SOCKS:-}"
@@ -111,42 +116,42 @@ install_group() {
   local prefixes=()
 
   case "$group" in
-  shell)
-    prefixes=(0?)
-    ;;
-  build)
-    prefixes=(1? 2?)
-    ;;
-  runtimes)
-    prefixes=(3?)
-    ;;
-  editor)
-    prefixes=(4?)
-    ;;
-  ai)
-    prefixes=(5?)
-    ;;
-  tools | dev)
-    prefixes=(6?)
-    ;;
-  operations)
-    prefixes=(7?)
-    ;;
-  terminal)
-    prefixes=(8?)
-    ;;
-  input)
-    prefixes=(9?)
-    ;;
-  all)
-    run_installer "$(source_dir)/.chezmoi-install/main.sh"
-    return
-    ;;
-  *)
-    echo "Unknown install group: $group" >&2
-    usage >&2
-    exit 2
-    ;;
+    shell)
+      prefixes=(0?)
+      ;;
+    build)
+      prefixes=(1? 2?)
+      ;;
+    runtimes)
+      prefixes=(3?)
+      ;;
+    editor)
+      prefixes=(4?)
+      ;;
+    ai)
+      prefixes=(5?)
+      ;;
+    tools | dev)
+      prefixes=(6?)
+      ;;
+    operations)
+      prefixes=(7?)
+      ;;
+    terminal)
+      prefixes=(8?)
+      ;;
+    input)
+      prefixes=(9?)
+      ;;
+    all)
+      run_installer "$(source_dir)/.chezmoi-install/main.sh"
+      return
+      ;;
+    *)
+      echo "Unknown install group: $group" >&2
+      usage >&2
+      exit 2
+      ;;
   esac
 
   local prefix
@@ -169,43 +174,43 @@ proxy_clear=false
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
-  --proxy)
-    [ "$#" -ge 2 ] || {
-      echo "--proxy requires a URL" >&2
-      exit 2
-    }
-    proxy_args+=(--http "$2")
-    shift 2
-    ;;
-  --socks)
-    [ "$#" -ge 2 ] || {
-      echo "--socks requires a URL" >&2
-      exit 2
-    }
-    proxy_args+=(--socks "$2")
-    shift 2
-    ;;
-  --no-proxy)
-    [ "$#" -ge 2 ] || {
-      echo "--no-proxy requires a list" >&2
-      exit 2
-    }
-    proxy_args+=(--no-proxy "$2")
-    shift 2
-    ;;
-  --clear-proxy)
-    proxy_clear=true
-    shift
-    ;;
-  --)
-    shift
-    command_args+=("$@")
-    break
-    ;;
-  *)
-    command_args+=("$1")
-    shift
-    ;;
+    --proxy)
+      [ "$#" -ge 2 ] || {
+        echo "--proxy requires a URL" >&2
+        exit 2
+      }
+      proxy_args+=(--http "$2")
+      shift 2
+      ;;
+    --socks)
+      [ "$#" -ge 2 ] || {
+        echo "--socks requires a URL" >&2
+        exit 2
+      }
+      proxy_args+=(--socks "$2")
+      shift 2
+      ;;
+    --no-proxy)
+      [ "$#" -ge 2 ] || {
+        echo "--no-proxy requires a list" >&2
+        exit 2
+      }
+      proxy_args+=(--no-proxy "$2")
+      shift 2
+      ;;
+    --clear-proxy)
+      proxy_clear=true
+      shift
+      ;;
+    --)
+      shift
+      command_args+=("$@")
+      break
+      ;;
+    *)
+      command_args+=("$1")
+      shift
+      ;;
   esac
 done
 
@@ -225,91 +230,91 @@ fi
 set -- "${command_args[@]}"
 
 case "${1:-help}" in
-init)
-  shift
-  init_dots "$@"
-  ;;
-apply)
-  shift
-  exec chezmoi apply "$@"
-  ;;
-diff)
-  shift
-  exec chezmoi diff "$@"
-  ;;
-status)
-  shift
-  exec chezmoi status "$@"
-  ;;
-edit)
-  shift
-  exec chezmoi edit "$@"
-  ;;
-update)
-  shift
-  update_init=false
-  update_args=()
-  for arg in "$@"; do
-    if [ "$arg" = "--init" ]; then
-      update_init=true
+  init)
+    shift
+    init_dots "$@"
+    ;;
+  apply)
+    shift
+    exec chezmoi apply "$@"
+    ;;
+  diff)
+    shift
+    exec chezmoi diff "$@"
+    ;;
+  status)
+    shift
+    exec chezmoi status "$@"
+    ;;
+  edit)
+    shift
+    exec chezmoi edit "$@"
+    ;;
+  update)
+    shift
+    update_init=false
+    update_args=()
+    for arg in "$@"; do
+      if [ "$arg" = "--init" ]; then
+        update_init=true
+      else
+        update_args+=("$arg")
+      fi
+    done
+    git -C "$(source_dir)" pull --ff-only
+    if [ "$update_init" = true ]; then
+      if [ "${#update_args[@]}" -gt 0 ]; then
+        init_dots "${update_args[@]}"
+      else
+        init_dots
+      fi
     else
-      update_args+=("$arg")
+      if [ "${#update_args[@]}" -gt 0 ]; then
+        chezmoi apply "${update_args[@]}"
+      else
+        chezmoi apply
+      fi
     fi
-  done
-  git -C "$(source_dir)" pull --ff-only
-  if [ "$update_init" = true ]; then
-    if [ "${#update_args[@]}" -gt 0 ]; then
-      init_dots "${update_args[@]}"
-    else
-      init_dots
+    ;;
+  doctor)
+    shift
+    exec chezmoi doctor "$@"
+    ;;
+  proxy)
+    shift
+    exec "$(proxy_script_path)" "$@"
+    ;;
+  install)
+    shift
+    if [ "$#" -eq 0 ]; then
+      echo "dots install requires a package or group name" >&2
+      exit 2
     fi
-  else
-    if [ "${#update_args[@]}" -gt 0 ]; then
-      chezmoi apply "${update_args[@]}"
-    else
-      chezmoi apply
-    fi
-  fi
-  ;;
-doctor)
-  shift
-  exec chezmoi doctor "$@"
-  ;;
-proxy)
-  shift
-  exec "$(proxy_script_path)" "$@"
-  ;;
-install)
-  shift
-  if [ "$#" -eq 0 ]; then
-    echo "dots install requires a package or group name" >&2
-    exit 2
-  fi
 
-  target="$1"
-  shift
+    target="$1"
+    shift
 
-  case "$target" in
-  shell | build | runtimes | editor | tools | dev | operations | ai | terminal | input | all)
-    install_group "$target"
+    case "$target" in
+      shell | build | runtimes | editor | tools | dev | operations | ai | terminal | input | all)
+        install_group "$target"
+        ;;
+      *)
+        installer="$(find_installer "$target")"
+        if [ -z "$installer" ]; then
+          echo "Installer not found for target: $target" >&2
+          exit 1
+        fi
+        echo "==> Installing $target"
+        run_installer "$installer"
+        ;;
+    esac
+    ;;
+  help | -h | --help)
+    usage
     ;;
   *)
-    installer="$(find_installer "$target")"
-    if [ -z "$installer" ]; then
-      echo "Installer not found for target: $target" >&2
-      exit 1
-    fi
-    echo "==> Installing $target"
-    run_installer "$installer"
+    echo "Unknown command: $1" >&2
+    usage >&2
+    exit 2
     ;;
-  esac
-  ;;
-help | -h | --help)
-  usage
-  ;;
-*)
-  echo "Unknown command: $1" >&2
-  usage >&2
-  exit 2
-  ;;
 esac

@@ -29,10 +29,8 @@ install_mise() {
     }
     rm -rf "$temp_dir"
   else
-    # Use the standalone installer so mise does not modify shell files managed
-    # by chezmoi. MISE_INSTALL_PATH keeps the binary under USR_HOME.
-    curl -fsSL https://mise.jdx.dev/install.sh |
-      MISE_INSTALL_PATH="$MISE_INSTALL_PATH" MISE_INSTALL_SKIP_IF_EXISTS=1 sh || return 1
+    curl_download https://mise.jdx.dev/install.sh \
+      | MISE_INSTALL_PATH="$MISE_INSTALL_PATH" MISE_INSTALL_SKIP_IF_EXISTS=1 sh || return 1
   fi
 
   if [ ! -x "$MISE_INSTALL_PATH" ]; then

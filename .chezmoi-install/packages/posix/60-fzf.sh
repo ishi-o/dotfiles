@@ -8,12 +8,10 @@ install_fzf() {
     return 0
   fi
 
-  # Try package manager first
   if try_package_manager fzf; then
     return 0
   fi
 
-  # Fall back to git clone installation
   echo "Installing fzf..."
 
   if [ ! -d "$FZF_HOME" ]; then

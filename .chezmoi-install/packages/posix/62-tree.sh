@@ -17,8 +17,8 @@ install_tree() {
     "$USR_HOME/src" || return 1
 
   cd "$USR_HOME/src/tree-$pkg_version" || return 1
-  make &&
-    make install PREFIX="$USR_HOME"
+  make \
+    && make install PREFIX="$USR_HOME"
 }
 
 install_tree

@@ -7,7 +7,6 @@ install_xclip() {
     return 0
   fi
 
-  # Only needed on WSL for clipboard integration.
   if [ "$is_wsl" != "true" ]; then
     return 0
   fi

@@ -120,7 +120,6 @@ function Upgrade-Nvim {
     Write-Host "==> Neovim nightly installed successfully."
 }
 
-# Node.js helpers.
 function Initialize-Nvm {
     param([switch]$InstallNode)
 
@@ -170,7 +169,6 @@ function Initialize-Nvm {
     }
 }
 
-# MSYS2 helpers.
 $script:MSYS2PackageNames = @(
     "zsh",
     "autoconf",
@@ -185,7 +183,8 @@ $script:MSYS2PackageNames = @(
     "libnpth",
     "texinfo",
     "pinentry",
-    "tree"
+    "tree",
+    "less"
 )
 
 function Test-MSYS2Package {
@@ -222,10 +221,10 @@ function Get-MSYS2GroupPackages {
             )
         }
         "tools" {
-            @("tree") 
+            @("tree", "less")
         }
         "dev" {
-            @("tree") 
+            @("tree", "less")
         }
         "editor" {
             @()
@@ -290,19 +289,24 @@ function Install-MSYS2Packages {
         throw "MSYS2 usr/bin not found at $msys2UsrBin"
     }
 
-    $pacman = Join-Path $msys2UsrBin "pacman.exe"
-    if (-not (Test-Path -LiteralPath $pacman -PathType Leaf)) {
-        throw "MSYS2 pacman not found at $pacman"
+    $bash = Join-Path $msys2UsrBin "bash.exe"
+    if (-not (Test-Path -LiteralPath $bash -PathType Leaf)) {
+        throw "MSYS2 bash not found at $bash"
     }
 
     $env:Path = "$msys2UsrBin;$env:Path"
 
+    $installArgs = @("-lc", 'pacman -Sy --needed --noconfirm "$@"', "pacman") + $Packages
     $previousMSystem = $env:MSYSTEM
     $env:MSYSTEM = "MSYS"
     try {
-        & $pacman -Sy --needed --noconfirm @Packages
+        & $bash @installArgs
         if ($LASTEXITCODE -ne 0) {
-            throw "MSYS2 package installation failed: $($Packages -join ', ')"
+            & $bash -lc 'pacman-key --init >/dev/null 2>&1; pacman-key --populate msys2'
+            & $bash @installArgs
+            if ($LASTEXITCODE -ne 0) {
+                throw "MSYS2 package installation failed: $($Packages -join ', ')"
+            }
         }
     } finally {
         if ($null -eq $previousMSystem) {

@@ -1,55 +1,37 @@
 {{- if and (eq .chezmoi.os "linux") (env "WSL_DISTRO_NAME") (stat "/mnt/wslg") }}
-# WSLg does not configure a Wayland input-method service by default. Keep Kitty
-# on XWayland so it can use Fcitx's X11/IBus compatibility frontend.
 linux_display_server x11
 {{- end }}
 
-### LAYOUT
 enabled_layouts splits,stack
-### LAYOUT
 
-### CURSOR
 cursor_shape block
 cursor_blink_interval 0.5
 cursor #3A5B7E
 cursor_text_color background
-### CURSOR
 
-### TEXT
 adjust_line_height 0
 adjust_baseline -2
 adjust_column_width 0
-### TEXT
 
-### REMOTE_SSH
 allow_remote_control yes
 listen_on unix:/tmp/kitty
 shell_integration enabled
 shell_integration no-cursor
-### REMOTE_SSH
 
-### CLIPBOARD
 clipboard_control write-clipboard write-primary read-clipboard read-primary
-### CLIPBOARD
 
-# KITTY_FONTS
 font_family      family="Consolas"
 bold_font        auto
 italic_font      auto
 bold_italic_font auto
 font_size 20
-# KITTY_FONTS
 
-# AUTO_SESSION
 startup_session ~/.config/kitty/sessions/last.kitty-session
-# AUTO_SESSION
 
-### MAPPING
 kitty_mod ctrl+shift
 map f11 toggle_fullscreen
 map ctrl+shift+s save_as_session --use-foreground-process --save-only ~/.config/kitty/sessions/last.kitty-session
 
-# Pane management
 map ctrl+shift+d close_window
 map ctrl+shift+h move_window left
 map ctrl+shift+j move_window down
@@ -71,7 +53,6 @@ map --when-focus-on var:IS_NVIM ctrl+k
 map --when-focus-on var:IS_NVIM ctrl+h
 map --when-focus-on var:IS_NVIM ctrl+l
 
-# the 3 here is the resize amount, adjust as needed
 map alt+j kitten relative_resize.py down  3
 map alt+k kitten relative_resize.py up    3
 map alt+h kitten relative_resize.py left  3
@@ -82,20 +63,14 @@ map --when-focus-on var:IS_NVIM alt+k
 map --when-focus-on var:IS_NVIM alt+h
 map --when-focus-on var:IS_NVIM alt+l
 
-# 1 = completion menu (send Meta-j/k to zsh/fzf-tab), 2 = fzf selector (pass through).
 map --when-focus-on var:ZSH_SELECTOR_MODE=1 alt+j send_text normal,application \x1bj
 map --when-focus-on var:ZSH_SELECTOR_MODE=1 alt+k send_text normal,application \x1bk
 map --when-focus-on var:ZSH_SELECTOR_MODE=2 alt+j
 map --when-focus-on var:ZSH_SELECTOR_MODE=2 alt+k
 
-# Window splitting
 map ctrl+\ launch --location=vsplit --cwd=current
 map ctrl+- launch --location=hsplit --cwd=current
 
-# Zoom the active pane and restore the previous layout on the next press.
 map ctrl+shift+z toggle_layout stack
-### MAPPING
 
-### MACOS_OPTION_AS_ALT
 macos_option_as_alt yes
-### MACOS_OPTION_AS_ALT

@@ -7,7 +7,7 @@
   },
   "volcengine-agent-plan": {
     "auth": {
-      "OPENAI_API_KEY": "${ARK_API_KEY}"
+      "OPENAI_API_KEY": "${ARK_AGENT_API_KEY}"
     },
     "config": "model = \"glm-5.3\"\nmodel_provider = \"volcengine-agent-plan\"\nmodel_catalog_json = \"~/.config/codex/models.json\"\n\n[model_providers.volcengine-agent-plan]\nname = \"volcengine-agent-plan\"\nbase_url = \"https://ark.cn-beijing.volces.com/api/plan/v3\"\nwire_api = \"responses\"\n"
   },

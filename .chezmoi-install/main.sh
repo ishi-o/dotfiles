@@ -1,57 +1,52 @@
 #!/usr/bin/env bash
-# Main orchestrator for package installation
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Global cleanup function for interrupted downloads
 cleanup_temp_files() {
-  # Clean up any temp files created by this process
   rm -f /tmp/*.tmp.$$
   rm -rf /tmp/*-*.$$
   rm -f "$HOME/.local/bin/"*.tmp.$$
 }
 
-# Set up trap to cleanup on exit, interrupt, or termination
 trap cleanup_temp_files EXIT INT TERM
 
-# Source libraries
 source "$SCRIPT_DIR/lib/posix/env.sh"
 source "$SCRIPT_DIR/lib/posix/helpers.sh"
 
 category_enabled() {
   case "$1" in
-  shell)
-    [ "$install_shell" = "true" ]
-    ;;
-  build)
-    [ "$install_build" = "true" ]
-    ;;
-  runtimes)
-    [ "$install_runtimes" = "true" ]
-    ;;
-  editor)
-    [ "$install_editor" = "true" ]
-    ;;
-  ai)
-    [ "$install_ai" = "true" ]
-    ;;
-  utilities)
-    [ "$install_utilities" = "true" ]
-    ;;
-  operations)
-    [ "$install_operations" = "true" ]
-    ;;
-  terminal)
-    [ "$install_terminal" = "true" ]
-    ;;
-  input)
-    [ "$install_input" = "true" ]
-    ;;
-  *)
-    return 2
-    ;;
+    shell)
+      [ "$install_shell" = "true" ]
+      ;;
+    build)
+      [ "$install_build" = "true" ]
+      ;;
+    runtimes)
+      [ "$install_runtimes" = "true" ]
+      ;;
+    editor)
+      [ "$install_editor" = "true" ]
+      ;;
+    ai)
+      [ "$install_ai" = "true" ]
+      ;;
+    utilities)
+      [ "$install_utilities" = "true" ]
+      ;;
+    operations)
+      [ "$install_operations" = "true" ]
+      ;;
+    terminal)
+      [ "$install_terminal" = "true" ]
+      ;;
+    input)
+      [ "$install_input" = "true" ]
+      ;;
+    *)
+      return 2
+      ;;
   esac
 }
 
@@ -74,7 +69,6 @@ shopt -u nullglob
 if [ ${#packages[@]} -eq 0 ]; then
   echo "No packages found in $SCRIPT_DIR/packages/posix/"
 else
-  # Sort packages by filename (compatible with bash 3.2+)
   sorted_packages=()
   while IFS= read -r -d '' file; do
     sorted_packages+=("$file")
@@ -82,52 +76,53 @@ else
 
   echo "==> Found ${#sorted_packages[@]} packages"
 
-  # Install in filename order
   for pkg_file in "${sorted_packages[@]}"; do
     pkg_basename=$(basename "$pkg_file" .sh)
+    if [ "$pkg_basename" = "00-init" ]; then
+      continue
+    fi
     pkg_category=""
     case "$pkg_basename" in
-    0[0-9]-*)
-      pkg_category=shell
-      ;;
-    1[0-9]-* | 2[0-9]-*)
-      pkg_category=build
-      ;;
-    3[0-9]-*)
-      pkg_category=runtimes
-      ;;
-    4[0-9]-*)
-      pkg_category=editor
-      ;;
-    5[0-9]-*)
-      pkg_category=ai
-      ;;
-    6[0-9]-*)
-      pkg_category=utilities
-      ;;
-    7[0-9]-*)
-      pkg_category=operations
-      ;;
-    8[0-9]-*)
-      pkg_category=terminal
-      ;;
-    9[0-9]-*)
-      pkg_category=input
-      ;;
+      0[0-9]-*)
+        pkg_category=shell
+        ;;
+      1[0-9]-* | 2[0-9]-*)
+        pkg_category=build
+        ;;
+      3[0-9]-*)
+        pkg_category=runtimes
+        ;;
+      4[0-9]-*)
+        pkg_category=editor
+        ;;
+      5[0-9]-*)
+        pkg_category=ai
+        ;;
+      6[0-9]-*)
+        pkg_category=utilities
+        ;;
+      7[0-9]-*)
+        pkg_category=operations
+        ;;
+      8[0-9]-*)
+        pkg_category=terminal
+        ;;
+      9[0-9]-*)
+        pkg_category=input
+        ;;
     esac
 
     case "$pkg_category" in
-    shell | build | runtimes | editor | ai | utilities | operations | terminal | input)
-      if ! category_enabled "$pkg_category"; then
-        echo "==> Skipping $pkg_basename"
-        continue
-      fi
-      ;;
+      shell | build | runtimes | editor | ai | utilities | operations | terminal | input)
+        if ! category_enabled "$pkg_category"; then
+          echo "==> Skipping $pkg_basename"
+          continue
+        fi
+        ;;
     esac
 
     echo "==> Processing: $pkg_basename"
 
-    # Source the package file (which will execute the install function)
     source "$pkg_file"
   done
 fi
@@ -149,8 +144,6 @@ else
 
   echo "==> Found ${#sorted_completion_scripts[@]} completion generators"
 
-  # Completion generation is optional. A failed generator must not fail the
-  # whole installation, so run each one in an isolated, non-errexit shell.
   for completion_script in "${sorted_completion_scripts[@]}"; do
     completion_basename=$(basename "$completion_script" .sh)
     echo "==> Processing completion: $completion_basename"

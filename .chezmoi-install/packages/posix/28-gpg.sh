@@ -8,12 +8,10 @@ install_gpg() {
     return 0
   fi
 
-  # Try package manager first
   if try_package_manager gnupg; then
     return 0
   fi
 
-  # Fall back to building from source
   echo "Installing gpg ${pkg_version}..."
 
   local src_dir="$USR_HOME/src/gnupg-${pkg_version}"
@@ -31,9 +29,9 @@ install_gpg() {
     --disable-silent-rule \
     --with-pinentry-pgm="$USR_HOME/bin/pinentry" \
     CFLAGS="-I$USR_HOME/include -I$USR_HOME/include/ncurses" \
-    LDFLAGS="-L$USR_HOME/include -L$USR_HOME/include/ncurses -L$USR_HOME/lib" && \
-  make && \
-  make install
+    LDFLAGS="-L$USR_HOME/include -L$USR_HOME/include/ncurses -L$USR_HOME/lib" \
+    && make \
+    && make install
 }
 
 install_gpg

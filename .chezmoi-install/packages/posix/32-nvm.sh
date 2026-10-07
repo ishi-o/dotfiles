@@ -18,15 +18,13 @@ install_nvm() {
     git clone --depth 1 --branch "$pkg_version" https://github.com/nvm-sh/nvm.git "$NVM_DIR" || return 1
   fi
 
-  # Source nvm and select a user-managed Node/npm for the following packages.
-  # nvm does not tolerate set -euo pipefail.
   set +euo pipefail
   . "$NVM_DIR/nvm.sh" || return 1
-  if [ "$(nvm version "$node_version" 2>/dev/null)" = "N/A" ]; then
+  if [ "$(nvm version "$node_version" 2> /dev/null)" = "N/A" ]; then
     nvm install "$node_version" || return 1
   fi
-  nvm alias default "$node_version" >/dev/null || return 1
-  nvm use --silent default >/dev/null || return 1
+  nvm alias default "$node_version" > /dev/null || return 1
+  nvm use --silent default > /dev/null || return 1
   set -euo pipefail
 }
 

@@ -8,9 +8,10 @@ install_cc_switch() {
   fi
 
   echo "Installing cc-switch..."
+
   CC_SWITCH_INSTALL_DIR="$HOME/.local/bin" CC_SWITCH_FORCE=1 \
-    curl -fsSL https://github.com/SaladDay/cc-switch-cli/releases/latest/download/install.sh |
-    bash
+    curl_download https://github.com/SaladDay/cc-switch-cli/releases/latest/download/install.sh \
+    | bash
 }
 
 install_cc_switch

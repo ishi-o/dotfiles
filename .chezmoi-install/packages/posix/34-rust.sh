@@ -4,13 +4,11 @@ pkg_name="rust"
 pkg_version="stable"
 
 install_rust() {
-  # Check if rust is already installed (via cargo)
   if check_installed cargo; then
     echo "Rust is already installed ($(cargo --version))"
     return 0
   fi
 
-  # Check if rustup is installed
   if check_installed rustup; then
     echo "rustup is already installed, updating..."
     rustup update
@@ -21,19 +19,16 @@ install_rust() {
 
   if [ "$os" = "windows" ]; then
     local installer="/tmp/rustup-init.exe.$$"
-    curl -sSfL "https://win.rustup.rs/x86_64" -o "$installer" || return 1
+    curl_download -o "$installer" "https://win.rustup.rs/x86_64" || return 1
     "$installer" -y --no-modify-path
     local installer_status=$?
     rm -f "$installer"
     return "$installer_status"
   fi
 
-  # Download and run rustup installer
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  curl_download --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s -- -y
 
-  # Source cargo environment for the current shell
   if [ -f "$CARGO_HOME/env" ]; then
-    # shellcheck source=/dev/null
     source "$CARGO_HOME/env"
   fi
 

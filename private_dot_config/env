@@ -1,7 +1,7 @@
 export CONTEXT7_API_KEY=
 export GLM_API_KEY=
 export OPENAI_API_KEY=
-export ARK_API_KEY=
+export ARK_AGENT_API_KEY=
 export ARK_CODING_API_KEY=
 if [ -f "$HOME/.config/env.local" ]; then
   . "$HOME/.config/env.local"

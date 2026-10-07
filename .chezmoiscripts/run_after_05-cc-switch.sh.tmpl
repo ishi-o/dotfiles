@@ -6,18 +6,16 @@ set -euo pipefail
 export CC_SWITCH_CONFIG_DIR="${CC_SWITCH_CONFIG_DIR:-$HOME/.config/cc-switch}"
 
 if [ -r "$HOME/.config/env" ]; then
-  # shellcheck disable=SC1091
   . "$HOME/.config/env"
 fi
 
 expand_env() {
-  local file="$1" content name value
-  content="$(cat "$file")"
+  local content="$1" name value
   while [[ $content =~ \$\{([A-Za-z_][A-Za-z0-9_]*)\} ]]; do
     name="${BASH_REMATCH[1]}"
     value="${!name-}"
     if [[ -z "$value" ]]; then
-      echo "run_after_05-cc-switch: \${$name} referenced in $file is not set" >&2
+      echo "run_after_05-cc-switch: environment variable '$name' is not set, skipping" >&2
       return 1
     fi
     content="${content//"\${${name}}"/$value}"
@@ -25,39 +23,89 @@ expand_env() {
   printf '%s' "$content"
 }
 
+provider_exists() {
+  local app="$1" id="$2" output
+  output="$(cc-switch --app "$app" provider list 2>/dev/null || true)"
+  if [ -n "$output" ] && grep -qw -- "$id" <<<"$output"; then
+    return 0
+  fi
+  sleep 1
+  output="$(cc-switch --app "$app" provider list 2>/dev/null || true)"
+  [ -n "$output" ] && grep -qw -- "$id" <<<"$output"
+}
+
+default_provider() {
+  case "$1" in
+  codex) printf '%s' "codex-official" ;;
+  *) printf '%s' "claude-official" ;;
+  esac
+}
+
 current_provider() {
   local app="$1" current
   current="$(cc-switch --app "$app" provider current 2>/dev/null | awk '/ID:/ { print $2; exit }' || true)"
-  printf '%s' "${current:-zai}"
+  case "$current" in
+  "" | default) printf '%s' "" ;;
+  *) printf '%s' "$current" ;;
+  esac
+}
+
+switch_provider() {
+  local app="$1" provider="$2" fallback
+  if ! provider_exists "$app" "$provider"; then
+    fallback="$(default_provider "$app")"
+    if provider_exists "$app" "$fallback"; then
+      echo "run_after_05-cc-switch: provider '$provider' not available for $app, using '$fallback'" >&2
+      provider="$fallback"
+    else
+      echo "run_after_05-cc-switch: provider list unavailable for $app, leaving current provider unchanged" >&2
+      return 0
+    fi
+  fi
+  if ! cc-switch --app "$app" provider switch "$provider"; then
+    echo "run_after_05-cc-switch: failed to switch $app provider, continuing" >&2
+  fi
 }
 
 install_providers() {
-  local app="$1" seed="$2" resolved id temporary_path
-  resolved="$(mktemp)"
-  expand_env "$seed" >"$resolved"
+  local app="$1" seed="$2" id provider_json temporary_path
   while IFS= read -r id; do
-    if cc-switch --app "$app" provider list 2>/dev/null | grep -qw -- "$id"; then
+    if provider_exists "$app" "$id"; then
+      continue
+    fi
+
+    provider_json="$(jq --arg id "$id" '.[$id]' "$seed")"
+    if ! provider_json="$(expand_env "$provider_json")"; then
+      echo "run_after_05-cc-switch: provider '$id' for $app skipped" >&2
       continue
     fi
 
     temporary_path="$(mktemp)"
-    jq --arg id "$id" '.[$id]' "$resolved" >"$temporary_path"
+    printf '%s' "$provider_json" >"$temporary_path"
     cc-switch --app "$app" provider add \
       --id "$id" \
       --name "$id" \
       --config-file "$temporary_path" \
       --common-config
     rm -f "$temporary_path"
-  done < <(jq -r 'keys[]' "$resolved")
-  rm -f "$resolved"
+  done < <(jq -r 'keys[]' "$seed")
 }
 
 install_mcp() {
-  local resolved payload encoded id
-  resolved="$(mktemp)"
-  expand_env "$CC_SWITCH_CONFIG_DIR/mcp.json" >"$resolved"
-  payload="$(cat "$resolved")"
-  rm -f "$resolved"
+  local seed="$CC_SWITCH_CONFIG_DIR/mcp.json" id server_json payload encoded
+  payload='{"mcpServers":{}}'
+  while IFS= read -r id; do
+    server_json="$(jq --arg id "$id" '.mcpServers[$id]' "$seed")"
+    if ! server_json="$(expand_env "$server_json")"; then
+      echo "run_after_05-cc-switch: mcp server '$id' skipped" >&2
+      continue
+    fi
+    payload="$(jq --arg id "$id" --argjson server "$server_json" '.mcpServers[$id] = $server' <<<"$payload")"
+  done < <(jq -r '.mcpServers | keys[]' "$seed")
+
+  if [ "$(printf '%s' "$payload" | jq -r '.mcpServers | length')" -eq 0 ]; then
+    return 0
+  fi
 
   encoded="$(printf '%s' "$payload" | base64 | tr -d '\n')"
   cc-switch deeplink "ccswitch://v1/import?resource=mcp&apps=claude,codex&config=$encoded"
@@ -67,14 +115,27 @@ install_mcp() {
   done < <(printf '%s' "$payload" | jq -r '.mcpServers | keys[]')
 }
 
+sync_claude_mcp() {
+  local config_dir="${CLAUDE_CONFIG_DIR:-}" live="$HOME/.claude.json" target tmp
+  if [ -z "$config_dir" ] || [ "$config_dir" = "$HOME" ] || [ ! -f "$live" ]; then
+    return 0
+  fi
+  target="$config_dir/.claude.json"
+  tmp="$(mktemp)"
+  if [ -f "$target" ]; then
+    jq -s '.[0].mcpServers = .[1].mcpServers | .[0]' "$target" "$live" >"$tmp" && mv "$tmp" "$target"
+  else
+    jq '{mcpServers: .mcpServers}' "$live" >"$tmp" && mv "$tmp" "$target"
+  fi
+  rm -f "$tmp"
+}
+
 if ! command -v cc-switch >/dev/null 2>&1; then
   exit 0
 fi
 
 claude_provider="$(current_provider claude)"
 codex_provider="$(current_provider codex)"
-[ "$claude_provider" = default ] && claude_provider=zai
-[ "$codex_provider" = default ] && codex_provider=zai
 
 cc-switch --app claude config common set --file "$CC_SWITCH_CONFIG_DIR/common-claude.json"
 cc-switch --app codex config common set --file "$CC_SWITCH_CONFIG_DIR/common-codex.toml"
@@ -82,9 +143,14 @@ cc-switch --app codex config common set --file "$CC_SWITCH_CONFIG_DIR/common-cod
 install_providers claude "$CC_SWITCH_CONFIG_DIR/claude.json"
 install_providers codex "$CC_SWITCH_CONFIG_DIR/codex.json"
 
-cc-switch --app claude provider switch "$claude_provider"
-cc-switch --app codex provider switch "$codex_provider"
+if [ -n "$claude_provider" ]; then
+  switch_provider claude "$claude_provider"
+fi
+if [ -n "$codex_provider" ]; then
+  switch_provider codex "$codex_provider"
+fi
 
 install_mcp
 cc-switch mcp sync
+sync_claude_mcp
 {{- end }}
