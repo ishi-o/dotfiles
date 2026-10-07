@@ -4,7 +4,7 @@ pkg_name="libassuan"
 pkg_version="${LIBASSUAN_VERSION:-2.5.7}"
 
 install_libassuan() {
-  if check_library libassuan; then
+  if check_installed libassuan-dev; then
     return 0
   fi
 

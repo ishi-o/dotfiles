@@ -4,7 +4,7 @@ pkg_name="ncurses"
 pkg_version="${NCURSES_VERSION:-6.5}"
 
 install_ncurses() {
-  if ls "$USR_HOME/include/ncursesw" > /dev/null 2>&1; then
+  if check_installed libncurses-dev; then
     return 0
   fi
 

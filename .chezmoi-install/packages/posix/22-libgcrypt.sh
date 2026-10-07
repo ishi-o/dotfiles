@@ -4,7 +4,7 @@ pkg_name="libgcrypt"
 pkg_version="${LIBGCRYPT_VERSION:-1.10.3}"
 
 install_libgcrypt() {
-  if check_library libgcrypt; then
+  if check_installed libgcrypt20-dev; then
     return 0
   fi
 

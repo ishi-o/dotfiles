@@ -4,7 +4,7 @@ pkg_name="openssl"
 pkg_version="${OPENSSL_VERSION:-3.1.2}"
 
 install_openssl() {
-  if check_pkgconfig openssl; then
+  if check_installed libssl-dev; then
     return 0
   fi
 

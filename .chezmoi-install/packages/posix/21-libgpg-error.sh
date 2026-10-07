@@ -4,7 +4,7 @@ pkg_name="libgpg-error"
 pkg_version="${LIBGPG_ERROR_VERSION:-1.49}"
 
 install_libgpg_error() {
-  if check_library libgpg-error; then
+  if check_installed libgpg-error-dev; then
     return 0
   fi
 

@@ -4,7 +4,7 @@ pkg_name="libksba"
 pkg_version="${LIBKSBA_VERSION:-1.6.6}"
 
 install_libksba() {
-  if check_library libksba; then
+  if check_installed libksba-dev; then
     return 0
   fi
 

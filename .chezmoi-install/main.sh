@@ -10,7 +10,9 @@ cleanup_temp_files() {
   rm -f "$HOME/.local/bin/"*.tmp.$$
 }
 
-trap cleanup_temp_files EXIT INT TERM
+trap cleanup_temp_files EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 source "$SCRIPT_DIR/lib/posix/env.sh"
 source "$SCRIPT_DIR/lib/posix/helpers.sh"

@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+library_pattern() {
+  case "$1" in
+  libssl-dev) echo "ssl" ;;
+  libevent-dev) echo "event" ;;
+  libutf8proc-dev) echo "utf8proc" ;;
+  libgpg-error-dev) echo "gpg-error" ;;
+  libgcrypt20-dev) echo "gcrypt" ;;
+  libassuan-dev) echo "assuan" ;;
+  libksba-dev) echo "ksba" ;;
+  libnpth0-dev) echo "npth" ;;
+  libncurses-dev) echo "ncurses" ;;
+  *) echo "" ;;
+  esac
+}
+
 check_installed() {
   local item="$1"
 
@@ -7,76 +22,26 @@ check_installed() {
 
   case "$pkg_manager" in
   pacman)
-    pacman -Q "$(pacman_package_name "$item")" >/dev/null 2>&1
+    pacman -Q "$(pacman_package_name "$item")" >/dev/null 2>&1 && return 0
     ;;
   dnf)
-    dnf list --installed "$(dnf_package_name "$item")" >/dev/null 2>&1
+    dnf list --installed "$(dnf_package_name "$item")" >/dev/null 2>&1 && return 0
     ;;
   apt)
-    dpkg -s "$item" >/dev/null 2>&1
+    dpkg -s "$item" >/dev/null 2>&1 && return 0
     ;;
   esac
-}
 
-check_library() {
-  local lib_pattern="$1"
+  local lib_pattern
+  lib_pattern="$(library_pattern "$item")"
+  [ -n "$lib_pattern" ] || return 1
 
-  if ls "$USR_HOME"/lib/${lib_pattern}* >/dev/null 2>&1 ||
-    ls "$USR_HOME"/lib64/${lib_pattern}* >/dev/null 2>&1 ||
-    ls /usr/lib/${lib_pattern}* >/dev/null 2>&1 ||
-    ls /usr/lib64/${lib_pattern}* >/dev/null 2>&1 ||
-    ls /usr/local/lib/${lib_pattern}* >/dev/null 2>&1 ||
-    ls /usr/local/lib64/${lib_pattern}* >/dev/null 2>&1; then
-    return 0
-  fi
-
-  if [ "$pkg_manager" = "apt" ]; then
-    if dpkg -l "*${lib_pattern}*" 2>/dev/null | grep -q "^ii"; then
-      return 0
-    fi
-  fi
-
-  if [ "$pkg_manager" = "dnf" ]; then
-    if rpm -qa "*${lib_pattern}*" 2>/dev/null | grep -q .; then
-      return 0
-    fi
-  fi
-
-  return 1
-}
-
-check_pkgconfig() {
-  local pc_name="$1"
-
-  if ls "$USR_HOME/lib/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
-    ls "$USR_HOME/lib64/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
-    ls "/usr/lib/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
-    ls "/usr/lib64/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
-    ls "/usr/local/lib/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
-    ls "/usr/local/lib64/pkgconfig/${pc_name}.pc" >/dev/null 2>&1 ||
-    ls "/usr/share/pkgconfig/${pc_name}.pc" >/dev/null 2>&1; then
-    return 0
-  fi
-
-  if command -v pkg-config >/dev/null 2>&1; then
-    if pkg-config --exists "$pc_name" 2>/dev/null; then
-      return 0
-    fi
-  fi
-
-  if [ "$pkg_manager" = "apt" ]; then
-    if dpkg -l "*${pc_name}*" 2>/dev/null | grep -q "^ii"; then
-      return 0
-    fi
-  fi
-
-  if [ "$pkg_manager" = "dnf" ]; then
-    if rpm -qa "*${pc_name}*" 2>/dev/null | grep -q .; then
-      return 0
-    fi
-  fi
-
-  return 1
+  ls "$USR_HOME"/lib/lib${lib_pattern}* >/dev/null 2>&1 ||
+    ls "$USR_HOME"/lib64/lib${lib_pattern}* >/dev/null 2>&1 ||
+    ls /usr/lib/lib${lib_pattern}* >/dev/null 2>&1 ||
+    ls /usr/lib64/lib${lib_pattern}* >/dev/null 2>&1 ||
+    ls /usr/local/lib/lib${lib_pattern}* >/dev/null 2>&1 ||
+    ls /usr/local/lib64/lib${lib_pattern}* >/dev/null 2>&1
 }
 
 curl_download() {

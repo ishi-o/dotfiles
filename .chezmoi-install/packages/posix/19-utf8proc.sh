@@ -4,7 +4,7 @@ pkg_name="utf8proc"
 pkg_version="${UTF8PROC_VERSION:-2.9.0}"
 
 install_utf8proc() {
-  if check_library libutf8proc; then
+  if check_installed libutf8proc-dev; then
     return 0
   fi
 

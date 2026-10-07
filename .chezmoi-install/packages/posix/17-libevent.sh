@@ -4,7 +4,7 @@ pkg_name="libevent"
 pkg_version="${LIBEVENT_VERSION:-2.1.12-stable}"
 
 install_libevent() {
-  if check_library libevent_core.a; then
+  if check_installed libevent-dev; then
     return 0
   fi
 

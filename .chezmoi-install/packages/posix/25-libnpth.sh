@@ -4,7 +4,7 @@ pkg_name="libnpth"
 pkg_version="${LIBNPTH_VERSION:-1.7}"
 
 install_libnpth() {
-  if check_library libnpth; then
+  if check_installed libnpth0-dev; then
     return 0
   fi
 
