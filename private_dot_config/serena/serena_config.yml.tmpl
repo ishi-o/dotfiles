@@ -2,6 +2,7 @@
 {{- if eq .chezmoi.os "windows" -}}
 {{-   $masonBin = joinPath .chezmoi.homeDir "AppData/Local/nvim-data/mason/bin" -}}
 {{- end -}}
+{{- $serenaData := joinPath (joinPath .chezmoi.homeDir ".local/share") "serena/projects" -}}
 ls_specific_settings:
   bash:
     ls_path: "{{ $masonBin }}/bash-language-server"
@@ -31,3 +32,6 @@ ls_specific_settings:
     ls_path: "{{ $masonBin }}/vue-language-server"
   yaml:
     ls_path: "{{ $masonBin }}/yaml-language-server"
+project_serena_folder_location: "{{ $serenaData }}/$projectFolderName"
+web_dashboard_open_on_launch: false
+projects: []
