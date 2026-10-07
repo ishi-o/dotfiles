@@ -62,6 +62,7 @@ function Initialize-ScoopToolPaths {
 
     $env:Path = @(
         $env:PNPM_HOME,
+        (Join-Path $env:PNPM_HOME "bin"),
         (Join-Path $env:CARGO_HOME "bin"),
         $env:Path
     ) -join [IO.Path]::PathSeparator

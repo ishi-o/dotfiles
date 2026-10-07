@@ -7,7 +7,7 @@ register_kitty_in_dock() {
   [ "$os" = "darwin" ] || return 0
   command -v defaults > /dev/null 2>&1 || return 0
 
-  local kitty_app="$USR_HOME/kitty.app"
+  local kitty_app="$USR_HOME/opt/kitty.app"
   [ -d "$kitty_app" ] || return 0
 
   if defaults read com.apple.dock persistent-apps 2> /dev/null \
@@ -35,7 +35,7 @@ install_kitty() {
       ;;
   esac
 
-  local kitty_app="$USR_HOME/kitty.app"
+  local kitty_app="$USR_HOME/opt/kitty.app"
   local kitty_bin
   local kitten_bin
 
@@ -58,7 +58,7 @@ install_kitty() {
   if [ ! -x "$kitty_bin" ]; then
     echo "Installing kitty ${pkg_version}..."
     curl_download https://sw.kovidgoyal.net/kitty/installer.sh \
-      | sh /dev/stdin launch=n "dest=$USR_HOME" || return 1
+      | sh /dev/stdin launch=n "dest=$USR_HOME/opt" || return 1
   fi
 
   if [ ! -x "$kitty_bin" ]; then

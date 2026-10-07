@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$zplugInit = Join-Path $env:USERPROFILE "usr\local\zplug\init.zsh"
+$zplugInit = Join-Path $env:USERPROFILE ".local\share\zplug\init.zsh"
 if (-not (Test-Path -LiteralPath $zplugInit -PathType Leaf)) {
     return
 }

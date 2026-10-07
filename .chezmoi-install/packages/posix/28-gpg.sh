@@ -14,11 +14,11 @@ install_gpg() {
 
   echo "Installing gpg ${pkg_version}..."
 
-  local src_dir="$USR_HOME/src/gnupg-${pkg_version}"
+  local src_dir="$SRC_HOME/gnupg-${pkg_version}"
 
   download_extract \
     "https://gnupg.org/ftp/gcrypt/gnupg/gnupg-${pkg_version}.tar.bz2" \
-    "$USR_HOME/src" || return 1
+    "$SRC_HOME" || return 1
 
   cd "$src_dir" || return 1
   rm -rf build

@@ -37,6 +37,7 @@ MSYS_NT*|MINGW*_NT*)
             "$msys2_scoop_root/apps/git/current/cmd" \
             "$msys2_program_files/Git/cmd" \
             "$msys2_pnpm_home" \
+            "$msys2_pnpm_home/bin" \
             "$msys2_scoop_root/shims" \
             "$msys2_scoop_root/apps/mingw/current/bin" \
             "$msys2_scoop_root/apps/rustup-msvc/current/.cargo/bin" \

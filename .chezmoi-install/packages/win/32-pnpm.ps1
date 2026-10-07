@@ -7,8 +7,9 @@ $nodeVersion = if ($env:NODE_VERSION) { $env:NODE_VERSION } else { "22" }
 Install-ScoopPackage -Package "pnpm"
 
 $pnpmHome = Join-Path $env:LOCALAPPDATA "pnpm"
+$pnpmHomeBin = Join-Path $pnpmHome "bin"
 $env:PNPM_HOME = $pnpmHome
-$env:Path = "$pnpmHome;$env:Path"
+$env:Path = "$pnpmHomeBin;$pnpmHome;$env:Path"
 
 pnpm runtime set node $nodeVersion -g
 if ($LASTEXITCODE -ne 0) {

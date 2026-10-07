@@ -33,16 +33,21 @@ install_nvim() {
       ;;
   esac
 
-  rm -rf "$USR_HOME/nvim"
-  mkdir -p "$USR_HOME/nvim" || return 1
+  rm -rf "$USR_HOME/opt/nvim"
+  mkdir -p "$USR_HOME/opt/nvim" || return 1
 
   download_extract \
     "https://github.com/neovim/neovim/releases/download/${pkg_version}/${nvim_archive}" \
-    "$USR_HOME/nvim" \
+    "$USR_HOME/opt/nvim" \
     --strip-components=1 || {
-    rm -rf "$USR_HOME/nvim"
+    rm -rf "$USR_HOME/opt/nvim"
     return 1
   }
+
+  if [ "$os" != "windows" ]; then
+    mkdir -p "$USR_HOME/bin" || return 1
+    ln -sf "$USR_HOME/opt/nvim/bin/nvim" "$USR_HOME/bin/nvim" || return 1
+  fi
 }
 
 install_nvim

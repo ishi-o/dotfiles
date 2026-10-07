@@ -14,7 +14,7 @@ install_luajit() {
 
   echo "Installing luajit ${pkg_version}..."
 
-  local src_dir="$USR_HOME/src/luajit"
+  local src_dir="$SRC_HOME/luajit"
 
   if [ ! -d "$src_dir" ]; then
     git clone https://luajit.org/git/luajit.git "$src_dir" || return 1

@@ -13,16 +13,16 @@ if [[ -n "${WT_SESSION:-}" ]]; then
   fi
 fi
 
-if [ ! -f "$USR_HOME/zplug/init.zsh" ]; then
+if [ ! -f "$XDG_DATA_HOME/zplug/init.zsh" ]; then
   if command -v git >/dev/null 2>&1; then
-    mkdir -p "$(dirname "$USR_HOME/zplug")"
-    git clone --depth 1 https://github.com/zplug/zplug "$USR_HOME/zplug"
+    mkdir -p "$(dirname "$XDG_DATA_HOME/zplug")"
+    git clone --depth 1 https://github.com/zplug/zplug "$XDG_DATA_HOME/zplug"
   fi
 fi
-if [ ! -f "$USR_HOME/zplug/init.zsh" ]; then
+if [ ! -f "$XDG_DATA_HOME/zplug/init.zsh" ]; then
   zplug() { return 0; }
 else
-  export ZPLUG_HOME="$USR_HOME/zplug"
+  export ZPLUG_HOME="$XDG_DATA_HOME/zplug"
   export PATH="$ZPLUG_HOME/bin:$PATH"
   source "$ZPLUG_HOME/init.zsh"
 fi

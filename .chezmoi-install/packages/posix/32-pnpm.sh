@@ -8,9 +8,13 @@ install_pnpm() {
     return 0
   fi
 
+  export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
+  hash -r
+
   if ! check_installed pnpm; then
     echo "Installing pnpm..."
     curl_download https://get.pnpm.io/install.sh | sh -s -- || return 1
+    hash -r
   fi
 
   if ! check_installed pnpm; then

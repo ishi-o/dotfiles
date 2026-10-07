@@ -218,11 +218,11 @@ install_gnu_tool() {
   shift 3
   local configure_args=("$@")
 
-  local src_dir="$USR_HOME/src/${name}-${version}"
+  local src_dir="$SRC_HOME/${name}-${version}"
 
   echo "Installing ${name} ${version}..."
 
-  download_extract "$url" "$USR_HOME/src" || return 1
+  download_extract "$url" "$SRC_HOME" || return 1
 
   cd "$src_dir" || return 1
 

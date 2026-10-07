@@ -58,7 +58,7 @@ set_zsh_as_default() {
 install_zsh
 
 install_zplug() {
-  if [ -f "$USR_HOME/zplug/init.zsh" ]; then
+  if [ -f "$XDG_DATA_HOME/zplug/init.zsh" ]; then
     return 0
   fi
 
@@ -67,9 +67,9 @@ install_zplug() {
     return 1
   }
 
-  mkdir -p "$(dirname "$USR_HOME/zplug")"
-  rm -rf "$USR_HOME/zplug"
-  git clone --depth 1 https://github.com/zplug/zplug "$USR_HOME/zplug"
+  mkdir -p "$(dirname "$XDG_DATA_HOME/zplug")"
+  rm -rf "$XDG_DATA_HOME/zplug"
+  git clone --depth 1 https://github.com/zplug/zplug "$XDG_DATA_HOME/zplug"
 }
 
 install_zplug

@@ -15,12 +15,13 @@ case "$kernel" in
 esac
 export os
 
-export USR_HOME="${USR_HOME:-$HOME/usr/local}"
-
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+
+export USR_HOME="${USR_HOME:-$HOME/.local}"
+export SRC_HOME="${SRC_HOME:-$XDG_CACHE_HOME/dots-src}"
 
 export MISE_CONFIG_DIR="${MISE_CONFIG_DIR:-$XDG_CONFIG_HOME/mise}"
 export MISE_DATA_DIR="${MISE_DATA_DIR:-$XDG_DATA_HOME/mise}"
@@ -28,9 +29,9 @@ export MISE_CACHE_DIR="${MISE_CACHE_DIR:-$XDG_CACHE_HOME/mise}"
 export MISE_STATE_DIR="${MISE_STATE_DIR:-$XDG_STATE_HOME/mise}"
 if [ "${MISE_INSTALL_PATH:-}" = "" ]; then
   if [ "$os" = "windows" ]; then
-    MISE_INSTALL_PATH="$USR_HOME/mise/bin/mise.exe"
+    MISE_INSTALL_PATH="$USR_HOME/bin/mise.exe"
   else
-    MISE_INSTALL_PATH="$USR_HOME/mise/bin/mise"
+    MISE_INSTALL_PATH="$USR_HOME/bin/mise"
   fi
 fi
 export MISE_INSTALL_PATH
@@ -113,7 +114,7 @@ if [ "$pkg_manager" != "" ] && command -v sudo > /dev/null 2>&1; then
 fi
 export has_sudo
 
-export PATH="$USR_HOME/mise/bin:$USR_HOME/bin:$USR_HOME/nvim/bin:$HOME/.local/bin:$PNPM_HOME:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
+export PATH="$USR_HOME/bin:$PNPM_HOME/bin:$PNPM_HOME:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
 
 if [ -x "$PNPM_HOME/node" ]; then
   npm_global_bin="$(dirname "$PNPM_HOME")/bin"
@@ -126,7 +127,7 @@ if [ -x "$PNPM_HOME/node" ]; then
   unset npm_global_bin
 fi
 
-mkdir -p "$USR_HOME/src" || exit 1
+mkdir -p "$SRC_HOME" || exit 1
 mkdir -p "$HOME/.local/bin" || exit 1
 mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" \
   "$MISE_CONFIG_DIR" "$MISE_DATA_DIR" "$MISE_CACHE_DIR" "$MISE_STATE_DIR" \

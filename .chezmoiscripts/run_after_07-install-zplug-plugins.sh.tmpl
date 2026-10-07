@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-zplug_init="${USR_HOME:-$HOME/usr/local}/zplug/init.zsh"
+zplug_init="${XDG_DATA_HOME:-$HOME/.local/share}/zplug/init.zsh"
 [ -f "$zplug_init" ] || exit 0
 [ -f "$HOME/.zshrc" ] || exit 0
 command -v zsh > /dev/null 2>&1 || exit 0

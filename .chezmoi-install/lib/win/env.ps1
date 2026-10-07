@@ -71,7 +71,7 @@ if ($toolDirectories.Contains("UV_PYTHON_BIN_DIR")) {
     $env:Path = "$($toolDirectories["UV_PYTHON_BIN_DIR"]);$($toolDirectories["UV_TOOL_BIN_DIR"]);$env:Path"
 }
 
-$env:Path = "$($toolDirectories["PNPM_HOME"]);$env:Path"
+$env:Path = "$(Join-Path $toolDirectories["PNPM_HOME"] "bin");$($toolDirectories["PNPM_HOME"]);$env:Path"
 
 $npmConfigDir = Join-Path $env:XDG_CONFIG_HOME "npm"
 $npmCacheDir = Join-Path $env:XDG_CACHE_HOME "npm"

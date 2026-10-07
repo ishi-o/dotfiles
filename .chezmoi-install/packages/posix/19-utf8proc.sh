@@ -14,11 +14,11 @@ install_utf8proc() {
 
   echo "Installing utf8proc ${pkg_version}..."
 
-  local src_dir="$USR_HOME/src/utf8proc-${pkg_version}"
+  local src_dir="$SRC_HOME/utf8proc-${pkg_version}"
 
   download_extract \
     "https://github.com/JuliaStrings/utf8proc/archive/refs/tags/v${pkg_version}.tar.gz" \
-    "$USR_HOME/src" || return 1
+    "$SRC_HOME" || return 1
 
   cd "$src_dir" || return 1
   make install prefix="$USR_HOME"

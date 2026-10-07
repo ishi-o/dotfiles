@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-mise_path="${MISE_INSTALL_PATH:-$HOME/usr/local/mise/bin/mise}"
+mise_path="${MISE_INSTALL_PATH:-$HOME/.local/bin/mise}"
 mise_config="${MISE_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/mise}/config.toml"
 
 if [ ! -x "$mise_path" ]; then

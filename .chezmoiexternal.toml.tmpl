@@ -1,7 +1,5 @@
 {{- $origin := output "git" "-C" .chezmoi.sourceDir "remote" "-v" -}}
 {{- $useSSH := regexMatch "(?m)^origin[[:space:]]+(git@|ssh://|git\\+ssh://)" $origin -}}
-{{- $usrHome := or (env "USR_HOME") (joinPath .chezmoi.homeDir "usr/local") -}}
-{{- $usrHomeRel := trimPrefix (printf "%s/" .chezmoi.homeDir) $usrHome -}}
 {{- $installFonts := true -}}
 {{- if hasKey . "installFonts" -}}
 {{-   $installFonts = .installFonts -}}

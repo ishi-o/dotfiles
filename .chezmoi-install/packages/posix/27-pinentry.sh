@@ -8,17 +8,17 @@ install_pinentry() {
     return 0
   fi
 
-  if ls "$USR_HOME/src/pinentry-${pkg_version}/macosx/pinentry-mac" > /dev/null 2>&1; then
+  if ls "$SRC_HOME/pinentry-${pkg_version}/macosx/pinentry-mac" > /dev/null 2>&1; then
     return 0
   fi
 
   echo "Installing pinentry-mac ${pkg_version}..."
 
-  local src_dir="$USR_HOME/src/pinentry-${pkg_version}"
+  local src_dir="$SRC_HOME/pinentry-${pkg_version}"
 
   download_extract \
     "https://github.com/GPGTools/pinentry/archive/refs/tags/v${pkg_version}.tar.gz" \
-    "$USR_HOME/src" || return 1
+    "$SRC_HOME" || return 1
 
   cd "$src_dir" || return 1
 

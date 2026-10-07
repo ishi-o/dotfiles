@@ -11,9 +11,9 @@ if [ "$os" != "darwin" ] && [ "$os" != "linux" ]; then
 fi
 
 if command -v nvim >/dev/null 2>&1; then
-  nvim_destination="$(command -v nvim | sed 's#/bin/nvim$##')"
+  nvim_destination="$(realpath "$(command -v nvim)" | sed 's#/bin/nvim$##')"
 else
-  nvim_destination="$HOME/usr/local/nvim"
+  nvim_destination="$HOME/.local/opt/nvim"
 fi
 
 latest_release="${LATEST_RELEASE:-nightly}"

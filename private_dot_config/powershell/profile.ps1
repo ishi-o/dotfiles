@@ -48,6 +48,7 @@ $env:UV_TOOL_BIN_DIR = Join-Path $scoopRoot "persist\uv\tools\shims"
 $env:UV_TOOL_DIR = Join-Path $scoopRoot "persist\uv\tools\versions"
 $env:Path = @(
     $env:PNPM_HOME,
+    (Join-Path $env:PNPM_HOME "bin"),
     (Join-Path $env:CARGO_HOME "bin"),
     $env:UV_PYTHON_BIN_DIR,
     $env:UV_TOOL_BIN_DIR,

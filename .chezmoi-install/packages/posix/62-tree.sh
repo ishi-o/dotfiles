@@ -14,9 +14,9 @@ install_tree() {
 
   download_extract \
     "https://github.com/Old-Man-Programmer/tree/archive/refs/tags/$pkg_version.tar.gz" \
-    "$USR_HOME/src" || return 1
+    "$SRC_HOME" || return 1
 
-  cd "$USR_HOME/src/tree-$pkg_version" || return 1
+  cd "$SRC_HOME/tree-$pkg_version" || return 1
   make \
     && make install PREFIX="$USR_HOME"
 }
