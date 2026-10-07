@@ -132,8 +132,8 @@ function Set-CCSwitchCodexCommon {
         return
     }
 
-    $context7Command = "{{ if eq .chezmoi.os "windows" }}cmd{{ else }}npx{{ end }}"
-    $context7Args = '{{ if eq .chezmoi.os "windows" }}"/c", "npx", {{ end }}"-y", "@upstash/context7-mcp"'
+    $context7Command = "pnpm"
+    $context7Args = '"dlx", "@upstash/context7-mcp"'
     $snippet = @"
 [mcp_servers.context7]
 command = "$context7Command"

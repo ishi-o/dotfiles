@@ -8,19 +8,13 @@ install_codegraph() {
     return 0
   fi
 
-  if [ -f "$NVM_DIR/nvm.sh" ]; then
-    set +euo pipefail
-    . "$NVM_DIR/nvm.sh"
-    set -euo pipefail
-  fi
-
-  if ! check_installed npm; then
-    echo "Skipping codegraph: npm not found (install nvm/node first)"
+  if ! check_installed pnpm; then
+    echo "Skipping codegraph: pnpm not found (install pnpm first)"
     return 0
   fi
 
-  echo "Installing codegraph ${pkg_version} via npm..."
-  npm install -g @colbymchenry/codegraph || return 1
+  echo "Installing codegraph ${pkg_version} via pnpm..."
+  pnpm add -g @colbymchenry/codegraph || return 1
 }
 
 install_codegraph

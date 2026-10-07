@@ -25,27 +25,18 @@ MSYS_NT*|MINGW*_NT*)
         export UV_TOOL_BIN_DIR="$(cygpath -w "$msys2_uv_tool_bin")"
         export UV_TOOL_DIR="$(cygpath -w "$msys2_uv_tool_install")"
 
-        if [ -n "${NVM_HOME:-}" ]; then
-            msys2_nvm_home="$(cygpath -u "$NVM_HOME")"
-        else
-            msys2_nvm_home="$msys2_scoop_root/apps/nvm/current"
-        fi
-        msys2_nvm_node="$msys2_scoop_root/persist/nvm/.nodejs"
+        msys2_pnpm_home="$msys2_local_apps/pnpm"
         msys2_cargo_home="$msys2_scoop_root/persist/rustup-msvc/.cargo"
         msys2_rustup_home="$msys2_scoop_root/persist/rustup-msvc/.rustup"
 
-        export NVM_HOME="$(cygpath -w "$msys2_nvm_home")"
-        export NVM_SYMLINK="$(cygpath -w "$msys2_nvm_node")"
-        export NVM_DIR="$msys2_nvm_home"
+        export PNPM_HOME="$(cygpath -w "$msys2_pnpm_home")"
         export CARGO_HOME="$(cygpath -w "$msys2_cargo_home")"
         export RUSTUP_HOME="$(cygpath -w "$msys2_rustup_home")"
-        export NPM_CONFIG_CACHE="$(cygpath -w "$msys2_scoop_root/persist/nvm/npm-cache")"
 
         for msys2_path in \
             "$msys2_scoop_root/apps/git/current/cmd" \
             "$msys2_program_files/Git/cmd" \
-            "$msys2_nvm_home" \
-            "$msys2_nvm_node" \
+            "$msys2_pnpm_home" \
             "$msys2_scoop_root/shims" \
             "$msys2_scoop_root/apps/mingw/current/bin" \
             "$msys2_scoop_root/apps/rustup-msvc/current/.cargo/bin" \
@@ -78,7 +69,7 @@ MSYS_NT*|MINGW*_NT*)
         unset msys2_ai_command
 
         export PATH MSYS2_EXTERNAL_PATHS_DONE=1
-        unset msys2_user_profile msys2_local_apps msys2_program_files msys2_scoop_root msys2_nvm_home msys2_nvm_node msys2_cargo_home msys2_rustup_home msys2_uv_cache msys2_uv_python_bin msys2_uv_python_install msys2_uv_tool_bin msys2_uv_tool_install msys2_path
+        unset msys2_user_profile msys2_local_apps msys2_program_files msys2_scoop_root msys2_pnpm_home msys2_cargo_home msys2_rustup_home msys2_uv_cache msys2_uv_python_bin msys2_uv_python_install msys2_uv_tool_bin msys2_uv_tool_install msys2_path
     fi
     ;;
 esac

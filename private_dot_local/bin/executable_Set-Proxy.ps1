@@ -26,7 +26,7 @@ Options:
   -NoProxy <list>     Comma-separated hosts which bypass the proxy
   -Clear              Remove all proxy settings
   -Show               Show the saved proxy configuration
-  -Sync               Regenerate Git and npm configuration
+  -Sync               Regenerate Git and pnpm configuration
 
 The configuration is stored in %USERPROFILE%\.config\proxy\config.
 '@ | Write-Host
@@ -160,49 +160,32 @@ function Update-GitProxyConfiguration {
     }
 }
 
-function Update-NpmProxyConfiguration {
+function Update-PnpmProxyConfiguration {
     param([Parameter(Mandatory = $true)][hashtable]$Values)
 
-    $npmConfig = Join-Path $env:USERPROFILE ".config\npm\npmrc"
-    $env:NPM_CONFIG_USERCONFIG = $npmConfig
-    [Environment]::SetEnvironmentVariable("NPM_CONFIG_USERCONFIG", $npmConfig, "User")
-    New-Item -ItemType Directory -Path (Split-Path -Parent $npmConfig) -Force | Out-Null
-
-    if (Get-Command npm -ErrorAction SilentlyContinue) {
-        if ($Values.Http) {
-            npm config set proxy $Values.Http --location=user
-            if ($LASTEXITCODE -ne 0) {
-                throw "npm failed to update its proxy configuration"
-            }
-            npm config set https-proxy $Values.Http --location=user
-            if ($LASTEXITCODE -ne 0) {
-                throw "npm failed to update its HTTPS proxy configuration"
-            }
-        } else {
-            npm config delete proxy --location=user
-            if ($LASTEXITCODE -ne 0) {
-                throw "npm failed to remove its proxy configuration"
-            }
-            npm config delete https-proxy --location=user
-            if ($LASTEXITCODE -ne 0) {
-                throw "npm failed to remove its HTTPS proxy configuration"
-            }
-        }
+    if (-not (Get-Command pnpm -ErrorAction SilentlyContinue)) {
         return
     }
 
-    if (-not $Values.Http -and -not (Test-Path -LiteralPath $npmConfig -PathType Leaf)) {
-        return
-    }
-    $lines = @()
-    if (Test-Path -LiteralPath $npmConfig -PathType Leaf) {
-        $lines = @(Get-Content -LiteralPath $npmConfig |
-                Where-Object { $_ -notmatch '^\s*(proxy|https-proxy)\s*=' })
-    }
     if ($Values.Http) {
-        $lines += @("proxy=$($Values.Http)", "https-proxy=$($Values.Http)")
+        pnpm config set --global proxy $Values.Http
+        if ($LASTEXITCODE -ne 0) {
+            throw "pnpm failed to update its proxy configuration"
+        }
+        pnpm config set --global https-proxy $Values.Http
+        if ($LASTEXITCODE -ne 0) {
+            throw "pnpm failed to update its HTTPS proxy configuration"
+        }
+    } else {
+        pnpm config delete --global proxy
+        if ($LASTEXITCODE -ne 0) {
+            throw "pnpm failed to remove its proxy configuration"
+        }
+        pnpm config delete --global https-proxy
+        if ($LASTEXITCODE -ne 0) {
+            throw "pnpm failed to remove its HTTPS proxy configuration"
+        }
     }
-    $lines | Set-Content -LiteralPath $npmConfig -Encoding ascii
 }
 
 $configPath = Get-ProxyConfigurationPath
@@ -256,7 +239,7 @@ if ($Clear) {
 
 $gitConfig = Join-Path (Split-Path -Parent $configPath) "gitconfig"
 Update-GitProxyConfiguration -ConfigFile $gitConfig -Values $values
-Update-NpmProxyConfiguration -Values $values
+Update-PnpmProxyConfiguration -Values $values
 
 Write-Host "Proxy configuration: $configPath"
-Write-Host "Updated: Git, npm"
+Write-Host "Updated: Git, pnpm"

@@ -76,7 +76,7 @@ The command stores the URLs once and derives all consumer settings from them:
 - Shell environment: `HTTP_PROXY`, `HTTPS_PROXY`, `ALL_PROXY`, and `NO_PROXY`
 - SSH: the managed `proxy-ssh` helper used by `.ssh/config`
 - Git: `~/.config/proxy/gitconfig`, included by `~/.gitconfig`
-- npm: `~/.config/npm/npmrc`
+- pnpm: global config, managed by `pnpm config set --global`
 
 Do not edit these derived files directly. If a derived file is lost, run:
 

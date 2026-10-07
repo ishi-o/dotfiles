@@ -130,7 +130,7 @@ See [`PACKAGES.md`](PACKAGES.md) for package groups and installer ordering.
 | Go      | mise                            | latest     |
 | Java    | mise                            | OpenJDK 21 |
 | Lua     | mise, except Windows            | 5.4        |
-| Node.js | nvm                             | 22         |
+| Node.js | pnpm runtime                    | 22         |
 | Python  | uv                              | 3.13, 3.14 |
 | Rust    | rustup                          | stable     |
 | LuaJIT  | package manager or source build | 2.1        |

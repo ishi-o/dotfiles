@@ -91,8 +91,8 @@ install_providers() {
   done < <(jq -r 'keys[]' "$seed")
 }
 
-context7_command="{{ if eq .chezmoi.os "windows" }}cmd{{ else }}npx{{ end }}"
-context7_args='{{ if eq .chezmoi.os "windows" }}"/c", "npx", {{ end }}"-y", "@upstash/context7-mcp"'
+context7_command="pnpm"
+context7_args='"dlx", "@upstash/context7-mcp"'
 
 set_codex_common() {
   local base="$CC_SWITCH_CONFIG_DIR/common-codex.toml" tmp

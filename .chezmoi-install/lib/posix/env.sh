@@ -40,14 +40,14 @@ export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$XDG_CONFIG_HOME/claude}"
 export CC_SWITCH_CONFIG_DIR="${CC_SWITCH_CONFIG_DIR:-$XDG_CONFIG_HOME/cc-switch}"
 export SERENA_HOME="${SERENA_HOME:-$XDG_CONFIG_HOME/serena}"
 export GH_CONFIG_DIR="${GH_CONFIG_DIR:-$XDG_CONFIG_HOME/gh}"
-export NVM_DIR="${NVM_DIR:-$XDG_DATA_HOME/nvm}"
+export PNPM_HOME="${PNPM_HOME:-$XDG_DATA_HOME/pnpm}"
+export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/npmrc}"
+export NPM_CONFIG_CACHE="${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}"
 export GOPATH="${GOPATH:-$XDG_DATA_HOME/go}"
 export GOCACHE="${GOCACHE:-$XDG_CACHE_HOME/go-build}"
 export CARGO_HOME="${CARGO_HOME:-$XDG_DATA_HOME/cargo}"
 export RUSTUP_HOME="${RUSTUP_HOME:-$XDG_DATA_HOME/rustup}"
 export FZF_HOME="${FZF_HOME:-$XDG_DATA_HOME/fzf}"
-export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/npmrc}"
-export NPM_CONFIG_CACHE="${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}"
 
 proxy_config="$XDG_CONFIG_HOME/proxy/config"
 if [ -r "$proxy_config" ]; then
@@ -113,12 +113,24 @@ if [ "$pkg_manager" != "" ] && command -v sudo > /dev/null 2>&1; then
 fi
 export has_sudo
 
-export PATH="$USR_HOME/mise/bin:$USR_HOME/bin:$USR_HOME/nvim/bin:$HOME/.local/bin:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
+export PATH="$USR_HOME/mise/bin:$USR_HOME/bin:$USR_HOME/nvim/bin:$HOME/.local/bin:$PNPM_HOME:$FZF_HOME/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
+
+if [ -x "$PNPM_HOME/node" ]; then
+  npm_global_bin="$(dirname "$PNPM_HOME")/bin"
+  if [ -d "$npm_global_bin" ]; then
+    case ":$PATH:" in
+    *":$npm_global_bin:"*) ;;
+    *) PATH="$npm_global_bin:$PATH" && export PATH ;;
+    esac
+  fi
+  unset npm_global_bin
+fi
 
 mkdir -p "$USR_HOME/src" || exit 1
 mkdir -p "$HOME/.local/bin" || exit 1
 mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" \
   "$MISE_CONFIG_DIR" "$MISE_DATA_DIR" "$MISE_CACHE_DIR" "$MISE_STATE_DIR" \
-  "$CODEX_HOME" "$CLAUDE_CONFIG_DIR" "$GH_CONFIG_DIR" "$NVM_DIR" "$GOPATH" \
-  "$CARGO_HOME" "$RUSTUP_HOME" "$XDG_CONFIG_HOME/npm" "$NPM_CONFIG_CACHE" \
+  "$CODEX_HOME" "$CLAUDE_CONFIG_DIR" "$GH_CONFIG_DIR" "$GOPATH" \
+  "$CARGO_HOME" "$RUSTUP_HOME" "$PNPM_HOME" \
+  "$XDG_CONFIG_HOME/npm" "$XDG_CACHE_HOME/npm" \
   "$SERENA_HOME" || exit 1

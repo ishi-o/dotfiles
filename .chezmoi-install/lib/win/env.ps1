@@ -44,6 +44,7 @@ $toolDirectories = [ordered]@{
     GH_CONFIG_DIR     = Join-Path $env:USERPROFILE ".config\gh"
     GOPATH            = Join-Path $env:USERPROFILE ".local\share\go"
     GOCACHE           = Join-Path $env:USERPROFILE ".cache\go-build"
+    PNPM_HOME         = Join-Path $env:LOCALAPPDATA "pnpm"
 }
 
 if (Test-Path -LiteralPath $scoopRoot -PathType Container) {
@@ -53,11 +54,8 @@ if (Test-Path -LiteralPath $scoopRoot -PathType Container) {
         UV_PYTHON_INSTALL_DIR = Join-Path $scoopRoot "persist\uv\python\versions"
         UV_TOOL_BIN_DIR   = Join-Path $scoopRoot "persist\uv\tools\shims"
         UV_TOOL_DIR       = Join-Path $scoopRoot "persist\uv\tools\versions"
-        NVM_HOME          = Join-Path $scoopRoot "apps\nvm\current"
-        NVM_SYMLINK       = Join-Path $scoopRoot "persist\nvm\.nodejs"
         CARGO_HOME        = Join-Path $scoopRoot "persist\rustup-msvc\.cargo"
         RUSTUP_HOME       = Join-Path $scoopRoot "persist\rustup-msvc\.rustup"
-        NPM_CONFIG_CACHE  = Join-Path $scoopRoot "persist\nvm\npm-cache"
     }
     foreach ($entry in $scoopToolDirectories.GetEnumerator()) {
         $toolDirectories[$entry.Key] = $entry.Value
@@ -73,9 +71,13 @@ if ($toolDirectories.Contains("UV_PYTHON_BIN_DIR")) {
     $env:Path = "$($toolDirectories["UV_PYTHON_BIN_DIR"]);$($toolDirectories["UV_TOOL_BIN_DIR"]);$env:Path"
 }
 
-$npmConfig = Join-Path $env:USERPROFILE ".config\npm\npmrc"
-New-Item -ItemType Directory -Path (Split-Path -Parent $npmConfig) -Force | Out-Null
-Set-UserEnvironmentVariable -Name "NPM_CONFIG_USERCONFIG" -Value $npmConfig
+$env:Path = "$($toolDirectories["PNPM_HOME"]);$env:Path"
+
+$npmConfigDir = Join-Path $env:XDG_CONFIG_HOME "npm"
+$npmCacheDir = Join-Path $env:XDG_CACHE_HOME "npm"
+New-Item -ItemType Directory -Path $npmConfigDir, $npmCacheDir -Force | Out-Null
+Set-UserEnvironmentVariable -Name "NPM_CONFIG_USERCONFIG" -Value (Join-Path $npmConfigDir "npmrc")
+Set-UserEnvironmentVariable -Name "NPM_CONFIG_CACHE" -Value $npmCacheDir
 
 $proxyConfig = Join-Path $env:XDG_CONFIG_HOME "proxy\config"
 if (Test-Path -LiteralPath $proxyConfig -PathType Leaf) {

@@ -21,7 +21,7 @@
       "Bash(head *)",
       "Bash(tail *)",
       "Bash(yarn *)",
-      "Bash(npm *)",
+      "Bash(pnpm *)",
       "Bash(git diff *)",
       "Bash(git rebase *)",
       "Bash(git fetch *)",

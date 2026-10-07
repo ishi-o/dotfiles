@@ -9,4 +9,4 @@ $packages = @(
 )
 
 Install-MSYS2Packages -Packages @("mingw-w64-ucrt-x86_64-nodejs")
-Install-MSYS2NpmPackages -Packages $packages
+Install-MSYS2PnpmPackages -Packages $packages

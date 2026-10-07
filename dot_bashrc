@@ -12,12 +12,16 @@ shopt -s cdspell
 export EDITOR='nvim'
 export VISUAL='nvim'
 
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-command -v nvm >/dev/null 2>&1 && nvm use --silent default >/dev/null 2>&1
-
 alias vi=nvim
 alias vim=nvim
+
+npx() {
+  if [ -n "$1" ] && [ -x "./node_modules/.bin/$1" ]; then
+    pnpm exec "$@"
+  else
+    pnpm dlx "$@"
+  fi
+}
 [ -f "$CARGO_HOME/env" ] && . "$CARGO_HOME/env"
 
 [ -f "$XDG_CONFIG_HOME/fzf/fzf.bash" ] && source "$XDG_CONFIG_HOME/fzf/fzf.bash"

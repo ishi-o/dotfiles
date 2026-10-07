@@ -52,21 +52,16 @@ function Test-Installed {
 
 function Initialize-ScoopToolPaths {
     $scoopRoot = Get-ScoopRoot
-    $env:NVM_HOME = Join-Path $scoopRoot "apps\nvm\current"
-    $env:NVM_SYMLINK = Join-Path $scoopRoot "persist\nvm\.nodejs"
     $env:CARGO_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.cargo"
     $env:RUSTUP_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.rustup"
-    $env:NPM_CONFIG_CACHE = Join-Path $scoopRoot "persist\nvm\npm-cache"
+    $env:PNPM_HOME = Join-Path $env:LOCALAPPDATA "pnpm"
 
-    [Environment]::SetEnvironmentVariable("NVM_HOME", $env:NVM_HOME, "User")
-    [Environment]::SetEnvironmentVariable("NVM_SYMLINK", $env:NVM_SYMLINK, "User")
     [Environment]::SetEnvironmentVariable("CARGO_HOME", $env:CARGO_HOME, "User")
     [Environment]::SetEnvironmentVariable("RUSTUP_HOME", $env:RUSTUP_HOME, "User")
-    [Environment]::SetEnvironmentVariable("NPM_CONFIG_CACHE", $env:NPM_CONFIG_CACHE, "User")
+    [Environment]::SetEnvironmentVariable("PNPM_HOME", $env:PNPM_HOME, "User")
 
     $env:Path = @(
-        $env:NVM_HOME,
-        $env:NVM_SYMLINK,
+        $env:PNPM_HOME,
         (Join-Path $env:CARGO_HOME "bin"),
         $env:Path
     ) -join [IO.Path]::PathSeparator
@@ -129,55 +124,6 @@ function Upgrade-Nvim {
     }
 
     Write-Host "==> Neovim nightly installed successfully."
-}
-
-function Initialize-Nvm {
-    param([switch]$InstallNode)
-
-    Initialize-ScoopToolPaths
-    $nvmHome = (scoop prefix nvm).Trim()
-    if (-not $nvmHome -or -not (Test-Path -LiteralPath $nvmHome -PathType Container)) {
-        throw "NVM home not found"
-    }
-
-    $env:NVM_HOME = $nvmHome
-    [Environment]::SetEnvironmentVariable("NVM_HOME", $env:NVM_HOME, "User")
-    [Environment]::SetEnvironmentVariable("NVM_SYMLINK", $env:NVM_SYMLINK, "User")
-    $env:Path = "$env:NVM_HOME;$env:NVM_SYMLINK;$env:Path"
-
-    $nvm = Join-Path $nvmHome "nvm.exe"
-
-    $nvmSettings = Join-Path $nvmHome "settings.txt"
-    if (Test-Path -LiteralPath $nvmSettings -PathType Leaf) {
-        $settings = @(Get-Content -LiteralPath $nvmSettings)
-        $officialSettings = @($settings | Where-Object {
-                $_ -notmatch '^\s*(?:node_mirror|npm_mirror)\s*:'
-            })
-        if ($officialSettings.Count -ne $settings.Count) {
-            Set-Content -LiteralPath $nvmSettings -Value $officialSettings
-        }
-    }
-
-    if ($InstallNode) {
-        & $nvm install 22
-        if ($LASTEXITCODE -ne 0) {
-            throw "nvm install 22 failed"
-        }
-    }
-
-    & $nvm use 22
-    if ($LASTEXITCODE -ne 0) {
-        throw "nvm use 22 failed"
-    }
-
-    if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
-        throw "npm was not found after enabling NVM"
-    }
-
-    npm config set registry https://registry.npmjs.org/
-    if ($LASTEXITCODE -ne 0) {
-        throw "npm official registry configuration failed"
-    }
 }
 
 $script:MSYS2PackageNames = @(
@@ -328,7 +274,7 @@ function Install-MSYS2Packages {
     }
 }
 
-function Install-MSYS2NpmPackages {
+function Install-MSYS2PnpmPackages {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -337,7 +283,7 @@ function Install-MSYS2NpmPackages {
 
     foreach ($package in $Packages) {
         if ($package -notmatch '^[A-Za-z0-9@][A-Za-z0-9+_.-]*(/[A-Za-z0-9+_.-]+)?$') {
-            throw "Invalid npm package name: $package"
+            throw "Invalid package name: $package"
         }
     }
 
@@ -354,9 +300,9 @@ function Install-MSYS2NpmPackages {
     $previousMSystem = $env:MSYSTEM
     $env:MSYSTEM = "UCRT64"
     try {
-        & $bash -lc 'npm install -g "$@"' npm @Packages
+        & $bash -lc 'corepack enable pnpm && pnpm add -g "$@"' pnpm @Packages
         if ($LASTEXITCODE -ne 0) {
-            throw "MSYS2 npm installation failed: $($Packages -join ', ')"
+            throw "MSYS2 pnpm installation failed: $($Packages -join ', ')"
         }
     } finally {
         if ($null -eq $previousMSystem) {

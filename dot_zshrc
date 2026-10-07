@@ -50,10 +50,15 @@ zplug "Aloxaf/fzf-tab", defer:2
 
 
 if ! zplug check; then
+  if [ -n "${ZPLUG_AUTO_INSTALL:-}" ]; then
+    echo "Installing zplug plugins..."
+    zplug install
+  else
     printf "Install? [y/N]: "
     if read -q; then
-        echo; zplug install
+      echo; zplug install
     fi
+  fi
 fi
 zplug load
 
@@ -70,51 +75,13 @@ esac
 alias vi='nvim'
 alias vim='nvim'
 
-if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
-  _npm_prefix="$HOME/scoop/persist/nvm/.nodejs"
-  if [ ! -d "$_npm_prefix" ]; then
-    _npm_prefix="${NVM_SYMLINK:-}"
+npx() {
+  if [ -n "$1" ] && [ -x "./node_modules/.bin/$1" ]; then
+    pnpm exec "$@"
+  else
+    pnpm dlx "$@"
   fi
-  if [ -z "$_npm_prefix" ] && command -v npm >/dev/null 2>&1; then
-    _npm_prefix="$(npm config get prefix 2>/dev/null)"
-  fi
-  if [ -n "$_npm_prefix" ]; then
-    _npm_prefix="$(cygpath -u "$_npm_prefix" 2>/dev/null)"
-    if [ -d "$_npm_prefix" ]; then
-      case ":$PATH:" in
-        *":$_npm_prefix:"*) ;;
-        *) export PATH="$_npm_prefix:$PATH" ;;
-      esac
-    fi
-  fi
-  unset _npm_prefix
-else
-  export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
-
-  _nvm_ver="$(cat "$NVM_DIR/alias/default" 2>/dev/null)"
-  if [ -n "$_nvm_ver" ]; then
-    for _d in "$NVM_DIR/versions/node/v${_nvm_ver#v}"*; do
-      if [ -d "$_d/bin" ]; then
-        case ":$PATH:" in
-          *":$_d/bin:"*) ;;
-          *) export PATH="$_d/bin:$PATH" ;;
-        esac
-        break
-      fi
-    done
-  fi
-  unset _nvm_ver _d
-
-  _nvm_lazy_load() {
-    unset -f _nvm_lazy_load nvm
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-    nvm use --silent default >/dev/null 2>&1
-    hash -r
-  }
-
-  nvm() { _nvm_lazy_load; command nvm "$@"; }
-fi
+}
 
 . "$XDG_CONFIG_HOME/shell/completions"
 compdef _gradle gradlew ./gradlew

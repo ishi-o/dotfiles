@@ -1,9 +1,13 @@
 $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
-Initialize-Nvm
 
-npm install -g @openai/codex
+if (-not (Test-Installed "pnpm")) {
+    Write-Host "Skipping codex: pnpm not found (install pnpm first)"
+    return
+}
+
+pnpm add -g @openai/codex
 if ($LASTEXITCODE -ne 0) {
-    throw "npm install @openai/codex failed"
+    throw "pnpm add @openai/codex failed"
 }

@@ -1,9 +1,13 @@
 $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
-Initialize-Nvm
 
-npm install -g @anthropic-ai/claude-code
+if (-not (Test-Installed "pnpm")) {
+    Write-Host "Skipping claude: pnpm not found (install pnpm first)"
+    return
+}
+
+pnpm add -g @anthropic-ai/claude-code
 if ($LASTEXITCODE -ne 0) {
-    throw "npm install @anthropic-ai/claude-code failed"
+    throw "pnpm add @anthropic-ai/claude-code failed"
 }

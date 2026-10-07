@@ -36,19 +36,18 @@ $scoopRoot = if ($env:SCOOP) {
 } else {
     Join-Path $HOME "scoop"
 }
-$env:NVM_HOME = Join-Path $scoopRoot "apps\nvm\current"
-$env:NVM_SYMLINK = Join-Path $scoopRoot "persist\nvm\.nodejs"
+$env:PNPM_HOME = Join-Path $env:LOCALAPPDATA "pnpm"
+$env:NPM_CONFIG_USERCONFIG = Join-Path $env:XDG_CONFIG_HOME "npm\npmrc"
+$env:NPM_CONFIG_CACHE = Join-Path $env:XDG_CACHE_HOME "npm"
 $env:CARGO_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.cargo"
 $env:RUSTUP_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.rustup"
-$env:NPM_CONFIG_CACHE = Join-Path $scoopRoot "persist\nvm\npm-cache"
 $env:UV_CACHE_DIR = Join-Path $scoopRoot "persist\uv\cache"
 $env:UV_PYTHON_BIN_DIR = Join-Path $scoopRoot "persist\uv\python\shims"
 $env:UV_PYTHON_INSTALL_DIR = Join-Path $scoopRoot "persist\uv\python\versions"
 $env:UV_TOOL_BIN_DIR = Join-Path $scoopRoot "persist\uv\tools\shims"
 $env:UV_TOOL_DIR = Join-Path $scoopRoot "persist\uv\tools\versions"
 $env:Path = @(
-    $env:NVM_HOME,
-    $env:NVM_SYMLINK,
+    $env:PNPM_HOME,
     (Join-Path $env:CARGO_HOME "bin"),
     $env:UV_PYTHON_BIN_DIR,
     $env:UV_TOOL_BIN_DIR,
@@ -344,20 +343,36 @@ $scoopCompleter = {
 }
 Register-ArgumentCompleter -Native -CommandName scoop -ScriptBlock $scoopCompleter
 
-$nvmCompleter = {
+$pnpmCompleter = {
     param($wordToComplete)
 
     $commands = @(
-        "arch", "current", "debug", "install", "list", "list-available", "on", "off",
-        "proxy", "root", "uninstall", "use", "version"
+        "add", "install", "remove", "unlink", "link", "list", "update", "outdated",
+        "exec", "dlx", "run", "test", "config", "store", "cache", "runtime", "setup",
+        "env", "self-update"
     )
     $commands |
         Where-Object { $_.StartsWith($wordToComplete, [StringComparison]::OrdinalIgnoreCase) } |
         ForEach-Object {
-            [System.Management.Automation.CompletionResult]::new($_, $_, "ParameterValue", "nvm $_")
+            [System.Management.Automation.CompletionResult]::new($_, $_, "ParameterValue", "pnpm $_")
         }
 }
-Register-ArgumentCompleter -Native -CommandName nvm -ScriptBlock $nvmCompleter
+Register-ArgumentCompleter -Native -CommandName pnpm -ScriptBlock $pnpmCompleter
+
+function npx {
+    param([Parameter(ValueFromRemainingArguments = $true)]$Command)
+
+    if ($Command.Count -gt 0) {
+        $bin = Join-Path "node_modules\.bin" $Command[0]
+        if ((Test-Path -LiteralPath $bin) -or
+            (Test-Path -LiteralPath "$bin.cmd") -or
+            (Test-Path -LiteralPath "$bin.ps1")) {
+            pnpm exec @Command
+            return
+        }
+    }
+    pnpm dlx @Command
+}
 
 $dotsCompleter = {
     param($wordToComplete, $commandAst)

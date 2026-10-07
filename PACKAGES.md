@@ -41,8 +41,8 @@ $env:SCOOP_DIR = "D:\Scoop"
 ```
 
 - `00-msys2.ps1` handles MSYS2 packages in one `pacman --needed` transaction.
-- AI tools install for both Windows NVM Node.js and MSYS2 UCRT64 Node.js.
-- uv, Python, tools, NVM, npm, Cargo, and Rustup use Scoop persisted paths.
+- AI tools install for both Windows pnpm Node.js and MSYS2 UCRT64 Node.js.
+- uv, Python, tools, Cargo, and Rustup use Scoop persisted paths; pnpm lives in `%LOCALAPPDATA%\pnpm`.
 - Codex and Claude configuration homes stay under `~/.config`.
 
 ## Groups
@@ -51,10 +51,10 @@ $env:SCOOP_DIR = "D:\Scoop"
 | ----- | -------- |
 | `shell` | POSIX `vim`, `zsh`; Windows MSYS2 + `zsh` |
 | `build` | Compilers, MSVC/MinGW on Windows, build tools, and base libraries |
-| `runtimes` | `uv`, `mise`, `nvm`, `luajit`, `rust` |
+| `runtimes` | `uv`, `mise`, `pnpm` (with `npm` fallback), `luajit`, `rust` |
 | `editor` | `nvim`, `tree-sitter` |
 | `tools` / `dev` | `7-Zip`, `fzf`, `PSFzf`, `posh-git`, `fd`, `ripgrep`, `gh`, `sqlite3`, `zoxide`, `jq`, `yq`; Windows `tree` and `less` through MSYS2 |
-| `operations` | `kubectl`, `netcat`, `openssh` |
+| `operations` | `kubectl`, `netcat`, `openssh` (POSIX; Windows uses system OpenSSH) |
 | `ai` | `cc-switch`, `codex`, `claude`, `serena`, `github-mcp-server`, `codegraph`; Windows additionally installs the MSYS2 bundle |
 | `terminal` | POSIX `tmux`, `kitty`; Windows MSYS2 `tmux` and Windows Terminal |
 | `input` | WSL `fcitx5` and Chinese addons; `breeze-cursor-theme` set as the default cursor |
