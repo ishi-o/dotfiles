@@ -39,6 +39,17 @@ function Get-ScoopRoot {
     Join-Path $env:USERPROFILE "scoop"
 }
 
+function Test-Installed {
+    param([Parameter(Mandatory = $true)][string]$Name)
+
+    if (Get-Command $Name -ErrorAction SilentlyContinue) {
+        return $true
+    }
+
+    $scoopRoot = Get-ScoopRoot
+    return (Test-Path -LiteralPath (Join-Path $scoopRoot "apps\$Name\current") -PathType Container)
+}
+
 function Initialize-ScoopToolPaths {
     $scoopRoot = Get-ScoopRoot
     $env:NVM_HOME = Join-Path $scoopRoot "apps\nvm\current"

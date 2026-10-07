@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
 
-if (Get-Command serena -ErrorAction SilentlyContinue) {
+if (Test-Installed "serena") {
     return
 }
 

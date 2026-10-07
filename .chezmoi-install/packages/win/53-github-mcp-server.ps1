@@ -1,6 +1,8 @@
 $ErrorActionPreference = "Stop"
 
-if (Get-Command github-mcp-server -ErrorAction SilentlyContinue) {
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
+
+if (Test-Installed "github-mcp-server") {
     return
 }
 

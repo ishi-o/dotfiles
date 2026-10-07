@@ -8,7 +8,7 @@ install_breeze_cursor() {
     return 0
   fi
 
-  if [ -d /usr/share/icons/breeze_cursors ] || [ -d "$XDG_DATA_HOME/icons/breeze_cursors" ]; then
+  if check_installed "$pkg_name"; then
     echo "breeze-cursor-theme is already installed"
     return 0
   fi

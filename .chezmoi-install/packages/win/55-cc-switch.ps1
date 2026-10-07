@@ -1,6 +1,8 @@
 $ErrorActionPreference = "Stop"
 
-if (Get-Command cc-switch -ErrorAction SilentlyContinue) {
+. (Join-Path $PSScriptRoot "..\..\lib\win\helpers.ps1")
+
+if (Test-Installed "cc-switch") {
     return
 }
 

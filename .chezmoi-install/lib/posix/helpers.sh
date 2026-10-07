@@ -1,8 +1,21 @@
 #!/usr/bin/env bash
 
 check_installed() {
-  local cmd="$1"
-  command -v "$cmd" >/dev/null 2>&1
+  local item="$1"
+
+  command -v "$item" >/dev/null 2>&1 && return 0
+
+  case "$pkg_manager" in
+  pacman)
+    pacman -Q "$(pacman_package_name "$item")" >/dev/null 2>&1
+    ;;
+  dnf)
+    dnf list --installed "$(dnf_package_name "$item")" >/dev/null 2>&1
+    ;;
+  apt)
+    dpkg -s "$item" >/dev/null 2>&1
+    ;;
+  esac
 }
 
 check_library() {
