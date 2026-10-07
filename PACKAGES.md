@@ -57,7 +57,7 @@ $env:SCOOP_DIR = "D:\Scoop"
 | `operations` | `kubectl`, `netcat`, `openssh` |
 | `ai` | `cc-switch`, `codex`, `claude`, `serena`, `github-mcp-server`, `codegraph`; Windows additionally installs the MSYS2 bundle |
 | `terminal` | POSIX `tmux`, `kitty`; Windows MSYS2 `tmux` and Windows Terminal |
-| `input` | WSL `fcitx5` and Chinese addons |
+| `input` | WSL `fcitx5` and Chinese addons; `breeze-cursor-theme` set as the default cursor |
 
 ## Targeted installation
 

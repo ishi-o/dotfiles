@@ -2,8 +2,10 @@
 {{- $useSSH := regexMatch "(?m)^origin[[:space:]]+(git@|ssh://|git\\+ssh://)" $origin -}}
 {{- $usrHome := or (env "USR_HOME") (joinPath .chezmoi.homeDir "usr/local") -}}
 {{- $usrHomeRel := trimPrefix (printf "%s/" .chezmoi.homeDir) $usrHome -}}
-{{- $installFontsValue := lower (or (env "INSTALL_FONTS") "true") -}}
-{{- $installFonts := not (or (eq $installFontsValue "false") (eq $installFontsValue "0") (eq $installFontsValue "no") (eq $installFontsValue "off")) -}}
+{{- $installFonts := true -}}
+{{- if hasKey . "installFonts" -}}
+{{-   $installFonts = .installFonts -}}
+{{- end -}}
 [".config/nvim"]
 type = "git-repo"
 {{ if $useSSH }}

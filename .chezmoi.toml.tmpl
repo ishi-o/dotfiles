@@ -27,6 +27,7 @@ encryption = "age"
 {{- $installUtilities := promptBoolOnce . "installUtilities" "Install utility packages" true -}}
 {{- $installOperations := promptBoolOnce . "installOperations" "Install operation packages" true -}}
 {{- $installTerminal := promptBoolOnce . "installTerminal" "Install terminal packages" true -}}
+{{- $installFonts := promptBoolOnce . "installFonts" "Install fonts" true -}}
 {{- $installInput := false -}}
 {{- if eq .chezmoi.os "linux" -}}
 {{-   if hasKey .chezmoi.kernel "osrelease" -}}
@@ -47,4 +48,5 @@ installAi = {{ $installAi }}
 installUtilities = {{ $installUtilities }}
 installOperations = {{ $installOperations }}
 installTerminal = {{ $installTerminal }}
+installFonts = {{ $installFonts }}
 installInput = {{ $installInput }}

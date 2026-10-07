@@ -101,6 +101,7 @@ pacman_package_name() {
   netcat-openbsd) echo "openbsd-netcat" ;;
   sqlite3) echo "sqlite" ;;
   openssh-client) echo "openssh" ;;
+  breeze-cursor-theme) echo "breeze" ;;
   *) echo "$1" ;;
   esac
 }

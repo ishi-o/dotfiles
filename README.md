@@ -121,7 +121,6 @@ See [`PACKAGES.md`](PACKAGES.md) for package groups and installer ordering.
 - Configure a proxy with `set-proxy` before the first apply when needed.
 - The Windows shell is Zsh inside MSYS2 when MSYS2 and Zsh are installed.
 - WSL uses mirrored networking.
-- Set `INSTALL_FONTS=false` to disable automatic font installation.
 - Do not commit credentials in `~/.config/env` or `~/.config/env.local.ps1`.
 
 ## Managed runtimes
