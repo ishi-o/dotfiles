@@ -63,7 +63,16 @@ reset_script_state() {
   fi
 }
 
+prime_sudo() {
+  [ "$(uname -s)" = Linux ] || return 0
+  command -v sudo >/dev/null 2>&1 || return 0
+  sudo -n true 2>/dev/null && return 0
+  echo "Some setup scripts require sudo; caching credentials..."
+  sudo -v || echo "Warning: sudo unavailable; privileged steps will be skipped" >&2
+}
+
 init_dots() {
+  prime_sudo
   chezmoi init "$@"
   reset_script_state
   chezmoi apply
@@ -236,6 +245,7 @@ case "${1:-help}" in
     ;;
   apply)
     shift
+    prime_sudo
     exec chezmoi apply "$@"
     ;;
   diff)
@@ -269,6 +279,7 @@ case "${1:-help}" in
         init_dots
       fi
     else
+      prime_sudo
       if [ "${#update_args[@]}" -gt 0 ]; then
         chezmoi apply "${update_args[@]}"
       else
