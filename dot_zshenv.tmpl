@@ -1,51 +1,33 @@
-. "$HOME/.config/shell/msys2-path"
-
-if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+{{- $isWsl := false -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if hasKey .chezmoi.kernel "osrelease" -}}
+{{-     if contains "microsoft" (.chezmoi.kernel.osrelease | lower) -}}
+{{-       $isWsl = true -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{ if eq .chezmoi.os "windows" -}}
+if [ -n "${USERPROFILE:-}" ] && command -v cygpath >/dev/null 2>&1; then
+	export HOME="$(cygpath -u "$USERPROFILE")"
 fi
 
-shopt -s cdspell
-
+. "$HOME/.config/shell/msys2-path"
+{{ end -}}
 . "$HOME/.config/shell/env"
-. "$XDG_CONFIG_HOME/env"
+. "$HOME/.config/env"
 
 export EDITOR='nvim'
 export VISUAL='nvim'
 
-alias vi=nvim
-alias vim=nvim
-
-npx() {
-  if [ -n "$1" ] && [ -x "./node_modules/.bin/$1" ]; then
-    pnpm exec "$@"
-  else
-    pnpm dlx "$@"
-  fi
-}
-[ -f "$CARGO_HOME/env" ] && . "$CARGO_HOME/env"
-
-[ -f "$XDG_CONFIG_HOME/fzf/fzf.bash" ] && source "$XDG_CONFIG_HOME/fzf/fzf.bash"
-
-. "$XDG_CONFIG_HOME/shell/completions"
-
-mise_path="$(command -v mise 2>/dev/null || true)"
-if [ -z "$mise_path" ] && [ -x "$MISE_INSTALL_PATH" ]; then
-	mise_path="$MISE_INSTALL_PATH"
-fi
-if [ -n "$mise_path" ]; then
-	case "$(uname -s 2>/dev/null)" in
-		MSYS_NT*) ;;
-		*) eval "$("$mise_path" activate bash)" ;;
-	esac
-fi
-unset mise_path
-
+{{ if eq .chezmoi.os "linux" -}}
 if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.freedesktop.DBus --print-reply /org/freedesktop/DBus org.freedesktop.DBus.ListNames >/dev/null 2>&1; then
 	unset DBUS_SESSION_BUS_ADDRESS
+{{ if $isWsl }}
 	wslg_bus="/mnt/wslg/run/user/$(id -u)/bus"
 	if [ -S "$wslg_bus" ]; then
 		export DBUS_SESSION_BUS_ADDRESS="unix:path=$wslg_bus"
 	fi
+{{ end }}
 	if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.freedesktop.DBus --print-reply /org/freedesktop/DBus org.freedesktop.DBus.ListNames >/dev/null 2>&1; then
 		unset DBUS_SESSION_BUS_ADDRESS
 		if command -v dbus-launch >/dev/null 2>&1; then
@@ -54,19 +36,17 @@ if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.fr
 	fi
 fi
 
-fcitx5_is_wsl=false
-case "$(uname -r 2>/dev/null)" in
-*microsoft*|*Microsoft*|*WSL*) fcitx5_is_wsl=true ;;
-esac
-[ -n "${WSL_DISTRO_NAME:-}" ] && fcitx5_is_wsl=true
-
-if [ "$fcitx5_is_wsl" = true ] && [ -d /mnt/wslg ] &&
-	command -v fcitx5 >/dev/null 2>&1 &&
+{{ end -}}
+{{ if $isWsl -}}
+if [ -d /mnt/wslg ] && command -v fcitx5 >/dev/null 2>&1 &&
 	{ [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; }; then
 	export XMODIFIERS=@im=fcitx
 	export GTK_IM_MODULE=fcitx
 	export QT_IM_MODULE=fcitx
 	export SDL_IM_MODULE=fcitx
+	if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+		export GLFW_IM_MODULE=ibus
+	fi
 	fcitx5_pid="$(pgrep -xo fcitx5 2>/dev/null)"
 	fcitx5_needs_start=true
 	if [ -n "$fcitx5_pid" ]; then
@@ -80,9 +60,6 @@ if [ "$fcitx5_is_wsl" = true ] && [ -d /mnt/wslg ] &&
 	if [ "$fcitx5_needs_start" = true ]; then
 		nohup fcitx5 --disable=wayland --replace -d >/dev/null 2>&1 &
 	fi
+	unset fcitx5_pid fcitx5_args fcitx5_needs_start
 fi
-unset fcitx5_is_wsl fcitx5_pid fcitx5_args fcitx5_needs_start
-
-if [ -z "${ZSH_VERSION:-}" ] && [ -x /usr/bin/zsh ] && [[ "$(uname -s)" == MSYS_NT* ]]; then
-	exec /usr/bin/zsh
-fi
+{{ end }}

@@ -1,0 +1,98 @@
+{{- $isWsl := false -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if hasKey .chezmoi.kernel "osrelease" -}}
+{{-     if contains "microsoft" (.chezmoi.kernel.osrelease | lower) -}}
+{{-       $isWsl = true -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{ if eq .chezmoi.os "windows" -}}
+. "$HOME/.config/shell/msys2-path"
+{{ end -}}
+
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+shopt -s cdspell
+
+. "$HOME/.config/shell/env"
+. "$XDG_CONFIG_HOME/env"
+
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+alias vi=nvim
+alias vim=nvim
+
+npx() {
+  if [ -n "$1" ] && [ -x "./node_modules/.bin/$1" ]; then
+    pnpm exec "$@"
+  else
+    pnpm dlx "$@"
+  fi
+}
+[ -f "$CARGO_HOME/env" ] && . "$CARGO_HOME/env"
+
+[ -f "$XDG_CONFIG_HOME/fzf/fzf.bash" ] && source "$XDG_CONFIG_HOME/fzf/fzf.bash"
+
+. "$XDG_CONFIG_HOME/shell/completions"
+
+{{ if ne .chezmoi.os "windows" -}}
+mise_path="$(command -v mise 2>/dev/null || true)"
+if [ -z "$mise_path" ] && [ -x "$MISE_INSTALL_PATH" ]; then
+	mise_path="$MISE_INSTALL_PATH"
+fi
+if [ -n "$mise_path" ]; then
+	eval "$("$mise_path" activate bash)"
+fi
+unset mise_path
+
+{{ end -}}
+{{ if eq .chezmoi.os "linux" -}}
+if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.freedesktop.DBus --print-reply /org/freedesktop/DBus org.freedesktop.DBus.ListNames >/dev/null 2>&1; then
+	unset DBUS_SESSION_BUS_ADDRESS
+{{ if $isWsl }}
+	wslg_bus="/mnt/wslg/run/user/$(id -u)/bus"
+	if [ -S "$wslg_bus" ]; then
+		export DBUS_SESSION_BUS_ADDRESS="unix:path=$wslg_bus"
+	fi
+{{ end }}
+	if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.freedesktop.DBus --print-reply /org/freedesktop/DBus org.freedesktop.DBus.ListNames >/dev/null 2>&1; then
+		unset DBUS_SESSION_BUS_ADDRESS
+		if command -v dbus-launch >/dev/null 2>&1; then
+			eval "$(dbus-launch --sh-syntax)"
+		fi
+	fi
+fi
+
+{{ end -}}
+{{ if $isWsl -}}
+if [ -d /mnt/wslg ] && command -v fcitx5 >/dev/null 2>&1 &&
+	{ [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; }; then
+	export XMODIFIERS=@im=fcitx
+	export GTK_IM_MODULE=fcitx
+	export QT_IM_MODULE=fcitx
+	export SDL_IM_MODULE=fcitx
+	fcitx5_pid="$(pgrep -xo fcitx5 2>/dev/null)"
+	fcitx5_needs_start=true
+	if [ -n "$fcitx5_pid" ]; then
+		fcitx5_needs_start=false
+		fcitx5_args="$(ps -o args= -p "$fcitx5_pid" 2>/dev/null)"
+		case "$fcitx5_args" in
+		*"--disable=wayland"*) ;;
+		*) fcitx5_needs_start=true ;;
+		esac
+	fi
+	if [ "$fcitx5_needs_start" = true ]; then
+		nohup fcitx5 --disable=wayland --replace -d >/dev/null 2>&1 &
+	fi
+	unset fcitx5_pid fcitx5_args fcitx5_needs_start
+fi
+{{ end }}
+
+{{ if eq .chezmoi.os "windows" -}}
+if [ -z "${ZSH_VERSION:-}" ] && [ -x /usr/bin/zsh ]; then
+	exec /usr/bin/zsh
+fi
+{{ end }}

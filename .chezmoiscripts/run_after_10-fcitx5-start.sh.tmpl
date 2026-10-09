@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+{{- $isWsl := false -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if hasKey .chezmoi.kernel "osrelease" -}}
+{{-     if contains "microsoft" (.chezmoi.kernel.osrelease | lower) -}}
+{{-       $isWsl = true -}}
+{{-     end -}}
+{{-   end -}}
+{{- end }}
+{{ if eq .chezmoi.os "linux" -}}
+restart_marker="${XDG_RUNTIME_DIR:-/tmp}/dots-fcitx5-restart"
+if [ -f "$restart_marker" ]; then
+  rm -f "$restart_marker"
+  if command -v fcitx5 >/dev/null 2>&1; then
+    nohup fcitx5 {{ if $isWsl }}--disable=wayland --replace {{ end }}-d >/dev/null 2>&1 &
+  fi
+fi
+{{- end }}

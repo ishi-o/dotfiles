@@ -1,10 +1,14 @@
+{{- $im := "pinyin" -}}
+{{- if stat "/usr/share/rime-data/rime_frost_double_pinyin.schema.yaml" -}}
+{{-   $im = "rime" -}}
+{{- end }}
 [Groups/0]
 # Group Name
 Name=Default
 # Layout
 Default Layout=us
 # Default Input Method
-DefaultIM=rime
+DefaultIM={{ $im }}
 
 [Groups/0/Items/0]
 # Name
@@ -14,7 +18,7 @@ Layout=
 
 [Groups/0/Items/1]
 # Name
-Name=rime
+Name={{ $im }}
 # Layout
 Layout=
 
