@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+xray_bin="$(command -v xray || true)"
+if [ -z "$xray_bin" ]; then
+  echo "xray not found; skipping Xray service setup"
+  exit 0
+fi
+
+xray_config="{{ .chezmoi.homeDir }}/.config/xray/config.json"
+if [ ! -f "$xray_config" ]; then
+  echo "Xray config not found at $xray_config; skipping Xray service setup"
+  exit 0
+fi
+
+xray_env="{{ .chezmoi.homeDir }}/.config/xray/env"
+if [ ! -f "$xray_env" ]; then
+  echo "Xray credentials not found at $xray_env; skipping Xray service setup"
+  echo "Create it with KEY=value lines: XRAY_TAG XRAY_ADDRESS XRAY_PORT XRAY_UUID XRAY_SNI XRAY_PUBLIC_KEY XRAY_SHORT_ID"
+  exit 0
+fi
+
+if ! command -v systemctl >/dev/null 2>&1; then
+  echo "systemd not found; skipping Xray service setup"
+  exit 0
+fi
+
+if ! command -v sudo >/dev/null 2>&1; then
+  echo "sudo not available; skipping Xray service setup"
+  exit 0
+fi
+
+if ! sudo -n true >/dev/null 2>&1; then
+  echo "sudo credentials required for Xray service setup; run 'sudo -v' then re-run"
+  exit 0
+fi
+
+xray_asset_dir="$(dirname "$(readlink -f "$xray_bin")")"
+for asset in geosite.dat geoip.dat; do
+  if [ ! -f "$xray_asset_dir/$asset" ] && [ ! -f "/usr/share/xray/$asset" ]; then
+    echo "Downloading $asset to $xray_asset_dir..."
+    asset_tmp="$(mktemp)"
+    if curl -fL --progress-bar -o "$asset_tmp" "https://github.com/v2fly/v2ray-core/releases/latest/download/$asset"; then
+      sudo install -m 0644 "$asset_tmp" "$xray_asset_dir/$asset"
+    else
+      echo "Warning: could not download $asset" >&2
+    fi
+    rm -f "$asset_tmp"
+  fi
+done
+
+user_unit="$HOME/.config/systemd/user/xray.service"
+if [ -f "$user_unit" ]; then
+  systemctl --user disable --now xray >/dev/null 2>&1 || true
+  rm -f "$user_unit"
+  systemctl --user daemon-reload >/dev/null 2>&1 || true
+fi
+
+tproxy_line=""
+{{- if and (hasKey . "xrayTProxy") .xrayTProxy }}
+tproxy_dir="/usr/local/etc/xray"
+sudo mkdir -p "$tproxy_dir"
+
+tproxy_tmp="$(mktemp)"
+cat >"$tproxy_tmp" <<'EOF'
+#!/bin/sh
+while ip rule del fwmark 1 table 100 2>/dev/null; do :; done
+ip rule add fwmark 1 table 100
+ip route flush table 100 2>/dev/null
+ip route add local 0.0.0.0/0 dev lo table 100
+
+iptables -t mangle -F XRAY 2>/dev/null
+iptables -t mangle -X XRAY 2>/dev/null
+iptables -t mangle -F XRAY_MASK 2>/dev/null
+iptables -t mangle -X XRAY_MASK 2>/dev/null
+
+lan_dev="$(ip route show default 2>/dev/null | awk '{for (i = 1; i < NF; i++) if ($i == "dev") {print $(i + 1); exit}}')"
+
+iptables -t mangle -N XRAY
+iptables -t mangle -A XRAY -d 127.0.0.0/8 -j RETURN
+iptables -t mangle -A XRAY -d 224.0.0.0/4 -j RETURN
+iptables -t mangle -A XRAY -d 255.255.255.255/32 -j RETURN
+if [ -n "$lan_dev" ]; then
+  for lan_subnet in $(ip -o -4 addr show dev "$lan_dev" scope global 2>/dev/null | awk '{print $4}'); do
+    iptables -t mangle -A XRAY -d "$lan_subnet" -j RETURN
+  done
+fi
+iptables -t mangle -A XRAY -p tcp --dport 53 -j RETURN
+iptables -t mangle -A XRAY -p udp --dport 53 -j RETURN
+iptables -t mangle -A XRAY -j RETURN -m mark --mark 0xff
+iptables -t mangle -A XRAY -p tcp -j TPROXY --on-ip 127.0.0.1 --on-port 10800 --tproxy-mark 1
+iptables -t mangle -A XRAY -p udp -j TPROXY --on-ip 127.0.0.1 --on-port 10800 --tproxy-mark 1
+iptables -t mangle -C PREROUTING -j XRAY 2>/dev/null || iptables -t mangle -A PREROUTING -j XRAY
+
+iptables -t mangle -N XRAY_MASK
+iptables -t mangle -A XRAY_MASK -d 127.0.0.0/8 -j RETURN
+iptables -t mangle -A XRAY_MASK -d 224.0.0.0/4 -j RETURN
+iptables -t mangle -A XRAY_MASK -d 255.255.255.255/32 -j RETURN
+if [ -n "$lan_dev" ]; then
+  for lan_subnet in $(ip -o -4 addr show dev "$lan_dev" scope global 2>/dev/null | awk '{print $4}'); do
+    iptables -t mangle -A XRAY_MASK -d "$lan_subnet" -j RETURN
+  done
+fi
+iptables -t mangle -A XRAY_MASK -p tcp --dport 53 -j RETURN
+iptables -t mangle -A XRAY_MASK -p udp --dport 53 -j RETURN
+iptables -t mangle -A XRAY_MASK -j RETURN -m mark --mark 0xff
+iptables -t mangle -A XRAY_MASK -p tcp -j MARK --set-mark 1
+iptables -t mangle -A XRAY_MASK -p udp -j MARK --set-mark 1
+iptables -t mangle -C OUTPUT -j XRAY_MASK 2>/dev/null || iptables -t mangle -A OUTPUT -j XRAY_MASK
+EOF
+sudo install -m 0755 "$tproxy_tmp" "$tproxy_dir/tproxy.sh"
+rm -f "$tproxy_tmp"
+
+tproxy_line="ExecStartPre=$tproxy_dir/tproxy.sh"
+{{- end }}
+
+service_tmp="$(mktemp)"
+cat >"$service_tmp" <<EOF
+[Unit]
+Description=Xray Service
+After=network.target nss-lookup.target
+
+[Service]
+User=root
+${tproxy_line}
+ExecStart=$xray_bin run -c $xray_config
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo install -m 0644 "$service_tmp" /etc/systemd/system/xray.service
+rm -f "$service_tmp"
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now xray
