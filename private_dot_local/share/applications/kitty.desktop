@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=kitty
+GenericName=Terminal
+Comment=Fast, feature-rich, GPU based terminal
+Exec=kitty
+Icon=kitty
+Terminal=false
+Categories=System;TerminalEmulator;
+StartupWMClass=kitty
