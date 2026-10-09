@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Lutris
+Comment=Video Game Preservation Platform
+Exec=/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games lutris %U
+Icon=net.lutris.Lutris
+Terminal=false
+StartupNotify=true
+StartupWMClass=net.lutris.Lutris
+Categories=Game;PackageManager;
+MimeType=x-scheme-handler/lutris;application/x-lutris;
+X-GNOME-UsesNotifications=true

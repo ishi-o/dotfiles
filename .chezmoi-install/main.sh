@@ -46,6 +46,9 @@ category_enabled() {
     input)
       [ "$install_input" = "true" ]
       ;;
+    gaming)
+      [ "$install_gaming" = "true" ]
+      ;;
     *)
       return 2
       ;;
@@ -63,6 +66,7 @@ install_utilities="${DOTS_INSTALL_UTILITIES:-true}"
 install_operations="${DOTS_INSTALL_OPERATIONS:-true}"
 install_terminal="${DOTS_INSTALL_TERMINAL:-true}"
 install_input="${DOTS_INSTALL_INPUT:-false}"
+install_gaming="${DOTS_INSTALL_GAMING:-true}"
 
 shopt -s nullglob
 packages=("$SCRIPT_DIR/packages/posix/"*.sh)
@@ -112,10 +116,13 @@ else
       9[0-9]-*)
         pkg_category=input
         ;;
+      g[0-9]-*)
+        pkg_category=gaming
+        ;;
     esac
 
     case "$pkg_category" in
-      shell | build | runtimes | editor | ai | utilities | operations | terminal | input)
+      shell | build | runtimes | editor | ai | utilities | operations | terminal | input | gaming)
         if ! category_enabled "$pkg_category"; then
           echo "==> Skipping $pkg_basename"
           continue
@@ -129,34 +136,43 @@ else
   done
 fi
 
-echo ""
-echo "==> Generating shell completions"
+install_completions="${DOTS_INSTALL_COMPLETIONS:-true}"
 
-shopt -s nullglob
-completion_scripts=("$SCRIPT_DIR/completions/posix/"*.sh)
-shopt -u nullglob
-
-if [ ${#completion_scripts[@]} -eq 0 ]; then
-  echo "No completion generators found in $SCRIPT_DIR/completions/"
+if [ "$install_completions" != "true" ]; then
+  echo ""
+  echo "==> Skipping shell completions"
 else
-  sorted_completion_scripts=()
-  while IFS= read -r -d '' file; do
-    sorted_completion_scripts+=("$file")
-  done < <(printf '%s\0' "${completion_scripts[@]}" | sort -z)
+  echo ""
+  echo "==> Generating shell completions"
 
-  echo "==> Found ${#sorted_completion_scripts[@]} completion generators"
+  shopt -s nullglob
+  completion_scripts=("$SCRIPT_DIR/completions/posix/"*.sh)
+  shopt -u nullglob
 
-  for completion_script in "${sorted_completion_scripts[@]}"; do
-    completion_basename=$(basename "$completion_script" .sh)
-    echo "==> Processing completion: $completion_basename"
+  if [ ${#completion_scripts[@]} -eq 0 ]; then
+    echo "No completion generators found in $SCRIPT_DIR/completions/"
+  else
+    sorted_completion_scripts=()
+    while IFS= read -r -d '' file; do
+      sorted_completion_scripts+=("$file")
+    done < <(printf '%s\0' "${completion_scripts[@]}" | sort -z)
 
-    if ! (
-      set +e
-      source "$completion_script"
-    ); then
-      echo "Warning: Completion generator failed: $completion_basename" >&2
-    fi
-  done
+    echo "==> Found ${#sorted_completion_scripts[@]} completion generators"
+
+    for completion_script in "${sorted_completion_scripts[@]}"; do
+      completion_basename=$(basename "$completion_script" .sh)
+      echo "==> Processing completion: $completion_basename"
+
+      if ! (
+        set +e
+        source "$completion_script"
+      ); then
+        echo "Warning: Completion generator failed: $completion_basename" >&2
+      fi
+    done
+
+    rm -f "${ZDOTDIR:-$HOME}"/.zcompdump*
+  fi
 fi
 
 echo ""
