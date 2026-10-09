@@ -16,7 +16,7 @@ library_pattern() {
 }
 
 check_installed() {
-  local item="$1"
+  local item="$1" brew_package
 
   command -v "$item" >/dev/null 2>&1 && return 0
 
@@ -30,6 +30,10 @@ check_installed() {
   apt)
     dpkg -s "$item" >/dev/null 2>&1 && return 0
     ;;
+  brew)
+    brew_package="$(brew_package_name "$item")"
+    [ -n "$brew_package" ] && brew list "$brew_package" >/dev/null 2>&1 && return 0
+    ;;
   esac
 
   local lib_pattern
@@ -41,7 +45,9 @@ check_installed() {
     ls /usr/lib/lib${lib_pattern}* >/dev/null 2>&1 ||
     ls /usr/lib64/lib${lib_pattern}* >/dev/null 2>&1 ||
     ls /usr/local/lib/lib${lib_pattern}* >/dev/null 2>&1 ||
-    ls /usr/local/lib64/lib${lib_pattern}* >/dev/null 2>&1
+    ls /usr/local/lib64/lib${lib_pattern}* >/dev/null 2>&1 ||
+    ls /opt/homebrew/opt/*/lib/lib${lib_pattern}* >/dev/null 2>&1 ||
+    ls /opt/homebrew/lib/lib${lib_pattern}* >/dev/null 2>&1
 }
 
 curl_download() {
@@ -69,7 +75,7 @@ pacman_package_name() {
   libssl-dev) echo "openssl" ;;
   libevent-dev) echo "libevent" ;;
   libncurses-dev) echo "ncurses" ;;
-  libutf8proc-dev) echo "utf8proc" ;;
+  libutf8proc-dev) echo "libutf8proc" ;;
   libgpg-error-dev) echo "libgpg-error" ;;
   libgcrypt20-dev) echo "libgcrypt" ;;
   libassuan-dev) echo "libassuan" ;;
@@ -104,6 +110,46 @@ install_via_pacman() {
 
   echo "Installing via pacman: ${packages[*]}"
   sudo pacman -S "${sync_flags[@]}" --needed --noconfirm "${packages[@]}"
+}
+
+brew_package_name() {
+  case "$1" in
+  build-essential) echo "" ;;
+  libssl-dev) echo "openssl@3" ;;
+  libevent-dev) echo "libevent" ;;
+  libncurses-dev) echo "ncurses" ;;
+  libutf8proc-dev) echo "utf8proc" ;;
+  libgpg-error-dev) echo "libgpg-error" ;;
+  libgcrypt20-dev) echo "libgcrypt" ;;
+  libassuan-dev) echo "libassuan" ;;
+  libksba-dev) echo "libksba" ;;
+  libnpth0-dev) echo "npth" ;;
+  fd-find) echo "fd" ;;
+  sqlite3) echo "sqlite" ;;
+  breeze-cursor-theme) echo "" ;;
+  fcitx5 | fcitx5-chinese-addons | fcitx5-rime | librime | wl-clipboard | xclip | xray) echo "" ;;
+  *) echo "$1" ;;
+  esac
+}
+
+install_via_brew() {
+  if [ "$pkg_manager" != "brew" ]; then
+    return 1
+  fi
+
+  local package
+  local packages=()
+  for package in "$@"; do
+    package="$(brew_package_name "$package")"
+    [ -n "$package" ] && packages+=("$package")
+  done
+
+  if [ ${#packages[@]} -eq 0 ]; then
+    return 1
+  fi
+
+  echo "Installing via brew: ${packages[*]}"
+  brew install "${packages[@]}"
 }
 
 dnf_package_name() {
@@ -153,6 +199,10 @@ try_package_manager() {
   fi
   if [ "$pkg_manager" = "pacman" ] && [ "$has_sudo" = "true" ]; then
     install_via_pacman "$@"
+    return $?
+  fi
+  if [ "$pkg_manager" = "brew" ]; then
+    install_via_brew "$@"
     return $?
   fi
   return 1
