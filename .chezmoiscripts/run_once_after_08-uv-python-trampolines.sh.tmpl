@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+shopt -s nullglob
+for trampoline in "$HOME/.local/bin"/python "$HOME/.local/bin"/python3 "$HOME/.local/bin"/python3.*; do
+  if [ -L "$trampoline" ]; then
+    case "$(readlink "$trampoline")" in
+    */uv/python/*) rm -f "$trampoline" ;;
+    esac
+  elif [ -f "$trampoline" ] && head -c 256 "$trampoline" | grep -q "uv run --no-project"; then
+    rm -f "$trampoline"
+  fi
+done
+shopt -u nullglob

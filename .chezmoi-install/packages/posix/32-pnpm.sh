@@ -22,6 +22,11 @@ install_pnpm() {
     return 1
   fi
 
+  local managed_node="$PNPM_HOME/bin/node"
+  if [ -x "$managed_node" ] && "$managed_node" -v 2>/dev/null | grep -q "^v${node_version}"; then
+    return 0
+  fi
+
   echo "Setting node ${node_version} as the pnpm runtime..."
   pnpm runtime set node "$node_version" -g
 

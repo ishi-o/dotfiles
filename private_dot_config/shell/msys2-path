@@ -15,12 +15,10 @@ MSYS_NT*|MINGW*_NT*)
         fi
 
         msys2_uv_cache="$msys2_scoop_root/persist/uv/cache"
-        msys2_uv_python_bin="$msys2_scoop_root/persist/uv/python/shims"
         msys2_uv_python_install="$msys2_scoop_root/persist/uv/python/versions"
         msys2_uv_tool_bin="$msys2_scoop_root/persist/uv/tools/shims"
         msys2_uv_tool_install="$msys2_scoop_root/persist/uv/tools/versions"
         export UV_CACHE_DIR="$(cygpath -w "$msys2_uv_cache")"
-        export UV_PYTHON_BIN_DIR="$(cygpath -w "$msys2_uv_python_bin")"
         export UV_PYTHON_INSTALL_DIR="$(cygpath -w "$msys2_uv_python_install")"
         export UV_TOOL_BIN_DIR="$(cygpath -w "$msys2_uv_tool_bin")"
         export UV_TOOL_DIR="$(cygpath -w "$msys2_uv_tool_install")"
@@ -41,7 +39,6 @@ MSYS_NT*|MINGW*_NT*)
             "$msys2_scoop_root/shims" \
             "$msys2_scoop_root/apps/mingw/current/bin" \
             "$msys2_scoop_root/apps/rustup-msvc/current/.cargo/bin" \
-            "$msys2_uv_python_bin" \
             "$msys2_uv_tool_bin" \
             "$msys2_user_profile/.local/share/mise/shims" \
             "$msys2_local_apps/Neovim/bin" \
@@ -70,7 +67,7 @@ MSYS_NT*|MINGW*_NT*)
         unset msys2_ai_command
 
         export PATH MSYS2_EXTERNAL_PATHS_DONE=1
-        unset msys2_user_profile msys2_local_apps msys2_program_files msys2_scoop_root msys2_pnpm_home msys2_cargo_home msys2_rustup_home msys2_uv_cache msys2_uv_python_bin msys2_uv_python_install msys2_uv_tool_bin msys2_uv_tool_install msys2_path
+        unset msys2_user_profile msys2_local_apps msys2_program_files msys2_scoop_root msys2_pnpm_home msys2_cargo_home msys2_rustup_home msys2_uv_cache msys2_uv_python_install msys2_uv_tool_bin msys2_uv_tool_install msys2_path
     fi
     ;;
 esac

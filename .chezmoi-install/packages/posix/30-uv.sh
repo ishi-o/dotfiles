@@ -32,29 +32,6 @@ install_uv() {
     echo "Warning: uv installed but not found in PATH" >&2
     return 0
   fi
-
-  local py_versions=("3.14" "3.13")
-  for ver in "${py_versions[@]}"; do
-    if ! check_installed "python${ver}"; then
-      echo "Installing Python ${ver} via uv..."
-      uv python install "${ver}"
-    fi
-  done
-
-  local python_shim="$HOME/.local/bin/python"
-  local python3_shim="$HOME/.local/bin/python3"
-  if [ ! -e "$python_shim" ]; then
-    cat > "$python_shim" << 'SHIM'
-exec uv run --no-project python "$@"
-SHIM
-    chmod +x "$python_shim"
-  fi
-  if [ ! -e "$python3_shim" ]; then
-    cat > "$python3_shim" << 'SHIM'
-exec uv run --no-project python3 "$@"
-SHIM
-    chmod +x "$python3_shim"
-  fi
 }
 
 install_uv

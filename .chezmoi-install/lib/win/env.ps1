@@ -50,7 +50,6 @@ $toolDirectories = [ordered]@{
 if (Test-Path -LiteralPath $scoopRoot -PathType Container) {
     $scoopToolDirectories = [ordered]@{
         UV_CACHE_DIR      = Join-Path $scoopRoot "persist\uv\cache"
-        UV_PYTHON_BIN_DIR = Join-Path $scoopRoot "persist\uv\python\shims"
         UV_PYTHON_INSTALL_DIR = Join-Path $scoopRoot "persist\uv\python\versions"
         UV_TOOL_BIN_DIR   = Join-Path $scoopRoot "persist\uv\tools\shims"
         UV_TOOL_DIR       = Join-Path $scoopRoot "persist\uv\tools\versions"
@@ -67,8 +66,8 @@ foreach ($entry in $toolDirectories.GetEnumerator()) {
     Set-UserEnvironmentVariable -Name $entry.Key -Value $entry.Value
 }
 
-if ($toolDirectories.Contains("UV_PYTHON_BIN_DIR")) {
-    $env:Path = "$($toolDirectories["UV_PYTHON_BIN_DIR"]);$($toolDirectories["UV_TOOL_BIN_DIR"]);$env:Path"
+if ($toolDirectories.Contains("UV_TOOL_BIN_DIR")) {
+    $env:Path = "$($toolDirectories["UV_TOOL_BIN_DIR"]);$env:Path"
 }
 
 $env:Path = "$(Join-Path $toolDirectories["PNPM_HOME"] "bin");$($toolDirectories["PNPM_HOME"]);$env:Path"

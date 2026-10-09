@@ -42,7 +42,6 @@ $env:NPM_CONFIG_CACHE = Join-Path $env:XDG_CACHE_HOME "npm"
 $env:CARGO_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.cargo"
 $env:RUSTUP_HOME = Join-Path $scoopRoot "persist\rustup-msvc\.rustup"
 $env:UV_CACHE_DIR = Join-Path $scoopRoot "persist\uv\cache"
-$env:UV_PYTHON_BIN_DIR = Join-Path $scoopRoot "persist\uv\python\shims"
 $env:UV_PYTHON_INSTALL_DIR = Join-Path $scoopRoot "persist\uv\python\versions"
 $env:UV_TOOL_BIN_DIR = Join-Path $scoopRoot "persist\uv\tools\shims"
 $env:UV_TOOL_DIR = Join-Path $scoopRoot "persist\uv\tools\versions"
@@ -50,7 +49,6 @@ $env:Path = @(
     $env:PNPM_HOME,
     (Join-Path $env:PNPM_HOME "bin"),
     (Join-Path $env:CARGO_HOME "bin"),
-    $env:UV_PYTHON_BIN_DIR,
     $env:UV_TOOL_BIN_DIR,
     $env:Path
 ) -join [IO.Path]::PathSeparator
@@ -423,6 +421,10 @@ if (Get-Command kubectl -ErrorAction SilentlyContinue) {
 
 if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
     chezmoi completion powershell | Out-String | Invoke-Expression
+}
+
+if (Get-Command cc-switch -ErrorAction SilentlyContinue) {
+    cc-switch completions powershell | Out-String | Invoke-Expression
 }
 
 if (Get-Command codex -ErrorAction SilentlyContinue) {
