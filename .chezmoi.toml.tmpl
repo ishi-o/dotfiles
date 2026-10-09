@@ -1,9 +1,3 @@
-encryption = "age"
-
-[age]
-  recipient = "age1lqfj2wt2376ephe4r4a0qas5nlq5hgtj5j7dzd926ukk346k5paqd9vvu5"
-  identity = "~/.age/key.txt"
-
 [edit]
   command = "vi"
   args = []
@@ -27,17 +21,26 @@ encryption = "age"
 {{- $installUtilities := promptBoolOnce . "installUtilities" "Install utility packages" true -}}
 {{- $installOperations := promptBoolOnce . "installOperations" "Install operation packages" true -}}
 {{- $installTerminal := promptBoolOnce . "installTerminal" "Install terminal packages" true -}}
+{{- $installCompletions := promptBoolOnce . "installCompletions" "Install shell completions" true -}}
 {{- $installFonts := promptBoolOnce . "installFonts" "Install fonts" true -}}
+{{- $fontSize := promptIntOnce . "fontSize" "Font size for terminals and input method" 16 -}}
+{{- $transparency := promptStringOnce . "transparency" "Terminal transparency (0.0-1.0)" "0.8" -}}
 {{- $installInput := false -}}
 {{- if eq .chezmoi.os "linux" -}}
-{{-   if hasKey .chezmoi.kernel "osrelease" -}}
-{{-     if contains "microsoft" (.chezmoi.kernel.osrelease | lower) -}}
-{{-       $installInput = promptBoolOnce . "installInput" "Install input packages" true -}}
-{{-     end -}}
-{{-   end -}}
+{{-   $installInput = promptBoolOnce . "installInput" "Install input packages" true -}}
+{{- end -}}
+{{- $installGaming := false -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   $installGaming = promptBoolOnce . "installGaming" "Install gaming packages" true -}}
+{{- end -}}
+{{- $xrayTProxy := false -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   $xrayTProxy = promptBoolOnce . "xrayTProxy" "Enable Xray transparent proxy" false -}}
 {{- end -}}
 
 [data]
+fontSize = {{ $fontSize }}
+transparency = {{ $transparency | quote }}
 systemType = {{ $systemType | quote }}
 systemRelease = {{ $systemRelease | quote }}
 installShell = {{ $installShell }}
@@ -48,5 +51,8 @@ installAi = {{ $installAi }}
 installUtilities = {{ $installUtilities }}
 installOperations = {{ $installOperations }}
 installTerminal = {{ $installTerminal }}
+installCompletions = {{ $installCompletions }}
 installFonts = {{ $installFonts }}
 installInput = {{ $installInput }}
+installGaming = {{ $installGaming }}
+xrayTProxy = {{ $xrayTProxy }}
