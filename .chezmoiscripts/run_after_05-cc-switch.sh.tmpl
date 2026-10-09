@@ -1,9 +1,8 @@
-{{ if ne .chezmoi.os "windows" -}}
 #!/usr/bin/env bash
 
 set -euo pipefail
 
-export CC_SWITCH_CONFIG_DIR="${CC_SWITCH_CONFIG_DIR:-$HOME/.config/cc-switch}"
+export CC_SWITCH_CONFIG_DIR="$HOME/.config/cc-switch"
 
 if [ -r "$HOME/.config/env" ]; then
   . "$HOME/.config/env"
@@ -130,4 +129,3 @@ fi
 if [ -n "$codex_provider" ]; then
   switch_provider codex "$codex_provider"
 fi
-{{- end }}
