@@ -54,51 +54,34 @@ if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] || ! dbus-send --session --dest=org.fr
 	fi
 fi
 
-fcitx5_enabled=false
 fcitx5_is_wsl=false
 case "$(uname -r 2>/dev/null)" in
 *microsoft*|*Microsoft*|*WSL*) fcitx5_is_wsl=true ;;
 esac
 [ -n "${WSL_DISTRO_NAME:-}" ] && fcitx5_is_wsl=true
 
-if command -v fcitx5 >/dev/null 2>&1 &&
+if [ "$fcitx5_is_wsl" = true ] && [ -d /mnt/wslg ] &&
+	command -v fcitx5 >/dev/null 2>&1 &&
 	{ [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; }; then
-	if [ "$fcitx5_is_wsl" = false ] || [ -d /mnt/wslg ]; then
-		fcitx5_enabled=true
-	fi
-fi
-
-if [ "$fcitx5_enabled" = true ]; then
-	if [ "$fcitx5_is_wsl" = true ] && [ -d /mnt/wslg ]; then
-		export GTK_IM_MODULE=fcitx
-		export QT_IM_MODULE=fcitx
-		export SDL_IM_MODULE=fcitx
-		export XMODIFIERS=@im=fcitx
-	elif [ -z "${WAYLAND_DISPLAY:-}" ] && [ -n "${DISPLAY:-}" ]; then
-		export XMODIFIERS=@im=fcitx
-
-	fi
+	export XMODIFIERS=@im=fcitx
+	export GTK_IM_MODULE=fcitx
+	export QT_IM_MODULE=fcitx
+	export SDL_IM_MODULE=fcitx
 	fcitx5_pid="$(pgrep -xo fcitx5 2>/dev/null)"
 	fcitx5_needs_start=true
 	if [ -n "$fcitx5_pid" ]; then
 		fcitx5_needs_start=false
-		if [ "$fcitx5_is_wsl" = true ] && [ -d /mnt/wslg ]; then
-			fcitx5_args="$(ps -o args= -p "$fcitx5_pid" 2>/dev/null)"
-			case "$fcitx5_args" in
-			*"--disable=wayland"*) ;;
-			*) fcitx5_needs_start=true ;;
-			esac
-		fi
+		fcitx5_args="$(ps -o args= -p "$fcitx5_pid" 2>/dev/null)"
+		case "$fcitx5_args" in
+		*"--disable=wayland"*) ;;
+		*) fcitx5_needs_start=true ;;
+		esac
 	fi
 	if [ "$fcitx5_needs_start" = true ]; then
-		if [ "$fcitx5_is_wsl" = true ] && [ -d /mnt/wslg ]; then
-			nohup fcitx5 --disable=wayland --replace -d >/dev/null 2>&1 &
-		else
-			nohup fcitx5 -d >/dev/null 2>&1 &
-		fi
+		nohup fcitx5 --disable=wayland --replace -d >/dev/null 2>&1 &
 	fi
 fi
-unset fcitx5_enabled fcitx5_is_wsl fcitx5_pid fcitx5_args fcitx5_needs_start
+unset fcitx5_is_wsl fcitx5_pid fcitx5_args fcitx5_needs_start
 
 if [ -z "${ZSH_VERSION:-}" ] && [ -x /usr/bin/zsh ] && [[ "$(uname -s)" == MSYS_NT* ]]; then
 	exec /usr/bin/zsh

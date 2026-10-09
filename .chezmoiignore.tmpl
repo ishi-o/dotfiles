@@ -20,11 +20,15 @@ PSScriptAnalyzerSettings.psd1
 **/*.vbs
 .wslconfig
 AppData/
-scoop/
 {{ end }}
 
 {{- if ne .chezmoi.os "linux" }}
 .config/fcitx5
+.config/environment.d
+.local/share/applications
+.local/share/fcitx5
+.local/share/icons
+.chezmoiscripts/run_after_08-xray.sh.tmpl
 {{- end }}
 
 .config/claude/settings.json

@@ -1,0 +1,20 @@
+patch:
+  switches:
+    - name: traditionalization
+      states: [ 简体, 繁体 ]
+    - name: full_shape
+      states: [ 半角, 全角 ]
+    - name: ascii_punct
+      states: [ 。，, ．， ]
+    - name: emoji
+      states: [ 💀, 😄 ]
+    - name: chinese_english
+      states: [ 翻译关, 翻译开 ]
+    - name: mars
+      reset: 0
+      states: [ 地, 煋 ]
+    - name: chaifen
+      states: [ 拆分不提示, 拆分提示 ]
+    - name: pin_cand
+      reset: 1
+      states: [ 固顶关, 固顶开 ]
