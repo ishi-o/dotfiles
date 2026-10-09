@@ -7,7 +7,7 @@
 
 # Tools preferences
 
-- Never use Homebrew. If software needs to be installed, ask the user to install it.
+- Do not install anything; ask the user to install what you need.
 - Prefer `jq`, `yq`, and other common command-line tools over ad-hoc Python scripts when they are sufficient.
 
 # Git skills
