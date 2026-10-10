@@ -8,10 +8,5 @@
 # Tools preferences
 
 - Do not install anything; ask the user to install what you need.
-- Prefer `jq`, `yq`, and other common command-line tools over ad-hoc Python scripts when they are sufficient.
-
-# Git skills
-
-- Use `/commit` for a local commit when the user explicitly requests one.
-- Use `/commit-push` when the user explicitly requests a commit and push.
-- Use `/commit-push-pr` when the user explicitly requests the complete commit, push, and pull-request workflow.
+- Prefer `fd`, `rg`, `jq`, `yq`, and other common command-line tools over ad-hoc Python scripts when they are sufficient.
+- Use the context7 plugin for library and framework documentation instead of fetching web pages.
