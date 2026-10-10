@@ -89,7 +89,7 @@ function Get-ProxyScript {
 
 function Find-Installer {
     param([string]$Target)
-    $dir = Join-Path (Get-SourceDir) ".chezmoi-install\packages\win"
+    $dir = Join-Path (Get-SourceDir) "installers\packages\win"
     Get-ChildItem -LiteralPath $dir -Filter "*-${Target}.ps1" -File |
         Select-Object -First 1 -ExpandProperty FullName
 }
@@ -101,7 +101,7 @@ function Invoke-MSYS2Installer {
         [string[]]$Packages
     )
 
-    $installer = Join-Path (Get-SourceDir) ".chezmoi-install\packages\win\00-msys2.ps1"
+    $installer = Join-Path (Get-SourceDir) "installers\packages\win\00-msys2.ps1"
     if (-not (Test-Path -LiteralPath $installer -PathType Leaf)) {
         throw "MSYS2 installer not found"
     }
@@ -113,11 +113,11 @@ function Install-Group {
     param([string]$Group)
 
     if ($Group -eq "all") {
-        Invoke-Installer (Join-Path (Get-SourceDir) ".chezmoi-install\main.ps1")
+        Invoke-Installer (Join-Path (Get-SourceDir) "installers\main.ps1")
         return
     }
 
-    $dir = Join-Path (Get-SourceDir) ".chezmoi-install\packages\win"
+    $dir = Join-Path (Get-SourceDir) "installers\packages\win"
     . (Join-Path $dir "..\..\lib\win\helpers.ps1")
     $msys2Packages = @()
     $prefixPatterns = @{
@@ -309,7 +309,7 @@ switch ($command) {
                 Install-Group $target
             }
             default {
-                . (Join-Path (Get-SourceDir) ".chezmoi-install\lib\win\helpers.ps1")
+                . (Join-Path (Get-SourceDir) "installers\lib\win\helpers.ps1")
                 if ($target -eq "msys2") {
                     Write-Host "==> Installing MSYS2 packages: zsh"
                     Invoke-MSYS2Installer -Packages @("zsh")

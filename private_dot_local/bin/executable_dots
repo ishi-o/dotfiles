@@ -41,7 +41,7 @@ EOF
 
 run_installer() {
   local init_script
-  init_script="$(source_dir)/.chezmoi-install/packages/posix/00-init.sh"
+  init_script="$(source_dir)/installers/packages/posix/00-init.sh"
   if [ -f "$init_script" ]; then
     bash -c 'source "$1"; source "$2"' bash "$init_script" "$1"
   else
@@ -113,14 +113,14 @@ load_proxy_environment() {
 find_installer() {
   local target="$1"
   local package_dir
-  package_dir="$(source_dir)/.chezmoi-install/packages/posix"
+  package_dir="$(source_dir)/installers/packages/posix"
   find "$package_dir" -maxdepth 1 -type f -name "*-${target}.sh" -print -quit
 }
 
 install_group() {
   local group="$1"
   local package_dir
-  package_dir="$(source_dir)/.chezmoi-install/packages/posix"
+  package_dir="$(source_dir)/installers/packages/posix"
   local packages=()
   local prefixes=()
 
@@ -153,7 +153,7 @@ install_group() {
       prefixes=(9?)
       ;;
     all)
-      run_installer "$(source_dir)/.chezmoi-install/main.sh"
+      run_installer "$(source_dir)/installers/main.sh"
       return
       ;;
     *)

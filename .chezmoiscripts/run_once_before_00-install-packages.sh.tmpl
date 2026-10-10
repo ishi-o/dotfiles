@@ -26,4 +26,4 @@ if command -v sudo >/dev/null 2>&1 && ! sudo -n true >/dev/null 2>&1; then
   exit 0
 fi
 {{- end }}
-exec "{{ .chezmoi.sourceDir }}/.chezmoi-install/main.sh" "$@"
+exec "{{ .chezmoi.sourceDir }}/installers/main.sh" "$@"

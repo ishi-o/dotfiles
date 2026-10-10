@@ -7,11 +7,12 @@ _run_fzf_picker() {
   echo "hidden" > "$state_file"
   local status
   {
-    fzf --layout=reverse --info='inline: | ' --pointer=' ' --scrollbar='' "$@" \
+    fzf --layout=reverse --info='inline: | ' --pointer=' ' --scrollbar='' \
+      --bind='ctrl-j:down,ctrl-k:up' \
+      "$@" \
       --bind="ctrl-p:toggle-preview+transform([[ \$(cat $state_file) = hidden ]] && echo visible > $state_file || echo hidden > $state_file)" \
       --bind="ctrl-u:transform([[ \$(cat $state_file) = visible ]] && echo preview-half-page-up || echo half-page-up)" \
-      --bind="ctrl-d:transform([[ \$(cat $state_file) = visible ]] && echo preview-half-page-down || echo half-page-down)" \
-      --bind='alt-j:down,alt-k:up'
+      --bind="ctrl-d:transform([[ \$(cat $state_file) = visible ]] && echo preview-half-page-down || echo half-page-down)"
     status=$?
   } always {
     rm -f "$state_file"

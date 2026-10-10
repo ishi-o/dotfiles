@@ -67,10 +67,10 @@ map --when-focus-on var:IS_NVIM alt+k
 map --when-focus-on var:IS_NVIM alt+h
 map --when-focus-on var:IS_NVIM alt+l
 
-map --when-focus-on var:ZSH_SELECTOR_MODE=1 alt+j send_text normal,application \x1bj
-map --when-focus-on var:ZSH_SELECTOR_MODE=1 alt+k send_text normal,application \x1bk
-map --when-focus-on var:ZSH_SELECTOR_MODE=2 alt+j
-map --when-focus-on var:ZSH_SELECTOR_MODE=2 alt+k
+map --when-focus-on var:ZSH_SELECTOR_MODE=1 ctrl+j send_text normal,application \x0a
+map --when-focus-on var:ZSH_SELECTOR_MODE=1 ctrl+k send_text normal,application \x0b
+map --when-focus-on var:ZSH_SELECTOR_MODE=2 ctrl+j
+map --when-focus-on var:ZSH_SELECTOR_MODE=2 ctrl+k
 
 map ctrl+\ launch --location=vsplit --cwd=current
 map ctrl+- launch --location=hsplit --cwd=current

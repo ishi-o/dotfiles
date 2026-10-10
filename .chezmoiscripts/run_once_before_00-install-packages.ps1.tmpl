@@ -10,5 +10,5 @@ $env:DOTS_INSTALL_UTILITIES = '{{ if hasKey . "installUtilities" }}{{ .installUt
 $env:DOTS_INSTALL_OPERATIONS = '{{ if hasKey . "installOperations" }}{{ .installOperations }}{{ else }}true{{ end }}'
 $env:DOTS_INSTALL_TERMINAL = '{{ if hasKey . "installTerminal" }}{{ .installTerminal }}{{ else }}true{{ end }}'
 
-& "{{ .chezmoi.sourceDir }}/.chezmoi-install/main.ps1"
+& "{{ .chezmoi.sourceDir }}/installers/main.ps1"
 {{- end }}

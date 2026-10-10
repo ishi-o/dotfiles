@@ -2,8 +2,8 @@
 
 ## Features
 
-- POSIX installers: `.chezmoi-install/packages/posix/*.sh`
-- Windows installers: `.chezmoi-install/packages/win/*.ps1`
+- POSIX installers: `installers/packages/posix/*.sh`
+- Windows installers: `installers/packages/win/*.ps1`
 - Platform selection with `.chezmoi.os`
 - Linux release selection with `.chezmoi.osRelease.id`
 - POSIX package managers: `apt`, `dnf`, `pacman`, and Homebrew on macOS

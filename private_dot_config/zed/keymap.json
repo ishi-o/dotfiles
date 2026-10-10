@@ -118,13 +118,13 @@
   {
     "context": "Editor && (showing_code_actions || showing_completions)",
     "bindings": {
-      "alt-k": "editor::ContextMenuPrevious",
+      "ctrl-k": "editor::ContextMenuPrevious",
     },
   },
   {
     "context": "Editor && (showing_code_actions || showing_completions)",
     "bindings": {
-      "alt-j": "editor::ContextMenuNext",
+      "ctrl-j": "editor::ContextMenuNext",
     },
   },
   {
@@ -142,23 +142,23 @@
   {
     "context": "Picker > Editor",
     "bindings": {
-      "alt-j": "menu::SelectNext",
+      "ctrl-j": "menu::SelectNext",
     },
   },
   {
     "bindings": {
-      "alt-j": "menu::SelectNext",
+      "ctrl-j": "menu::SelectNext",
     },
   },
   {
     "context": "Picker > Editor",
     "bindings": {
-      "alt-k": "menu::SelectPrevious",
+      "ctrl-k": "menu::SelectPrevious",
     },
   },
   {
     "bindings": {
-      "alt-k": "menu::SelectPrevious",
+      "ctrl-k": "menu::SelectPrevious",
     },
   },
 ]
