@@ -4,3 +4,10 @@ patch:
   'menu/page_size': 5
   ascii_composer/switch_key/Shift_L: noop
   ascii_composer/switch_key/Shift_R: noop
+  'key_binder/bindings/+':
+    - {accept: Tab, send: Page_Down, when: has_menu}
+    - {accept: "Shift+Tab", send: Page_Up, when: has_menu}
+    - {accept: bracketleft, send: Page_Up, when: has_menu}
+    - {accept: bracketright, send: Page_Down, when: has_menu}
+    - {accept: minus, send: Up, when: has_menu}
+    - {accept: equal, send: Down, when: has_menu}

@@ -18,6 +18,8 @@ listen_on unix:/tmp/kitty
 shell_integration enabled
 shell_integration no-cursor
 
+scrollback_pager nvim --clean --cmd 'set eventignore=FileType' +'nnoremap q ZQ' +'call nvim_open_term(0, {})' +'set nomodified nolist clipboard=unnamedplus undolevels=200' +'$' -
+
 clipboard_control write-clipboard write-primary read-clipboard read-primary
 
 font_family      family="Consolas"
@@ -57,10 +59,10 @@ map --when-focus-on var:IS_NVIM ctrl+k
 map --when-focus-on var:IS_NVIM ctrl+h
 map --when-focus-on var:IS_NVIM ctrl+l
 
-map alt+j kitten relative_resize.py down  3
-map alt+k kitten relative_resize.py up    3
-map alt+h kitten relative_resize.py left  3
-map alt+l kitten relative_resize.py right 3
+map alt+j kitten relative_resize.py down 2
+map alt+k kitten relative_resize.py up 2
+map alt+h kitten relative_resize.py left 2
+map alt+l kitten relative_resize.py right 2
 
 map --when-focus-on var:IS_NVIM alt+j
 map --when-focus-on var:IS_NVIM alt+k

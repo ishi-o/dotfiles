@@ -13,6 +13,11 @@ def handle_result(args, result, target_window_id, boss):
 
     direction = args[1]
 
+    try:
+        increment = int(args[2])
+    except (IndexError, ValueError):
+        increment = 1
+
     neighbors = boss.active_tab.current_layout.neighbors_for_window(
         window, boss.active_tab.windows
     )
@@ -26,47 +31,47 @@ def handle_result(args, result, target_window_id, boss):
     # has a neighbor on both sides
     if direction == "left" and (left_neighbors and right_neighbors):
         # boss.active_tab.set_active_window(left_neighbors[0])
-        boss.active_tab.resize_window("narrower", 1)
+        boss.active_tab.resize_window("narrower", increment)
         # boss.active_tab.set_active_window(current_window_id)
     # only has left neighbor
     elif direction == "left" and left_neighbors:
-        boss.active_tab.resize_window("wider", 1)
+        boss.active_tab.resize_window("wider", increment)
     # only has right neighbor
     elif direction == "left" and right_neighbors:
-        boss.active_tab.resize_window("narrower", 1)
+        boss.active_tab.resize_window("narrower", increment)
 
     # has a neighbor on both sides
     elif direction == "right" and (left_neighbors and right_neighbors):
         # boss.active_tab.set_active_window(left_neighbors[0])
-        boss.active_tab.resize_window("wider", 1)
+        boss.active_tab.resize_window("wider", increment)
         # boss.active_tab.set_active_window(current_window_id)
     # only has left neighbor
     elif direction == "right" and left_neighbors:
-        boss.active_tab.resize_window("narrower", 1)
+        boss.active_tab.resize_window("narrower", increment)
     # only has right neighbor
     elif direction == "right" and right_neighbors:
-        boss.active_tab.resize_window("wider", 1)
+        boss.active_tab.resize_window("wider", increment)
 
     # has a neighbor above and below
     elif direction == "up" and (top_neighbors and bottom_neighbors):
         # boss.active_tab.set_active_window(top_neighbors[0])
-        boss.active_tab.resize_window("shorter", 1)
+        boss.active_tab.resize_window("shorter", increment)
         # boss.active_tab.set_active_window(current_window_id)
     # only has top neighbor
     elif direction == "up" and top_neighbors:
-        boss.active_tab.resize_window("taller", 1)
+        boss.active_tab.resize_window("taller", increment)
     # only has bottom neighbor
     elif direction == "up" and bottom_neighbors:
-        boss.active_tab.resize_window("shorter", 1)
+        boss.active_tab.resize_window("shorter", increment)
 
     # has a neighbor above and below
     elif direction == "down" and (top_neighbors and bottom_neighbors):
         # boss.active_tab.set_active_window(top_neighbors[0])
-        boss.active_tab.resize_window("taller", 1)
+        boss.active_tab.resize_window("taller", increment)
         # boss.active_tab.set_active_window(current_window_id)
     # only has top neighbor
     elif direction == "down" and top_neighbors:
-        boss.active_tab.resize_window("shorter", 1)
+        boss.active_tab.resize_window("shorter", increment)
     # only has bottom neighbor
     elif direction == "down" and bottom_neighbors:
-        boss.active_tab.resize_window("taller", 1)
+        boss.active_tab.resize_window("taller", increment)
