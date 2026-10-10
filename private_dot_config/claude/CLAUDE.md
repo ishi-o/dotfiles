@@ -8,5 +8,5 @@
 # Tools preferences
 
 - Do not install anything; ask the user to install what you need.
-- Prefer `fd`, `rg`, `jq`, `yq`, and other common command-line tools over ad-hoc Python scripts when they are sufficient.
+- Prefer `jq`, `yq`, `xargs`, and other common command-line tools over ad-hoc Python scripts when they are sufficient.
 - Use the context7 plugin for library and framework documentation instead of fetching web pages.
