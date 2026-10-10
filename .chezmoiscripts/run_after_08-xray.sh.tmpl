@@ -65,61 +65,95 @@ sudo mkdir -p "$tproxy_dir"
 tproxy_tmp="$(mktemp)"
 cat >"$tproxy_tmp" <<'EOF'
 #!/bin/sh
-while ip rule del fwmark 1 table 100 2>/dev/null; do :; done
-ip rule add fwmark 1 table 100
-ip route flush table 100 2>/dev/null
-ip route add local 0.0.0.0/0 dev lo table 100
+tproxy_stop() {
+  while ip rule del fwmark 1 table 100 2>/dev/null; do :; done
+  ip route flush table 100 2>/dev/null
+  iptables -t mangle -D PREROUTING -j XRAY 2>/dev/null
+  iptables -t mangle -D OUTPUT -j XRAY_MASK 2>/dev/null
+  iptables -t mangle -F XRAY 2>/dev/null
+  iptables -t mangle -X XRAY 2>/dev/null
+  iptables -t mangle -F XRAY_MASK 2>/dev/null
+  iptables -t mangle -X XRAY_MASK 2>/dev/null
+}
 
-iptables -t mangle -F XRAY 2>/dev/null
-iptables -t mangle -X XRAY 2>/dev/null
-iptables -t mangle -F XRAY_MASK 2>/dev/null
-iptables -t mangle -X XRAY_MASK 2>/dev/null
+tproxy_start() {
+  ip rule add fwmark 1 table 100
+  ip route add local 0.0.0.0/0 dev lo table 100
 
-lan_dev="$(ip route show default 2>/dev/null | awk '{for (i = 1; i < NF; i++) if ($i == "dev") {print $(i + 1); exit}}')"
+  lan_dev="$(ip route show default 2>/dev/null | awk '{for (i = 1; i < NF; i++) if ($i == "dev") {print $(i + 1); exit}}')"
 
-iptables -t mangle -N XRAY
-iptables -t mangle -A XRAY -d 127.0.0.0/8 -j RETURN
-iptables -t mangle -A XRAY -d 224.0.0.0/4 -j RETURN
-iptables -t mangle -A XRAY -d 255.255.255.255/32 -j RETURN
-if [ -n "$lan_dev" ]; then
-  for lan_subnet in $(ip -o -4 addr show dev "$lan_dev" scope global 2>/dev/null | awk '{print $4}'); do
-    iptables -t mangle -A XRAY -d "$lan_subnet" -j RETURN
-  done
-fi
-iptables -t mangle -A XRAY -p tcp --dport 53 -j RETURN
-iptables -t mangle -A XRAY -p udp --dport 53 -j RETURN
-iptables -t mangle -A XRAY -j RETURN -m mark --mark 0xff
-iptables -t mangle -A XRAY -p tcp -j TPROXY --on-ip 127.0.0.1 --on-port 10800 --tproxy-mark 1
-iptables -t mangle -A XRAY -p udp -j TPROXY --on-ip 127.0.0.1 --on-port 10800 --tproxy-mark 1
-iptables -t mangle -C PREROUTING -j XRAY 2>/dev/null || iptables -t mangle -A PREROUTING -j XRAY
+  iptables -t mangle -N XRAY
+  iptables -t mangle -A XRAY -d 127.0.0.0/8 -j RETURN
+  iptables -t mangle -A XRAY -d 224.0.0.0/4 -j RETURN
+  iptables -t mangle -A XRAY -d 255.255.255.255/32 -j RETURN
+  if [ -n "$lan_dev" ]; then
+    for lan_subnet in $(ip -o -4 addr show dev "$lan_dev" scope global 2>/dev/null | awk '{print $4}'); do
+      iptables -t mangle -A XRAY -d "$lan_subnet" -j RETURN
+    done
+  fi
+  iptables -t mangle -A XRAY -p tcp --dport 53 -j RETURN
+  iptables -t mangle -A XRAY -p udp --dport 53 -j RETURN
+  iptables -t mangle -A XRAY -j RETURN -m mark --mark 0xff
+  iptables -t mangle -A XRAY -p tcp -j TPROXY --on-ip 127.0.0.1 --on-port 10800 --tproxy-mark 1
+  iptables -t mangle -A XRAY -p udp -j TPROXY --on-ip 127.0.0.1 --on-port 10800 --tproxy-mark 1
+  iptables -t mangle -A PREROUTING -j XRAY
 
-iptables -t mangle -N XRAY_MASK
-iptables -t mangle -A XRAY_MASK -d 127.0.0.0/8 -j RETURN
-iptables -t mangle -A XRAY_MASK -d 224.0.0.0/4 -j RETURN
-iptables -t mangle -A XRAY_MASK -d 255.255.255.255/32 -j RETURN
-if [ -n "$lan_dev" ]; then
-  for lan_subnet in $(ip -o -4 addr show dev "$lan_dev" scope global 2>/dev/null | awk '{print $4}'); do
-    iptables -t mangle -A XRAY_MASK -d "$lan_subnet" -j RETURN
-  done
-fi
-iptables -t mangle -A XRAY_MASK -p tcp --dport 53 -j RETURN
-iptables -t mangle -A XRAY_MASK -p udp --dport 53 -j RETURN
-iptables -t mangle -A XRAY_MASK -j RETURN -m mark --mark 0xff
-iptables -t mangle -A XRAY_MASK -p tcp -j MARK --set-mark 1
-iptables -t mangle -A XRAY_MASK -p udp -j MARK --set-mark 1
-iptables -t mangle -C OUTPUT -j XRAY_MASK 2>/dev/null || iptables -t mangle -A OUTPUT -j XRAY_MASK
+  iptables -t mangle -N XRAY_MASK
+  iptables -t mangle -A XRAY_MASK -d 127.0.0.0/8 -j RETURN
+  iptables -t mangle -A XRAY_MASK -d 224.0.0.0/4 -j RETURN
+  iptables -t mangle -A XRAY_MASK -d 255.255.255.255/32 -j RETURN
+  if [ -n "$lan_dev" ]; then
+    for lan_subnet in $(ip -o -4 addr show dev "$lan_dev" scope global 2>/dev/null | awk '{print $4}'); do
+      iptables -t mangle -A XRAY_MASK -d "$lan_subnet" -j RETURN
+    done
+  fi
+  iptables -t mangle -A XRAY_MASK -p tcp --dport 53 -j RETURN
+  iptables -t mangle -A XRAY_MASK -p udp --dport 53 -j RETURN
+  iptables -t mangle -A XRAY_MASK -j RETURN -m mark --mark 0xff
+  iptables -t mangle -A XRAY_MASK -p tcp -j MARK --set-mark 1
+  iptables -t mangle -A XRAY_MASK -p udp -j MARK --set-mark 1
+  iptables -t mangle -A OUTPUT -j XRAY_MASK
+}
+
+case "${1:-start}" in
+start)
+  tproxy_stop
+  tproxy_start
+  ;;
+stop) tproxy_stop ;;
+esac
 EOF
 sudo install -m 0755 "$tproxy_tmp" "$tproxy_dir/tproxy.sh"
 rm -f "$tproxy_tmp"
 
-tproxy_line="ExecStartPre=$tproxy_dir/tproxy.sh"
+dispatcher_dir="/etc/NetworkManager/dispatcher.d"
+if [ -d "$dispatcher_dir" ]; then
+  dispatcher_tmp="$(mktemp)"
+  cat >"$dispatcher_tmp" <<'EOF'
+#!/bin/sh
+case "$2" in
+up | dhcp4-change | dhcp6-change) ;;
+*) exit 0 ;;
+esac
+systemctl is-active --quiet xray || exit 0
+/usr/local/etc/xray/tproxy.sh start
+EOF
+  sudo install -m 0755 "$dispatcher_tmp" "$dispatcher_dir/90-xray-tproxy"
+  rm -f "$dispatcher_tmp"
+fi
+
+tproxy_line="ExecStartPre=$tproxy_dir/tproxy.sh start
+ExecStopPost=$tproxy_dir/tproxy.sh stop"
+{{- else }}
+sudo rm -f /usr/local/etc/xray/tproxy.sh /etc/NetworkManager/dispatcher.d/90-xray-tproxy
 {{- end }}
 
 service_tmp="$(mktemp)"
 cat >"$service_tmp" <<EOF
 [Unit]
 Description=Xray Service
-After=network.target nss-lookup.target
+After=network-online.target nss-lookup.target
+Wants=network-online.target
 
 [Service]
 User=root
@@ -136,4 +170,5 @@ sudo install -m 0644 "$service_tmp" /etc/systemd/system/xray.service
 rm -f "$service_tmp"
 
 sudo systemctl daemon-reload
-sudo systemctl enable --now xray
+sudo systemctl enable xray
+sudo systemctl restart xray
